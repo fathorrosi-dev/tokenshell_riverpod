@@ -1,0 +1,70 @@
+# Extends very_good_analysis — a strict, opinionated lint ruleset maintained
+# by Very Good Ventures. All rules in that package are active by default.
+# Overrides below are project-specific and documented with alasan (reason).
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  # Aktifkan strict mode untuk memaksimalkan keamanan type system Dart.
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+
+  # Arahkan analyzer ke folder yang relevan; exclude generated code.
+  exclude:
+    # File yang dihasilkan build_runner tidak perlu dianalisis.
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.mocks.dart"
+    # Asset dan font tidak berisi kode Dart.
+    - "assets/**"
+    - "build/**"
+
+linter:
+  rules:
+    # ── Rules yang dinonaktifkan dengan alasan eksplisit ──────────────────────
+
+    # very_good_analysis mengharuskan `public_member_api_docs` di semua member.
+    # Untuk template starter ini, dokumentasi yang berlebihan pada getter/setter
+    # sederhana mengurangi keterbacaan. Doc comment tetap diwajibkan pada class
+    # dan metode publik yang non-trivial.
+    public_member_api_docs: false
+
+    # Mengharuskan trailing comma di semua argument list multi-baris.
+    # Diaktifkan — konsisten dengan shadcn/ui formatting style.
+    require_trailing_commas: true
+
+    # `lines_longer_than_80_chars` dinonaktifkan karena batas 80 karakter
+    # terlalu ketat untuk file yang banyak menggunakan named parameters panjang
+    # (misalnya ThemeData, ButtonStyle). Gunakan dart format dengan line-length
+    # default (80) saat commit.
+    lines_longer_than_80_chars: false
+
+    # `prefer_double_quotes` dinonaktifkan — proyek ini menggunakan single quotes
+    # secara konsisten sesuai konvensi Flutter community.
+    prefer_double_quotes: false
+
+    # `avoid_classes_with_only_static_members` dinonaktifkan karena template ini
+    # menggunakan abstract final class sebagai namespace token (ColorTokens,
+    # SpacingTokens, dll.) yang merupakan pola idiomatik di Dart 3.
+    avoid_classes_with_only_static_members: false
+
+    # ── Rules tambahan yang diaktifkan ────────────────────────────────────────
+
+    # Pastikan setiap switch exhaustif — sangat penting untuk sealed class
+    # (Failure, ScreenSizeClass, ThemeMode) agar compiler menangkap kasus baru.
+    # (Sudah diaktifkan oleh very_good_analysis; dicantumkan sebagai dokumentasi.)
+    exhaustive_cases: true
+
+    # Larang penggunaan `print()` langsung — gunakan Talker sebagai gantinya.
+    avoid_print: true
+
+    # Paksa penggunaan const constructor kapanpun memungkinkan untuk performa.
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+
+    # Larang dynamic yang tidak perlu.
+    avoid_dynamic_calls: true
+    sort_pub_dependencies: false
