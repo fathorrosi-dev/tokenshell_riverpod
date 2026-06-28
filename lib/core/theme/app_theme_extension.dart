@@ -1,46 +1,130 @@
+// dart run build_runner build --delete-conflicting-outputs
 import 'package:flutter/material.dart';
-import 'package:tokenshell_riverpod/core/theme/app_theme.dart';
-import 'package:tokenshell_riverpod/core/theme/theme_constants.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'app_theme_extension.freezed.dart';
+
+// ── AppStatusColors ───────────────────────────────────────────────────────────
+
+/// Immutable snapshot of all status/semantic color tokens — success, warning,
+/// info, error — along with their foregrounds.
+///
+/// Extracted from the flat [AppThemeColors] field list so that:
+///   1. Status tokens can be extended independently (e.g. adding `successSubtle`)
+///      without touching the core semantic section.
+///   2. [AppThemeColors.lerp] delegates to [AppStatusColors.lerp] — one line
+///      instead of eight, and maintenance stays bounded regardless of how many
+///      status variants are added.
+///   3. Consumer API is more expressive:
+///        `colors.status.success`  vs  `colors.success`
+///
+/// ## Usage
+/// ```dart
+/// final s = context.colors.status;
+/// Container(color: s.warning, child: Text('!', style: TextStyle(color: s.warningForeground)));
+/// ```
+@freezed
+abstract class AppStatusColors with _$AppStatusColors {
+  const factory AppStatusColors({
+    required Color success,
+    required Color successForeground,
+    required Color warning,
+    required Color warningForeground,
+    required Color info,
+    required Color infoForeground,
+    required Color error,
+    required Color errorForeground,
+  }) = _AppStatusColors;
+
+  /// Linearly interpolates between [a] and [b] at fraction [t].
+  /// Delegated to from [AppThemeColors.lerp] — keeps the parent lerp
+  /// to a single line for the entire status group.
+  factory AppStatusColors.lerp(
+    AppStatusColors a,
+    AppStatusColors b,
+    double t,
+  ) {
+    return AppStatusColors(
+      success: Color.lerp(a.success, b.success, t)!,
+      successForeground: Color.lerp(
+        a.successForeground,
+        b.successForeground,
+        t,
+      )!,
+      warning: Color.lerp(a.warning, b.warning, t)!,
+      warningForeground: Color.lerp(
+        a.warningForeground,
+        b.warningForeground,
+        t,
+      )!,
+      info: Color.lerp(a.info, b.info, t)!,
+      infoForeground: Color.lerp(a.infoForeground, b.infoForeground, t)!,
+      error: Color.lerp(a.error, b.error, t)!,
+      errorForeground: Color.lerp(a.errorForeground, b.errorForeground, t)!,
+    );
+  }
+}
+
+// ── AppThemeColors ────────────────────────────────────────────────────────────
 
 /// Immutable snapshot of every shadcn/ui color token resolved for a
 /// specific [Brightness]. Consumed by [AppThemeExtension] and
 /// [ThemeConstants] factory methods.
-@immutable
-final class AppThemeColors {
-  const AppThemeColors({
-    required this.background,
-    required this.foreground,
-    required this.card,
-    required this.cardForeground,
-    required this.popover,
-    required this.popoverForeground,
-    required this.primary,
-    required this.primaryForeground,
-    required this.secondary,
-    required this.secondaryForeground,
-    required this.muted,
-    required this.mutedForeground,
-    required this.accent,
-    required this.accentForeground,
-    required this.destructive,
-    required this.destructiveForeground,
-    required this.border,
-    required this.input,
-    required this.ring,
-    required this.success,
-    required this.successForeground,
-    required this.warning,
-    required this.warningForeground,
-    required this.info,
-    required this.infoForeground,
-    required this.error,
-    required this.errorForeground,
-  });
+///
+/// ## Why Freezed?
+///
+/// Freezed generates [==], [hashCode], and [copyWith] from the single field
+/// declaration — always in sync by construction. Adding a core token is
+/// one line change. The compiler surfaces any missing required parameter
+/// at every call site.
+///
+/// ## Status tokens
+///
+/// Status colors live in the [AppStatusColors] sub-record ([status] field)
+/// rather than as flat fields. This keeps the core semantic section lean
+/// and makes [lerp] maintenance O(1) for the status group.
+///
+/// ## What Freezed does NOT generate
+///
+/// [AppThemeColors.lerp] is kept manual because Freezed has no domain
+/// knowledge that every field is a [Color]. When you add a new core token
+/// field, add the corresponding [Color.lerp] line here; the compiler will
+/// surface the gap as a missing required named parameter at the call site.
+@freezed
+abstract class AppThemeColors with _$AppThemeColors {
+  const factory AppThemeColors({
+    // ── Core semantic tokens ─────────────────────────────────────────────────
+    required Color background,
+    required Color foreground,
+    required Color card,
+    required Color cardForeground,
+    required Color popover,
+    required Color popoverForeground,
+    required Color primary,
+    required Color primaryForeground,
+    required Color secondary,
+    required Color secondaryForeground,
+    required Color muted,
+    required Color mutedForeground,
+    required Color accent,
+    required Color accentForeground,
+    required Color destructive,
+    required Color destructiveForeground,
+    required Color border,
+    required Color input,
+    required Color ring,
+    // ── Status tokens (grouped) ───────────────────────────────────────────────
+    required AppStatusColors status,
+  }) = _AppThemeColors;
 
-  // ── Interpolation ────────────────────────────────────────────────────────────
+  // ── Interpolation ──────────────────────────────────────────────────────────
 
   /// Linearly interpolates between [a] and [b] at fraction [t].
   /// Used by [AppThemeExtension.lerp] during animated theme transitions.
+  ///
+  /// MAINTENANCE NOTE: when you add a new core token field above, add the
+  /// corresponding [Color.lerp] line here. Status tokens are handled by
+  /// [AppStatusColors.lerp] — no changes needed here for status additions.
   factory AppThemeColors.lerp(
     AppThemeColors a,
     AppThemeColors b,
@@ -72,7 +156,11 @@ final class AppThemeColors {
       muted: Color.lerp(a.muted, b.muted, t)!,
       mutedForeground: Color.lerp(a.mutedForeground, b.mutedForeground, t)!,
       accent: Color.lerp(a.accent, b.accent, t)!,
-      accentForeground: Color.lerp(a.accentForeground, b.accentForeground, t)!,
+      accentForeground: Color.lerp(
+        a.accentForeground,
+        b.accentForeground,
+        t,
+      )!,
       destructive: Color.lerp(a.destructive, b.destructive, t)!,
       destructiveForeground: Color.lerp(
         a.destructiveForeground,
@@ -82,184 +170,10 @@ final class AppThemeColors {
       border: Color.lerp(a.border, b.border, t)!,
       input: Color.lerp(a.input, b.input, t)!,
       ring: Color.lerp(a.ring, b.ring, t)!,
-      success: Color.lerp(a.success, b.success, t)!,
-      successForeground: Color.lerp(
-        a.successForeground,
-        b.successForeground,
-        t,
-      )!,
-      warning: Color.lerp(a.warning, b.warning, t)!,
-      warningForeground: Color.lerp(
-        a.warningForeground,
-        b.warningForeground,
-        t,
-      )!,
-      info: Color.lerp(a.info, b.info, t)!,
-      infoForeground: Color.lerp(a.infoForeground, b.infoForeground, t)!,
-      error: Color.lerp(a.error, b.error, t)!,
-      errorForeground: Color.lerp(a.errorForeground, b.errorForeground, t)!,
+      // Status group — delegated; one line regardless of status token count.
+      status: AppStatusColors.lerp(a.status, b.status, t),
     );
   }
-
-  // ── Core semantic tokens ─────────────────────────────────────────────────────
-
-  final Color background;
-  final Color foreground;
-  final Color card;
-  final Color cardForeground;
-  final Color popover;
-  final Color popoverForeground;
-  final Color primary;
-  final Color primaryForeground;
-  final Color secondary;
-  final Color secondaryForeground;
-  final Color muted;
-  final Color mutedForeground;
-  final Color accent;
-  final Color accentForeground;
-  final Color destructive;
-  final Color destructiveForeground;
-  final Color border;
-  final Color input;
-  final Color ring;
-
-  // ── Status tokens ────────────────────────────────────────────────────────────
-
-  final Color success;
-  final Color successForeground;
-  final Color warning;
-  final Color warningForeground;
-  final Color info;
-  final Color infoForeground;
-  final Color error;
-  final Color errorForeground;
-
-  // ── Mutation ─────────────────────────────────────────────────────────────────
-
-  AppThemeColors copyWith({
-    Color? background,
-    Color? foreground,
-    Color? card,
-    Color? cardForeground,
-    Color? popover,
-    Color? popoverForeground,
-    Color? primary,
-    Color? primaryForeground,
-    Color? secondary,
-    Color? secondaryForeground,
-    Color? muted,
-    Color? mutedForeground,
-    Color? accent,
-    Color? accentForeground,
-    Color? destructive,
-    Color? destructiveForeground,
-    Color? border,
-    Color? input,
-    Color? ring,
-    Color? success,
-    Color? successForeground,
-    Color? warning,
-    Color? warningForeground,
-    Color? info,
-    Color? infoForeground,
-    Color? error,
-    Color? errorForeground,
-  }) {
-    return AppThemeColors(
-      background: background ?? this.background,
-      foreground: foreground ?? this.foreground,
-      card: card ?? this.card,
-      cardForeground: cardForeground ?? this.cardForeground,
-      popover: popover ?? this.popover,
-      popoverForeground: popoverForeground ?? this.popoverForeground,
-      primary: primary ?? this.primary,
-      primaryForeground: primaryForeground ?? this.primaryForeground,
-      secondary: secondary ?? this.secondary,
-      secondaryForeground: secondaryForeground ?? this.secondaryForeground,
-      muted: muted ?? this.muted,
-      mutedForeground: mutedForeground ?? this.mutedForeground,
-      accent: accent ?? this.accent,
-      accentForeground: accentForeground ?? this.accentForeground,
-      destructive: destructive ?? this.destructive,
-      destructiveForeground:
-          destructiveForeground ?? this.destructiveForeground,
-      border: border ?? this.border,
-      input: input ?? this.input,
-      ring: ring ?? this.ring,
-      success: success ?? this.success,
-      successForeground: successForeground ?? this.successForeground,
-      warning: warning ?? this.warning,
-      warningForeground: warningForeground ?? this.warningForeground,
-      info: info ?? this.info,
-      infoForeground: infoForeground ?? this.infoForeground,
-      error: error ?? this.error,
-      errorForeground: errorForeground ?? this.errorForeground,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is AppThemeColors &&
-        other.background == background &&
-        other.foreground == foreground &&
-        other.card == card &&
-        other.cardForeground == cardForeground &&
-        other.popover == popover &&
-        other.popoverForeground == popoverForeground &&
-        other.primary == primary &&
-        other.primaryForeground == primaryForeground &&
-        other.secondary == secondary &&
-        other.secondaryForeground == secondaryForeground &&
-        other.muted == muted &&
-        other.mutedForeground == mutedForeground &&
-        other.accent == accent &&
-        other.accentForeground == accentForeground &&
-        other.destructive == destructive &&
-        other.destructiveForeground == destructiveForeground &&
-        other.border == border &&
-        other.input == input &&
-        other.ring == ring &&
-        other.success == success &&
-        other.successForeground == successForeground &&
-        other.warning == warning &&
-        other.warningForeground == warningForeground &&
-        other.info == info &&
-        other.infoForeground == infoForeground &&
-        other.error == error &&
-        other.errorForeground == errorForeground;
-  }
-
-  @override
-  int get hashCode => Object.hashAll([
-    background,
-    foreground,
-    card,
-    cardForeground,
-    popover,
-    popoverForeground,
-    primary,
-    primaryForeground,
-    secondary,
-    secondaryForeground,
-    muted,
-    mutedForeground,
-    accent,
-    accentForeground,
-    destructive,
-    destructiveForeground,
-    border,
-    input,
-    ring,
-    success,
-    successForeground,
-    warning,
-    warningForeground,
-    info,
-    infoForeground,
-    error,
-    errorForeground,
-  ]);
 }
 
 // ── ThemeExtension ────────────────────────────────────────────────────────────
@@ -270,6 +184,11 @@ final class AppThemeColors {
 /// Access it anywhere with:
 /// ```dart
 /// final colors = AppThemeExtension.of(context).colors;
+/// ```
+///
+/// Or via the convenience extension in `extensions.dart`:
+/// ```dart
+/// final colors = context.colors;
 /// ```
 @immutable
 final class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
@@ -299,15 +218,20 @@ final class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   // ── Convenience accessor ─────────────────────────────────────────────────────
 
   /// Retrieves [AppThemeExtension] from the nearest [Theme].
-  /// Throws if the extension is not registered — always register via [AppTheme].
+  ///
+  /// Throws a descriptive [StateError] in all build modes (debug and release)
+  /// if the extension is not registered — more informative than the generic
+  /// "Null check operator used on a null value" that a bare `ext!` would give.
   static AppThemeExtension of(BuildContext context) {
     final ext = Theme.of(context).extension<AppThemeExtension>();
-    assert(
-      ext != null,
-      'AppThemeExtension not found in Theme. '
-      'Make sure you use AppTheme.light() or AppTheme.dark().',
-    );
-    return ext!;
+    if (ext == null) {
+      throw StateError(
+        'AppThemeExtension not found in ThemeData. '
+        'Ensure AppTheme.light() or AppTheme.dark() is used to build your '
+        'ThemeData — both register AppThemeExtension in their extensions list.',
+      );
+    }
+    return ext;
   }
 
   @override
