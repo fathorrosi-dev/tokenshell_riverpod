@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'package:tokenshell_riverpod/features/posts/data/models/post_model.dart';
-import 'package:tokenshell_riverpod/features/posts/presentation/notifiers/posts_notifier.dart';
 
 part 'post_remote_source.g.dart';
 
@@ -19,9 +18,19 @@ part 'post_remote_source.g.dart';
 abstract interface class PostRemoteSource {
   factory PostRemoteSource(Dio dio, {String baseUrl}) = _PostRemoteSource;
 
-  /// Fetches all posts from GET /posts.
+  /// Fetches posts from GET /posts.
+  ///
+  /// jsonplaceholder runs on json-server underneath, which supports
+  /// `_page` / `_limit` query params for pagination. Both are optional —
+  /// when `null`, Dio omits a query parameter from the request entirely
+  /// rather than sending it as the literal string `"null"`, so calling
+  /// this with no arguments fetches the full unpaginated list exactly as
+  /// before.
   @GET('/posts')
-  Future<List<PostModel>> getPosts();
+  Future<List<PostModel>> getPosts({
+    @Query('_page') int? page,
+    @Query('_limit') int? pageSize,
+  });
 
   /// Fetches a single post from GET /posts/{id}.
   @GET('/posts/{id}')

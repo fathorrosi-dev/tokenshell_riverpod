@@ -8,7 +8,7 @@ part of 'post_remote_source.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main,avoid_redundant_argument_values
 
 class _PostRemoteSource implements PostRemoteSource {
   _PostRemoteSource(this._dio, {this.baseUrl, this.errorLogger});
@@ -20,9 +20,13 @@ class _PostRemoteSource implements PostRemoteSource {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<PostModel>> getPosts() async {
+  Future<List<PostModel>> getPosts({int? page, int? pageSize}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'_page': page,
+      r'_limit': pageSize,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<PostModel>>(

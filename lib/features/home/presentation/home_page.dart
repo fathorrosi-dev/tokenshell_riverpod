@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:tokenshell_riverpod/core/design_system/design_system.dart';
-import 'package:tokenshell_riverpod/core/di/theme_provider.dart';
+import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
+import 'package:tokenshell_riverpod/core/theme/notifiers/theme_mode_notifier.dart';
 import 'package:tokenshell_riverpod/core/utils/extensions.dart';
 
 /// Home feature placeholder page.
@@ -15,6 +15,21 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final themeMode = ref.watch(themeModeProvider).value;
+
+    // Surfaces theme-mode persistence failures instead of letting the
+    // toggle above silently snap back with no explanation. See
+    // [themeModeWriteFailureProvider] for why this lives outside
+    // [ThemeModeNotifier]'s own state.
+    ref.listen<Object?>(themeModeWriteFailureProvider, (previous, failure) {
+      if (failure == null) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Couldn't save your theme preference. Try again."),
+        ),
+      );
+      ref.read(themeModeWriteFailureProvider.notifier).failure = null;
+    });
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -24,9 +39,7 @@ class HomePage extends ConsumerWidget {
           // Theme mode toggle — cycles system → light → dark → system.
           IconButton(
             icon: Icon(
-              _themeModeIcon(
-                ref.watch(themeModeProvider).asData?.value,
-              ),
+              _themeModeIcon(themeMode),
             ),
             tooltip: 'Toggle theme',
             onPressed: () => ref.read(themeModeProvider.notifier).toggle(),
@@ -104,23 +117,23 @@ class HomePage extends ConsumerWidget {
               ),
               _Swatch(
                 label: 'success',
-                color: colors.success,
-                onColor: colors.successForeground,
+                color: colors.status.success,
+                onColor: colors.status.successForeground,
               ),
               _Swatch(
                 label: 'warning',
-                color: colors.warning,
-                onColor: colors.warningForeground,
+                color: colors.status.warning,
+                onColor: colors.status.warningForeground,
               ),
               _Swatch(
                 label: 'info',
-                color: colors.info,
-                onColor: colors.infoForeground,
+                color: colors.status.info,
+                onColor: colors.status.infoForeground,
               ),
               _Swatch(
                 label: 'error',
-                color: colors.error,
-                onColor: colors.errorForeground,
+                color: colors.status.error,
+                onColor: colors.status.errorForeground,
               ),
             ],
           ),
@@ -160,7 +173,7 @@ class HomePage extends ConsumerWidget {
 
     return [
       for (final (label, style) in items) ...[
-        Text(label, style: style?.copyWith(fontSize: style.fontSize)),
+        Text(label, style: style),
         const SizedBox(height: SpacingTokens.md),
       ],
     ];
@@ -169,7 +182,7 @@ class HomePage extends ConsumerWidget {
 
 // ── Color swatch widget ────────────────────────────────────────────────────────
 
-class _Swatch extends StatelessWidget {
+class _Swatch extends StatefulWidget {
   const _Swatch({
     required this.label,
     required this.color,
@@ -181,27 +194,58 @@ class _Swatch extends StatelessWidget {
   final Color onColor;
 
   @override
+  State<_Swatch> createState() => _SwatchState();
+}
+
+class _SwatchState extends State<_Swatch> {
+  bool _pressed = false;
+
+  void _setPressed(bool value) {
+    if (_pressed == value) return;
+    setState(() => _pressed = value);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 120,
-      height: 56,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(RadiusTokens.md),
-        border: Border.all(
-          color: context.colors.border,
+    // Previously `_Swatch` was a plain [StatelessWidget] with no animation
+    // at all — meaning [context.durations] (the reduce-motion-aware
+    // duration system, see `core/utils/extensions.dart`) had zero real
+    // consumers anywhere in this template, and its wiring to
+    // [MediaQuery.disableAnimationsOf] had never actually been exercised.
+    // This small press-scale affordance is a low-stakes way to prove it
+    // works end-to-end: with OS-level "Reduce Motion" enabled,
+    // `context.durations.fast` resolves to [Duration.zero] and this
+    // animation becomes an instant, silent state change instead.
+    return GestureDetector(
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.96 : 1.0,
+        duration: context.durations.fast,
+        curve: Curves.easeOut,
+        child: Container(
+          width: 120,
+          height: 56,
+          decoration: BoxDecoration(
+            color: widget.color,
+            borderRadius: BorderRadius.circular(RadiusTokens.md),
+            border: Border.all(
+              color: context.colors.border,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            widget.label,
+            style: TextStyle(
+              fontFamily: TypographyTokens.fontFamily,
+              fontSize: TypographyTokens.sizeXs,
+              fontWeight: TypographyTokens.weightMedium,
+              color: widget.onColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        label,
-        style: TextStyle(
-          fontFamily: TypographyTokens.fontFamily,
-          fontSize: TypographyTokens.sizeXs,
-          fontWeight: TypographyTokens.weightMedium,
-          color: onColor,
-        ),
-        textAlign: TextAlign.center,
       ),
     );
   }

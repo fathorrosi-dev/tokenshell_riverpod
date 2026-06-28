@@ -1,38 +1,24 @@
-import 'package:flutter/foundation.dart';
-import 'package:tokenshell_riverpod/features/posts/data/models/post_model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'post.freezed.dart';
 
 /// Pure domain entity representing a single blog post.
 ///
-/// This class lives in the domain layer and has NO dependency on any
-/// external package, framework, or serialisation mechanism.
-/// JSON mapping is the responsibility of [PostModel] in the data layer.
-@immutable
-final class Post {
-  const Post({
-    required this.id,
-    required this.userId,
-    required this.title,
-    required this.body,
-  });
-
-  final int id;
-  final int userId;
-  final String title;
-  final String body;
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is Post &&
-        other.id == id &&
-        other.userId == userId &&
-        other.title == title &&
-        other.body == body;
-  }
-
-  @override
-  int get hashCode => Object.hash(id, userId, title, body);
-
-  @override
-  String toString() => 'Post(id: $id, userId: $userId, title: $title)';
+/// Lives in the Domain layer — deliberately free of Flutter SDK imports,
+/// serialisation mechanisms, and Data-layer dependencies. JSON mapping
+/// lives exclusively in [PostModel] (data layer); [PostModelX.toDomain]
+/// converts between the two.
+///
+/// Freezed provides value equality, immutability, [copyWith], and a
+/// human-readable [toString] — keeping the class consistent with
+/// [PostModel] and removing the risk of missing field updates that came
+/// with the previous manual [==] / [hashCode] / [toString] implementation.
+@freezed
+abstract class Post with _$Post {
+  const factory Post({
+    required int id,
+    required int userId,
+    required String title,
+    required String body,
+  }) = _Post;
 }

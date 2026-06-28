@@ -18,5 +18,9 @@ final class GetPostsUseCase {
   final PostRepository _repository;
 
   /// Executes the use case.
-  Future<Either<Failure, List<Post>>> call() => _repository.getPosts();
+  ///
+  /// [page] / [pageSize] forward directly to [PostRepository.getPosts] —
+  /// see that method's doc comment for what omitting them does.
+  Future<Either<Failure, List<Post>>> call({int? page, int? pageSize}) =>
+      _repository.getPosts(page: page, pageSize: pageSize);
 }

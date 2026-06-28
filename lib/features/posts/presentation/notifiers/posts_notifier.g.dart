@@ -8,196 +8,115 @@ part of 'posts_notifier.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Provides the [PostRemoteSource] Retrofit implementation.
-
-@ProviderFor(postRemoteSource)
-final postRemoteSourceProvider = PostRemoteSourceProvider._();
-
-/// Provides the [PostRemoteSource] Retrofit implementation.
-
-final class PostRemoteSourceProvider
-    extends
-        $FunctionalProvider<
-          PostRemoteSource,
-          PostRemoteSource,
-          PostRemoteSource
-        >
-    with $Provider<PostRemoteSource> {
-  /// Provides the [PostRemoteSource] Retrofit implementation.
-  PostRemoteSourceProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'postRemoteSourceProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$postRemoteSourceHash();
-
-  @$internal
-  @override
-  $ProviderElement<PostRemoteSource> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  PostRemoteSource create(Ref ref) {
-    return postRemoteSource(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(PostRemoteSource value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<PostRemoteSource>(value),
-    );
-  }
-}
-
-String _$postRemoteSourceHash() => r'7247697317ef6e383681027ecf82b2bf7a41cd4d';
-
-/// Provides the [PostRepositoryImpl] wired with its dependencies.
-
-@ProviderFor(postRepository)
-final postRepositoryProvider = PostRepositoryProvider._();
-
-/// Provides the [PostRepositoryImpl] wired with its dependencies.
-
-final class PostRepositoryProvider
-    extends
-        $FunctionalProvider<
-          PostRepositoryImpl,
-          PostRepositoryImpl,
-          PostRepositoryImpl
-        >
-    with $Provider<PostRepositoryImpl> {
-  /// Provides the [PostRepositoryImpl] wired with its dependencies.
-  PostRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'postRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$postRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<PostRepositoryImpl> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  PostRepositoryImpl create(Ref ref) {
-    return postRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(PostRepositoryImpl value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<PostRepositoryImpl>(value),
-    );
-  }
-}
-
-String _$postRepositoryHash() => r'4f1cc8cdcc520ad7592ca534f9f087ca9b6d95d3';
-
-/// Provides the [GetPostsUseCase] wired with the repository.
-
-@ProviderFor(getPostsUseCase)
-final getPostsUseCaseProvider = GetPostsUseCaseProvider._();
-
-/// Provides the [GetPostsUseCase] wired with the repository.
-
-final class GetPostsUseCaseProvider
-    extends
-        $FunctionalProvider<GetPostsUseCase, GetPostsUseCase, GetPostsUseCase>
-    with $Provider<GetPostsUseCase> {
-  /// Provides the [GetPostsUseCase] wired with the repository.
-  GetPostsUseCaseProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'getPostsUseCaseProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$getPostsUseCaseHash();
-
-  @$internal
-  @override
-  $ProviderElement<GetPostsUseCase> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  GetPostsUseCase create(Ref ref) {
-    return getPostsUseCase(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GetPostsUseCase value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<GetPostsUseCase>(value),
-    );
-  }
-}
-
-String _$getPostsUseCaseHash() => r'34e794f751dbe2b7d32d1178b530a1cd729a3f27';
-
-/// Manages the async state of the posts list.
+/// Manages the async, paginated state of the posts list.
+///
+/// Infrastructure dependencies (PostRemoteSource, PostRepository,
+/// GetPostsUseCase) are wired in the feature DI barrel (di/posts_providers.dart)
+/// — this file is responsible only for state lifecycle and business actions.
 ///
 /// State lifecycle:
-///   - [AsyncLoading] → while the use case is executing.
-///   - [AsyncData]    → resolved [List<Post>] on success.
-///   - [AsyncError]   → a typed [Failure] on any error path.
+///   - [AsyncLoading] → while the *first* page is loading (fresh `build()`
+///     or [refresh]). Subsequent pages use [PostsListState.isLoadingMore]
+///     instead — see that field's doc comment for why.
+///   - [AsyncData]    → resolved [PostsListState] on success.
+///   - [AsyncError]   → a typed `Failure` on any *first-page* error path.
+///     A failed [loadMore] does NOT transition here — see [loadMore].
 ///
-/// Consumers use `ref.watch(postsNotifierProvider)` for reactive UI and
-/// `ref.read(postsNotifierProvider.notifier).refresh()` for manual refresh.
+/// Consumers use `ref.watch(postsProvider)` for reactive UI,
+/// `ref.read(postsProvider.notifier).refresh()` for pull-to-refresh / the
+/// AppBar refresh button, and `ref.read(postsProvider.notifier).loadMore()`
+/// when the list is scrolled near its end.
+///
+/// ## Why keepAlive (R-06, 27 Jun 2026)
+///
+/// Changed from `@riverpod` (autoDispose default) to
+/// `@Riverpod(keepAlive: true)` so the paginated list state survives tab
+/// navigation. With autoDispose, every switch to Settings or Home and back
+/// would dispose this notifier — resetting to page 1 and discarding all
+/// pages the user had already scrolled through. For a daily-use
+/// productivity tool like Baseline, that's an unnecessary UX regression.
+///
+/// Tradeoff: keepAlive means the list stays in memory for the app's
+/// lifetime. For stale-data mitigation, consider calling [refresh] on
+/// screen re-focus via a GoRouter listener or AppLifecycleState observer
+/// once real quota data is in place.
 
 @ProviderFor(PostsNotifier)
 final postsProvider = PostsNotifierProvider._();
 
-/// Manages the async state of the posts list.
+/// Manages the async, paginated state of the posts list.
+///
+/// Infrastructure dependencies (PostRemoteSource, PostRepository,
+/// GetPostsUseCase) are wired in the feature DI barrel (di/posts_providers.dart)
+/// — this file is responsible only for state lifecycle and business actions.
 ///
 /// State lifecycle:
-///   - [AsyncLoading] → while the use case is executing.
-///   - [AsyncData]    → resolved [List<Post>] on success.
-///   - [AsyncError]   → a typed [Failure] on any error path.
+///   - [AsyncLoading] → while the *first* page is loading (fresh `build()`
+///     or [refresh]). Subsequent pages use [PostsListState.isLoadingMore]
+///     instead — see that field's doc comment for why.
+///   - [AsyncData]    → resolved [PostsListState] on success.
+///   - [AsyncError]   → a typed `Failure` on any *first-page* error path.
+///     A failed [loadMore] does NOT transition here — see [loadMore].
 ///
-/// Consumers use `ref.watch(postsNotifierProvider)` for reactive UI and
-/// `ref.read(postsNotifierProvider.notifier).refresh()` for manual refresh.
+/// Consumers use `ref.watch(postsProvider)` for reactive UI,
+/// `ref.read(postsProvider.notifier).refresh()` for pull-to-refresh / the
+/// AppBar refresh button, and `ref.read(postsProvider.notifier).loadMore()`
+/// when the list is scrolled near its end.
+///
+/// ## Why keepAlive (R-06, 27 Jun 2026)
+///
+/// Changed from `@riverpod` (autoDispose default) to
+/// `@Riverpod(keepAlive: true)` so the paginated list state survives tab
+/// navigation. With autoDispose, every switch to Settings or Home and back
+/// would dispose this notifier — resetting to page 1 and discarding all
+/// pages the user had already scrolled through. For a daily-use
+/// productivity tool like Baseline, that's an unnecessary UX regression.
+///
+/// Tradeoff: keepAlive means the list stays in memory for the app's
+/// lifetime. For stale-data mitigation, consider calling [refresh] on
+/// screen re-focus via a GoRouter listener or AppLifecycleState observer
+/// once real quota data is in place.
 final class PostsNotifierProvider
-    extends $AsyncNotifierProvider<PostsNotifier, List<Post>> {
-  /// Manages the async state of the posts list.
+    extends $AsyncNotifierProvider<PostsNotifier, PostsListState> {
+  /// Manages the async, paginated state of the posts list.
+  ///
+  /// Infrastructure dependencies (PostRemoteSource, PostRepository,
+  /// GetPostsUseCase) are wired in the feature DI barrel (di/posts_providers.dart)
+  /// — this file is responsible only for state lifecycle and business actions.
   ///
   /// State lifecycle:
-  ///   - [AsyncLoading] → while the use case is executing.
-  ///   - [AsyncData]    → resolved [List<Post>] on success.
-  ///   - [AsyncError]   → a typed [Failure] on any error path.
+  ///   - [AsyncLoading] → while the *first* page is loading (fresh `build()`
+  ///     or [refresh]). Subsequent pages use [PostsListState.isLoadingMore]
+  ///     instead — see that field's doc comment for why.
+  ///   - [AsyncData]    → resolved [PostsListState] on success.
+  ///   - [AsyncError]   → a typed `Failure` on any *first-page* error path.
+  ///     A failed [loadMore] does NOT transition here — see [loadMore].
   ///
-  /// Consumers use `ref.watch(postsNotifierProvider)` for reactive UI and
-  /// `ref.read(postsNotifierProvider.notifier).refresh()` for manual refresh.
+  /// Consumers use `ref.watch(postsProvider)` for reactive UI,
+  /// `ref.read(postsProvider.notifier).refresh()` for pull-to-refresh / the
+  /// AppBar refresh button, and `ref.read(postsProvider.notifier).loadMore()`
+  /// when the list is scrolled near its end.
+  ///
+  /// ## Why keepAlive (R-06, 27 Jun 2026)
+  ///
+  /// Changed from `@riverpod` (autoDispose default) to
+  /// `@Riverpod(keepAlive: true)` so the paginated list state survives tab
+  /// navigation. With autoDispose, every switch to Settings or Home and back
+  /// would dispose this notifier — resetting to page 1 and discarding all
+  /// pages the user had already scrolled through. For a daily-use
+  /// productivity tool like Baseline, that's an unnecessary UX regression.
+  ///
+  /// Tradeoff: keepAlive means the list stays in memory for the app's
+  /// lifetime. For stale-data mitigation, consider calling [refresh] on
+  /// screen re-focus via a GoRouter listener or AppLifecycleState observer
+  /// once real quota data is in place.
   PostsNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'postsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -210,29 +129,52 @@ final class PostsNotifierProvider
   PostsNotifier create() => PostsNotifier();
 }
 
-String _$postsNotifierHash() => r'4b3373a2b1cee9ddb51eaa1e62370bdd235618fa';
+String _$postsNotifierHash() => r'e16fc077aab0ef25fadfbc2267a15e0f26da6643';
 
-/// Manages the async state of the posts list.
+/// Manages the async, paginated state of the posts list.
+///
+/// Infrastructure dependencies (PostRemoteSource, PostRepository,
+/// GetPostsUseCase) are wired in the feature DI barrel (di/posts_providers.dart)
+/// — this file is responsible only for state lifecycle and business actions.
 ///
 /// State lifecycle:
-///   - [AsyncLoading] → while the use case is executing.
-///   - [AsyncData]    → resolved [List<Post>] on success.
-///   - [AsyncError]   → a typed [Failure] on any error path.
+///   - [AsyncLoading] → while the *first* page is loading (fresh `build()`
+///     or [refresh]). Subsequent pages use [PostsListState.isLoadingMore]
+///     instead — see that field's doc comment for why.
+///   - [AsyncData]    → resolved [PostsListState] on success.
+///   - [AsyncError]   → a typed `Failure` on any *first-page* error path.
+///     A failed [loadMore] does NOT transition here — see [loadMore].
 ///
-/// Consumers use `ref.watch(postsNotifierProvider)` for reactive UI and
-/// `ref.read(postsNotifierProvider.notifier).refresh()` for manual refresh.
+/// Consumers use `ref.watch(postsProvider)` for reactive UI,
+/// `ref.read(postsProvider.notifier).refresh()` for pull-to-refresh / the
+/// AppBar refresh button, and `ref.read(postsProvider.notifier).loadMore()`
+/// when the list is scrolled near its end.
+///
+/// ## Why keepAlive (R-06, 27 Jun 2026)
+///
+/// Changed from `@riverpod` (autoDispose default) to
+/// `@Riverpod(keepAlive: true)` so the paginated list state survives tab
+/// navigation. With autoDispose, every switch to Settings or Home and back
+/// would dispose this notifier — resetting to page 1 and discarding all
+/// pages the user had already scrolled through. For a daily-use
+/// productivity tool like Baseline, that's an unnecessary UX regression.
+///
+/// Tradeoff: keepAlive means the list stays in memory for the app's
+/// lifetime. For stale-data mitigation, consider calling [refresh] on
+/// screen re-focus via a GoRouter listener or AppLifecycleState observer
+/// once real quota data is in place.
 
-abstract class _$PostsNotifier extends $AsyncNotifier<List<Post>> {
-  FutureOr<List<Post>> build();
+abstract class _$PostsNotifier extends $AsyncNotifier<PostsListState> {
+  FutureOr<PostsListState> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<Post>>, List<Post>>;
+    final ref = this.ref as $Ref<AsyncValue<PostsListState>, PostsListState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Post>>, List<Post>>,
-              AsyncValue<List<Post>>,
+              AnyNotifier<AsyncValue<PostsListState>, PostsListState>,
+              AsyncValue<PostsListState>,
               Object?,
               Object?
             >;

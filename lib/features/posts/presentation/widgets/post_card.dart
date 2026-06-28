@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'package:tokenshell_riverpod/core/design_system/design_system.dart';
+import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
+import 'package:tokenshell_riverpod/core/routing/routes.dart';
 import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
+import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 import 'package:tokenshell_riverpod/core/utils/extensions.dart';
 import 'package:tokenshell_riverpod/features/posts/domain/entities/post.dart';
 
@@ -34,9 +35,10 @@ class PostCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(RadiusTokens.lg),
           splashColor: Colors.transparent,
           highlightColor: colors.accent.withValues(alpha: 0.5),
-          onTap: () {
-            // Navigate to post detail — implement with go_router push.
-          },
+          onTap: () => context.pushNamedRoute(
+            AppRoute.postDetail.name,
+            params: {'id': '${post.id}'},
+          ),
           child: Padding(
             padding: const EdgeInsets.all(SpacingTokens.xl),
             child: Column(
@@ -46,13 +48,13 @@ class PostCard extends StatelessWidget {
                 Row(
                   children: [
                     _Badge(
-                      label: '#${post.id}',
+                      label: AppStrings.postCardIdBadge(post.id),
                       backgroundColor: colors.muted,
                       foregroundColor: colors.mutedForeground,
                     ),
                     const SizedBox(width: SpacingTokens.md),
                     _Badge(
-                      label: 'User ${post.userId}',
+                      label: AppStrings.postCardUserBadge(post.userId),
                       backgroundColor: colors.secondary,
                       foregroundColor: colors.secondaryForeground,
                     ),
@@ -62,7 +64,7 @@ class PostCard extends StatelessWidget {
 
                 // ── Title ─────────────────────────────────────────────────────
                 Text(
-                  _capitalise(post.title),
+                  post.title.capitalised,
                   style: textTheme.titleSmall?.copyWith(
                     color: colors.cardForeground,
                     fontWeight: TypographyTokens.weightSemiBold,
@@ -90,15 +92,18 @@ class PostCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Read more',
+                      AppStrings.postCardReadMore,
                       style: textTheme.labelMedium?.copyWith(
                         color: colors.mutedForeground,
                       ),
                     ),
                     const SizedBox(width: SpacingTokens.xs),
+                    // FIXED: was `size: 14` — use token so this scales with
+                    // future IconSizeTokens changes instead of silently
+                    // diverging from the design system's xs definition.
                     Icon(
                       Icons.arrow_forward_rounded,
-                      size: 14,
+                      size: IconSizeTokens.xs,
                       color: colors.mutedForeground,
                     ),
                   ],
@@ -110,9 +115,6 @@ class PostCard extends StatelessWidget {
       ),
     );
   }
-
-  String _capitalise(String text) =>
-      text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
 }
 
 // ── Badge helper widget ────────────────────────────────────────────────────────
@@ -141,11 +143,23 @@ class _Badge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
-          fontFamily: TypographyTokens.fontFamily,
-          fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-          fontSize: TypographyTokens.sizeXs,
-          fontWeight: TypographyTokens.weightMedium,
+        // FIXED: was a hand-constructed TextStyle using raw TypographyTokens
+        // literals (fontFamily, fontSize, fontWeight, letterSpacing). That
+        // bypassed context.textTheme entirely, which means the fontSizeFactor
+        // applied by App.builder at medium (×1.1) and expanded (×1.2)
+        // breakpoints never reached badge text — it stayed compact-sized
+        // regardless of breakpoint.
+        //
+        // Using textTheme.labelMedium as the base ensures the font size
+        // participates in the responsive scaling pipeline. The font family,
+        // size (sizeXs = 12 px), and weight (weightMedium) already match
+        // the original badge intent — only color and letter-spacing are
+        // overridden via copyWith.
+        //
+        // letterSpacing is explicitly reset to trackingNormal (0 px):
+        // labelMedium defaults to trackingWide (0.4 px) from ThemeConstants,
+        // which reads oddly for short identifier labels like '#1' or 'User 2'.
+        style: context.textTheme.labelMedium?.copyWith(
           color: foregroundColor,
           letterSpacing: TypographyTokens.trackingNormal,
         ),
