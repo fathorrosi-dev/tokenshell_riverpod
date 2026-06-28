@@ -1,56 +1,20 @@
-import 'package:flutter/material.dart';
+import 'package:tokenshell_riverpod/core/routing/feature_registry.dart';
 
-import 'package:tokenshell_riverpod/core/routing/routes.dart';
-import 'package:tokenshell_riverpod/shared/shell/app_shell.dart';
+export 'package:tokenshell_riverpod/core/routing/feature_registry.dart'
+    show NavDestination;
 
-/// Descriptor for a single navigation destination in the app shell.
+/// All top-level shell destinations, derived from [shellFeatures] — the
+/// single source of truth shared with `core/routing/app_router.dart`'s
+/// `ShellRoute.routes`.
 ///
-/// Destinations are defined as pure data — no widget logic here.
-/// The adaptive shell ([AppShell]) maps these to the appropriate
-/// navigation widget (BottomNavigationBar / NavigationRail / NavigationDrawer).
-final class NavDestination {
-  const NavDestination({
-    required this.route,
-    required this.path,
-    required this.label,
-    required this.icon,
-    required this.selectedIcon,
-  });
-
-  /// The [AppRoute] enum value — used for programmatic navigation.
-  final AppRoute route;
-
-  /// Absolute path — used to determine the selected index via location matching.
-  final String path;
-
-  /// Display label shown in navigation widgets.
-  final String label;
-
-  /// Icon for the unselected state.
-  final IconData icon;
-
-  /// Icon for the selected / active state.
-  final IconData selectedIcon;
-}
-
-/// All top-level shell destinations.
+/// Previously a hand-maintained list edited in lockstep with route
+/// registration in `app_router.dart` — two separate touch points that
+/// had to stay manually synced. See [ShellFeature]'s doc comment in
+/// `core/routing/shell_feature.dart` for why that was a silent-drift
+/// risk, and where to add a new shell-level feature now.
 ///
-/// Order determines the visual order in BottomNavigationBar and NavigationRail.
-/// Add new entries here when introducing a new shell-level feature route;
-/// no other shell file needs modification.
-const List<NavDestination> appNavDestinations = [
-  NavDestination(
-    route: AppRoute.home,
-    path: AppPath.home,
-    label: 'Home',
-    icon: Icons.home_outlined,
-    selectedIcon: Icons.home_rounded,
-  ),
-  NavDestination(
-    route: AppRoute.settings,
-    path: AppPath.settings,
-    label: 'Settings',
-    icon: Icons.settings_outlined,
-    selectedIcon: Icons.settings_rounded,
-  ),
-];
+/// [NavDestination] itself now lives in `core/routing/shell_feature.dart`
+/// — re-exported here (via `feature_registry.dart`) so nothing importing
+/// this file needs to change.
+List<NavDestination> get appNavDestinations =>
+    shellFeatures.map((f) => f.destination).toList();

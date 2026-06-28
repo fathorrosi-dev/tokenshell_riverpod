@@ -12,6 +12,18 @@ part of 'app_router.dart';
 ///
 /// The router is a singleton: [keepAlive: true] prevents recreation on
 /// provider refresh and avoids inadvertent navigation state resets.
+///
+/// ## Adding a new feature
+///
+/// **Shell-level feature** (appears in bottom nav / rail, e.g. Home,
+/// Settings, Posts): define a `ShellFeature` getter in your feature's own
+/// `*_routes.dart` and add it to `shellFeatures` in
+/// `core/routing/feature_registry.dart`. This file never changes.
+///
+/// **Standalone feature** (full-screen, no nav chrome, e.g. Posts'
+/// detail page): expose a `List<RouteBase> get <name>StandaloneRoutes`
+/// getter from your `*_routes.dart` and spread it at the same level as
+/// the [ShellRoute] below.
 
 @ProviderFor(appRouter)
 final appRouterProvider = AppRouterProvider._();
@@ -20,6 +32,18 @@ final appRouterProvider = AppRouterProvider._();
 ///
 /// The router is a singleton: [keepAlive: true] prevents recreation on
 /// provider refresh and avoids inadvertent navigation state resets.
+///
+/// ## Adding a new feature
+///
+/// **Shell-level feature** (appears in bottom nav / rail, e.g. Home,
+/// Settings, Posts): define a `ShellFeature` getter in your feature's own
+/// `*_routes.dart` and add it to `shellFeatures` in
+/// `core/routing/feature_registry.dart`. This file never changes.
+///
+/// **Standalone feature** (full-screen, no nav chrome, e.g. Posts'
+/// detail page): expose a `List<RouteBase> get <name>StandaloneRoutes`
+/// getter from your `*_routes.dart` and spread it at the same level as
+/// the [ShellRoute] below.
 
 final class AppRouterProvider
     extends $FunctionalProvider<GoRouter, GoRouter, GoRouter>
@@ -28,6 +52,18 @@ final class AppRouterProvider
   ///
   /// The router is a singleton: [keepAlive: true] prevents recreation on
   /// provider refresh and avoids inadvertent navigation state resets.
+  ///
+  /// ## Adding a new feature
+  ///
+  /// **Shell-level feature** (appears in bottom nav / rail, e.g. Home,
+  /// Settings, Posts): define a `ShellFeature` getter in your feature's own
+  /// `*_routes.dart` and add it to `shellFeatures` in
+  /// `core/routing/feature_registry.dart`. This file never changes.
+  ///
+  /// **Standalone feature** (full-screen, no nav chrome, e.g. Posts'
+  /// detail page): expose a `List<RouteBase> get <name>StandaloneRoutes`
+  /// getter from your `*_routes.dart` and spread it at the same level as
+  /// the [ShellRoute] below.
   AppRouterProvider._()
     : super(
         from: null,
@@ -61,4 +97,4 @@ final class AppRouterProvider
   }
 }
 
-String _$appRouterHash() => r'e6dd48fd9fc600828c0ed9999d4af276e312a345';
+String _$appRouterHash() => r'a7b96bf34f8a6bf6fcd34127244a931e543c39e5';
