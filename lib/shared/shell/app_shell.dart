@@ -235,11 +235,7 @@ class _RailShell extends StatelessWidget {
                 ),
             ],
           ),
-          VerticalDivider(
-            width: 1,
-            thickness: 1,
-            color: colors.border,
-          ),
+          VerticalDivider(width: 1, thickness: 1, color: colors.border),
           Expanded(child: child),
         ],
       ),

@@ -26,7 +26,13 @@ class PostCard extends StatelessWidget {
         color: colors.card,
         borderRadius: BorderRadius.circular(RadiusTokens.lg),
         border: Border.all(color: colors.border),
-        boxShadow: ShadowTokens.sm,
+        // Brightness-resolved so this card's shadow stays perceptible in
+        // dark mode instead of blending into a near-black surface — same
+        // fix applied to the tooltip theme, see [ShadowTokens.resolve].
+        boxShadow: ShadowTokens.resolve(
+          Theme.of(context).brightness,
+          ShadowTokens.sm,
+        ),
       ),
       child: Material(
         color: Colors.transparent,

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tokenshell_riverpod/core/di/package_info_provider.dart';
+import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 import 'package:tokenshell_riverpod/core/theme/notifiers/theme_mode_notifier.dart';
 import 'package:tokenshell_riverpod/core/utils/extensions.dart';
@@ -82,13 +83,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     return Scaffold(
       backgroundColor: colors.background,
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text(AppStrings.settingsAppBarTitle)),
       body: ListView(
         padding: context.pagePadding,
         children: [
-          Text('Appearance', style: context.textTheme.titleMedium),
+          Text(
+            AppStrings.settingsAppearanceSectionTitle,
+            style: context.textTheme.titleMedium,
+          ),
           const SizedBox(height: SpacingTokens.xl),
 
           // ── Theme mode selector ─────────────────────────────────────────────
@@ -97,7 +99,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Theme mode',
+                  AppStrings.settingsThemeModeLabel,
                   style: context.textTheme.bodyMedium?.copyWith(
                     color: colors.foreground,
                     fontWeight: TypographyTokens.weightMedium,
@@ -105,7 +107,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ),
                 const SizedBox(height: SpacingTokens.xs),
                 Text(
-                  'Controls whether the app uses the light or dark colour scheme.',
+                  AppStrings.settingsThemeModeDescription,
                   style: context.textTheme.bodySmall?.copyWith(
                     color: colors.mutedForeground,
                   ),
@@ -115,7 +117,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   segments: const [
                     ButtonSegment(
                       value: ThemeMode.system,
-                      label: Text('System'),
+                      label: Text(AppStrings.settingsThemeModeSystem),
                       // IconSizeTokens.sm (16 px) keeps the icon tied to the
                       // token scale instead of a raw literal — if the token
                       // changes, all three icons here update automatically.
@@ -126,7 +128,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     ButtonSegment(
                       value: ThemeMode.light,
-                      label: Text('Light'),
+                      label: Text(AppStrings.settingsThemeModeLight),
                       icon: Icon(
                         Icons.light_mode_outlined,
                         size: IconSizeTokens.sm,
@@ -134,7 +136,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     ButtonSegment(
                       value: ThemeMode.dark,
-                      label: Text('Dark'),
+                      label: Text(AppStrings.settingsThemeModeDark),
                       icon: Icon(
                         Icons.dark_mode_outlined,
                         size: IconSizeTokens.sm,
@@ -163,28 +165,39 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           const SizedBox(height: SpacingTokens.x3l),
 
           // ── Template metadata ───────────────────────────────────────────────
-          Text('About', style: context.textTheme.titleMedium),
+          Text(
+            AppStrings.settingsAboutSectionTitle,
+            style: context.textTheme.titleMedium,
+          ),
           const SizedBox(height: SpacingTokens.xl),
           _SectionCard(
             child: Column(
               children: [
-                const _InfoRow(label: 'Template', value: 'TokenShell Riverpod'),
+                const _InfoRow(
+                  label: AppStrings.settingsAboutTemplateLabel,
+                  value: AppStrings.settingsAboutTemplateValue,
+                ),
                 Divider(height: SpacingTokens.x3l, color: colors.border),
                 _InfoRow(
-                  label: 'Version',
-                  value: packageInfoAsync.asData?.value.version ?? '—',
+                  label: AppStrings.settingsAboutVersionLabel,
+                  value:
+                      packageInfoAsync.asData?.value.version ??
+                      AppStrings.settingsAboutVersionFallback,
                 ),
                 Divider(height: SpacingTokens.x3l, color: colors.border),
                 const _InfoRow(
-                  label: 'Architecture',
-                  value: 'Clean Architecture',
+                  label: AppStrings.settingsAboutArchitectureLabel,
+                  value: AppStrings.settingsAboutArchitectureValue,
                 ),
                 Divider(height: SpacingTokens.x3l, color: colors.border),
-                const _InfoRow(label: 'State', value: 'Riverpod'),
+                const _InfoRow(
+                  label: AppStrings.settingsAboutStateLabel,
+                  value: AppStrings.settingsAboutStateValue,
+                ),
                 Divider(height: SpacingTokens.x3l, color: colors.border),
                 const _InfoRow(
-                  label: 'Design system',
-                  value: 'shadcn/ui tokens',
+                  label: AppStrings.settingsAboutDesignSystemLabel,
+                  value: AppStrings.settingsAboutDesignSystemValue,
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tokenshell_riverpod/core/errors/failure.dart';
+import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 import 'package:tokenshell_riverpod/core/utils/extensions.dart';
 import 'package:tokenshell_riverpod/features/posts/presentation/notifiers/post_detail_notifier.dart';
@@ -39,7 +40,8 @@ class PostDetailPage extends ConsumerWidget {
         // postAsync.asData?.value.title is null-safe: if the post hasn't
         // loaded yet (loading/error state), we fall back to the ID string.
         title: Text(
-          postAsync.asData?.value.title.capitalised ?? 'Post #$postId',
+          postAsync.asData?.value.title.capitalised ??
+              AppStrings.postDetailFallbackTitle(postId),
         ),
       ),
       body: postAsync.when(
@@ -61,7 +63,7 @@ class PostDetailPage extends ConsumerWidget {
               ),
               const SizedBox(height: SpacingTokens.sm),
               Text(
-                'User ${post.userId} · Post #${post.id}',
+                AppStrings.postDetailMeta(post.userId, post.id),
                 style: context.textTheme.bodySmall?.copyWith(
                   color: colors.mutedForeground,
                 ),

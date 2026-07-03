@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 import 'package:tokenshell_riverpod/core/utils/extensions.dart';
 
@@ -30,7 +31,7 @@ class AppStateView extends StatelessWidget {
 
   /// Empty-list state — "nothing to show, but nothing went wrong."
   factory AppStateView.empty({
-    String title = 'Nothing here yet',
+    String title = AppStrings.stateEmptyTitle,
     String? message,
   }) {
     return AppStateView(
@@ -43,8 +44,8 @@ class AppStateView extends StatelessWidget {
   /// Error state — something failed, with an optional retry action.
   factory AppStateView.error({
     required String message,
-    String title = 'Something went wrong',
-    String actionLabel = 'Try again',
+    String title = AppStrings.stateErrorTitle,
+    String actionLabel = AppStrings.stateErrorActionLabel,
     VoidCallback? onRetry,
     Color? iconColor,
   }) {
@@ -75,7 +76,11 @@ class AppStateView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 48, color: iconColor ?? colors.mutedForeground),
+            Icon(
+              icon,
+              size: IconSizeTokens.x4l,
+              color: iconColor ?? colors.mutedForeground,
+            ),
             const SizedBox(height: SpacingTokens.xl),
             Text(
               title,
@@ -97,7 +102,10 @@ class AppStateView extends StatelessWidget {
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: SpacingTokens.x3l),
               OutlinedButton.icon(
-                icon: const Icon(Icons.refresh_rounded, size: 16),
+                icon: const Icon(
+                  Icons.refresh_rounded,
+                  size: IconSizeTokens.sm,
+                ),
                 label: Text(actionLabel!),
                 onPressed: onAction,
               ),
