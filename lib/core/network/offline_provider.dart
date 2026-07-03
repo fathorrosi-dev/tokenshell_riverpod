@@ -34,16 +34,18 @@ part 'offline_provider.g.dart';
 /// identical computed value on the next watch, which is wasteful.
 @Riverpod(keepAlive: true)
 bool isOffline(Ref ref) {
-  return ref.watch(connectivityStreamProvider).maybeWhen(
-    // Treat "all adapters report none" as offline. A device with any
-    // active adapter (WiFi, mobile, ethernet) is considered online here —
-    // actual reachability is confirmed by the two-tier check in
-    // ConnectivityService.isConnected() at the repository call site.
-    data: (results) => results.every((r) => r == ConnectivityResult.none),
-    // Unknown / error state → assume online to avoid flashing the offline
-    // banner on cold start before the first stream event arrives. If the
-    // device is genuinely offline the first real data event surfaces it
-    // quickly with no noticeable delay.
-    orElse: () => false,
-  );
+  return ref
+      .watch(connectivityStreamProvider)
+      .maybeWhen(
+        // Treat "all adapters report none" as offline. A device with any
+        // active adapter (WiFi, mobile, ethernet) is considered online here —
+        // actual reachability is confirmed by the two-tier check in
+        // ConnectivityService.isConnected() at the repository call site.
+        data: (results) => results.every((r) => r == ConnectivityResult.none),
+        // Unknown / error state → assume online to avoid flashing the offline
+        // banner on cold start before the first stream event arrives. If the
+        // device is genuinely offline the first real data event surfaces it
+        // quickly with no noticeable delay.
+        orElse: () => false,
+      );
 }

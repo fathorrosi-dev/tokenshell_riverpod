@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:talker/talker.dart';
 import 'package:tokenshell_riverpod/core/env/app_env.dart';
 import 'package:tokenshell_riverpod/core/errors/failure.dart';
 import 'package:tokenshell_riverpod/core/logging/talker_provider.dart';
@@ -181,12 +182,11 @@ const Duration _reachabilityFailureCacheTtl = Duration(seconds: 3);
 /// keep living as a plain getter alongside the generated fields.
 @freezed
 abstract class ProbeResult with _$ProbeResult {
-
   const factory ProbeResult({
     required bool result,
     required DateTime checkedAt,
   }) = _ProbeResult;
-  
+
   const ProbeResult._();
 
   /// Whichever TTL applies to [result] — see [_reachabilitySuccessCacheTtl]
@@ -275,14 +275,26 @@ class ReachabilityCache extends _$ReachabilityCache {
 ///
 /// [isConnected] may be called concurrently by multiple repository methods
 /// (e.g. when two requests fire in parallel). [ReachabilityCache] provides
-/// implicit concurrency control: both callers will run the adapter check
-/// independently (cheap), but at most one fresh probe will run during any
-/// given TTL window — subsequent callers hit the cache. No explicit lock or
-/// mutex is needed.
+/// implicit concurrency control for the common case — at most one fresh
+/// probe runs per TTL window once a result is cached — but there is a
+/// narrow window it doesn't cover: two calls that both see a stale/absent
+/// cache before either one finishes probing. Without de-duplication, both
+/// independently start a real network round-trip to
+/// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+/// second caller awaits the first caller's in-progress [Future] instead of
+/// starting a redundant one. Bounded by realistic parallel-request counts
+/// (a handful, not a thundering herd) — this is a minor efficiency fix, not
+/// a correctness one; the cache already made the non-concurrent case cheap.
 @Riverpod(keepAlive: true)
 class ConnectivityService extends _$ConnectivityService {
   @override
   void build() {}
+
+  /// The reachability probe currently in flight, if any. Set just before
+  /// [_hasRealInternetAccess] is called and cleared in a `finally` block
+  /// once it settles (success or failure) — see [isConnected]'s "Concurrent
+  /// calls" doc above.
+  Future<bool>? _inFlightProbe;
 
   /// Checks the current connectivity status once and returns `true` only if
   /// the device both has an active network adapter AND can actually reach
@@ -350,25 +362,54 @@ class ConnectivityService extends _$ConnectivityService {
     // probe threw, probe got a non-2xx response) into the same silent
     // `false`, surfacing only as a generic "No internet connection" with
     // no way to tell which of those actually happened.
+
+    // A probe already started by a concurrent call — join it instead of
+    // starting a second, redundant round-trip. See the class-level
+    // "Concurrent calls" doc above.
+    final inFlight = _inFlightProbe;
+    if (inFlight != null) {
+      talker.debug('isConnected: joining an in-flight probe');
+      return inFlight;
+    }
+
     talker.info(
       'isConnected: running a fresh probe against $_reachabilityProbeUrl',
     );
-    bool reachable;
+    final probe = _runProbe(dio, talker);
+    _inFlightProbe = probe;
     try {
-      reachable = await _hasRealInternetAccess(dio);
+      final reachable = await probe;
+      cacheNotifier.latest = ProbeResult(
+        result: reachable,
+        checkedAt: DateTime.now(),
+      );
+      return reachable;
+    } finally {
+      // Clear regardless of outcome so the *next* call (after this probe
+      // has already settled) starts its own fresh probe rather than
+      // permanently reusing a completed Future.
+      _inFlightProbe = null;
+    }
+  }
+
+  /// Runs the actual reachability probe and logs the outcome. Split out
+  /// from [isConnected] so the in-flight [Future] assigned to
+  /// [_inFlightProbe] wraps exactly this work, not the cache bookkeeping
+  /// around it.
+  Future<bool> _runProbe(Dio dio, Talker talker) async {
+    try {
+      final reachable = await _hasRealInternetAccess(dio);
       if (!reachable) {
         talker.warning(
           'isConnected: probe got a response but not a 2xx status — '
           'treating $_reachabilityProbeUrl as unreachable.',
         );
       }
+      return reachable;
     } on DioException catch (error, stackTrace) {
       talker.handle(error, stackTrace, 'Reachability probe failed');
-      reachable = false;
+      return false;
     }
-
-    cacheNotifier.latest = ProbeResult(result: reachable, checkedAt: DateTime.now());
-    return reachable;
   }
 }
 

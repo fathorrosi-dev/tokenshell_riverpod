@@ -363,7 +363,7 @@ abstract class _$ReachabilityCache extends $Notifier<ProbeResult?> {
   ProbeResult? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<ProbeResult?, ProbeResult?>;
     final element =
         ref.element
@@ -373,7 +373,7 @@ abstract class _$ReachabilityCache extends $Notifier<ProbeResult?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -403,10 +403,16 @@ abstract class _$ReachabilityCache extends $Notifier<ProbeResult?> {
 ///
 /// [isConnected] may be called concurrently by multiple repository methods
 /// (e.g. when two requests fire in parallel). [ReachabilityCache] provides
-/// implicit concurrency control: both callers will run the adapter check
-/// independently (cheap), but at most one fresh probe will run during any
-/// given TTL window — subsequent callers hit the cache. No explicit lock or
-/// mutex is needed.
+/// implicit concurrency control for the common case — at most one fresh
+/// probe runs per TTL window once a result is cached — but there is a
+/// narrow window it doesn't cover: two calls that both see a stale/absent
+/// cache before either one finishes probing. Without de-duplication, both
+/// independently start a real network round-trip to
+/// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+/// second caller awaits the first caller's in-progress [Future] instead of
+/// starting a redundant one. Bounded by realistic parallel-request counts
+/// (a handful, not a thundering herd) — this is a minor efficiency fix, not
+/// a correctness one; the cache already made the non-concurrent case cheap.
 
 @ProviderFor(ConnectivityService)
 final connectivityServiceProvider = ConnectivityServiceProvider._();
@@ -437,10 +443,16 @@ final connectivityServiceProvider = ConnectivityServiceProvider._();
 ///
 /// [isConnected] may be called concurrently by multiple repository methods
 /// (e.g. when two requests fire in parallel). [ReachabilityCache] provides
-/// implicit concurrency control: both callers will run the adapter check
-/// independently (cheap), but at most one fresh probe will run during any
-/// given TTL window — subsequent callers hit the cache. No explicit lock or
-/// mutex is needed.
+/// implicit concurrency control for the common case — at most one fresh
+/// probe runs per TTL window once a result is cached — but there is a
+/// narrow window it doesn't cover: two calls that both see a stale/absent
+/// cache before either one finishes probing. Without de-duplication, both
+/// independently start a real network round-trip to
+/// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+/// second caller awaits the first caller's in-progress [Future] instead of
+/// starting a redundant one. Bounded by realistic parallel-request counts
+/// (a handful, not a thundering herd) — this is a minor efficiency fix, not
+/// a correctness one; the cache already made the non-concurrent case cheap.
 final class ConnectivityServiceProvider
     extends $NotifierProvider<ConnectivityService, void> {
   /// Stateless keepAlive service that runs all connectivity checks for the app.
@@ -469,10 +481,16 @@ final class ConnectivityServiceProvider
   ///
   /// [isConnected] may be called concurrently by multiple repository methods
   /// (e.g. when two requests fire in parallel). [ReachabilityCache] provides
-  /// implicit concurrency control: both callers will run the adapter check
-  /// independently (cheap), but at most one fresh probe will run during any
-  /// given TTL window — subsequent callers hit the cache. No explicit lock or
-  /// mutex is needed.
+  /// implicit concurrency control for the common case — at most one fresh
+  /// probe runs per TTL window once a result is cached — but there is a
+  /// narrow window it doesn't cover: two calls that both see a stale/absent
+  /// cache before either one finishes probing. Without de-duplication, both
+  /// independently start a real network round-trip to
+  /// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+  /// second caller awaits the first caller's in-progress [Future] instead of
+  /// starting a redundant one. Bounded by realistic parallel-request counts
+  /// (a handful, not a thundering herd) — this is a minor efficiency fix, not
+  /// a correctness one; the cache already made the non-concurrent case cheap.
   ConnectivityServiceProvider._()
     : super(
         from: null,
@@ -501,7 +519,7 @@ final class ConnectivityServiceProvider
 }
 
 String _$connectivityServiceHash() =>
-    r'f81c1f636f90bfeecb17f8448f62c43fcde1a637';
+    r'6eb97c6683aa350438653ce8c5c9a9f4b9429083';
 
 /// Stateless keepAlive service that runs all connectivity checks for the app.
 ///
@@ -529,16 +547,22 @@ String _$connectivityServiceHash() =>
 ///
 /// [isConnected] may be called concurrently by multiple repository methods
 /// (e.g. when two requests fire in parallel). [ReachabilityCache] provides
-/// implicit concurrency control: both callers will run the adapter check
-/// independently (cheap), but at most one fresh probe will run during any
-/// given TTL window — subsequent callers hit the cache. No explicit lock or
-/// mutex is needed.
+/// implicit concurrency control for the common case — at most one fresh
+/// probe runs per TTL window once a result is cached — but there is a
+/// narrow window it doesn't cover: two calls that both see a stale/absent
+/// cache before either one finishes probing. Without de-duplication, both
+/// independently start a real network round-trip to
+/// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+/// second caller awaits the first caller's in-progress [Future] instead of
+/// starting a redundant one. Bounded by realistic parallel-request counts
+/// (a handful, not a thundering herd) — this is a minor efficiency fix, not
+/// a correctness one; the cache already made the non-concurrent case cheap.
 
 abstract class _$ConnectivityService extends $Notifier<void> {
   void build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<void, void>;
     final element =
         ref.element
@@ -548,6 +572,6 @@ abstract class _$ConnectivityService extends $Notifier<void> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
