@@ -63,6 +63,21 @@ abstract final class AppTheme {
       brightness: brightness,
       colorScheme: colorScheme,
       textTheme: textTheme,
+      // Explicitly mirror `textTheme` here instead of leaving this unset.
+      // Left unset, `ThemeData` falls back to its own legacy
+      // `Typography`-derived default — a `TextTheme` that is only fully
+      // resolved (every role's `fontSize` non-null) AFTER it passes through
+      // `MaterialApp`'s widget-tree localization step. Reading it directly
+      // off a raw `ThemeData` built outside the widget tree (exactly what
+      // `theme_data_provider.dart`'s scaled `*Medium`/`*Expanded` variants
+      // do via `.apply(fontSizeFactor: ...)`) can hit a role whose
+      // `fontSize` is still null at that point, which trips the
+      // `fontSize != null || (fontSizeFactor == 1.0 && ...)` assertion in
+      // `TextStyle.apply`. Pointing `primaryTextTheme` at our own
+      // `textTheme` — which has every role's `fontSize` hardcoded from
+      // `TypographyTokens` — sidesteps that framework default entirely, so
+      // `.apply()` on it is always safe regardless of widget-tree state.
+      primaryTextTheme: textTheme,
 
       // Register the shadcn/ui extension — required for AppThemeExtension.of(ctx)
       extensions: [AppThemeExtension(colors: colors)],
