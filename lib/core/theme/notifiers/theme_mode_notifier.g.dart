@@ -81,7 +81,7 @@ final class ThemeModeNotifierProvider
   ThemeModeNotifier create() => ThemeModeNotifier();
 }
 
-String _$themeModeNotifierHash() => r'87401239f27d789c146bfbfc7bae6ff251170460';
+String _$themeModeNotifierHash() => r'bee819f91717f3e8261be94d6da84fda6e4eb683';
 
 /// Async notifier that loads the persisted [ThemeMode] on first build,
 /// exposes it to the widget tree, and persists changes via
@@ -104,7 +104,7 @@ abstract class _$ThemeModeNotifier extends $AsyncNotifier<ThemeMode> {
   FutureOr<ThemeMode> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<ThemeMode>, ThemeMode>;
     final element =
         ref.element
@@ -114,6 +114,6 @@ abstract class _$ThemeModeNotifier extends $AsyncNotifier<ThemeMode> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

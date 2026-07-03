@@ -61,8 +61,8 @@ class _ThemeModeWriteFailureNotifier extends Notifier<Object?> {
 /// [1]: https://riverpod.dev/docs/migration/from_state_notifier
 final themeModeWriteFailureProvider =
     NotifierProvider<_ThemeModeWriteFailureNotifier, Object?>(
-  _ThemeModeWriteFailureNotifier.new,
-);
+      _ThemeModeWriteFailureNotifier.new,
+    );
 
 /// Async notifier that loads the persisted [ThemeMode] on first build,
 /// exposes it to the widget tree, and persists changes via
@@ -82,14 +82,41 @@ final themeModeWriteFailureProvider =
 /// don't change; only the repository call underneath converts.
 @Riverpod(keepAlive: true)
 class ThemeModeNotifier extends _$ThemeModeNotifier {
+  /// Monotonically increasing counter used to detect stale completions of
+  /// [setThemeMode].
+  ///
+  /// Rapid/overlapping calls (e.g. a fast double-tap on the Settings
+  /// SegmentedButton) can resolve out of order: an OLDER call's write can
+  /// fail *after* a NEWER call's write already succeeded. Without this
+  /// guard, the older call's failure handler would roll [state] back to
+  /// ITS OWN "previous" snapshot — silently discarding the newer,
+  /// already-successful change, and logging a Sentry breadcrumb for the
+  /// newer mode while the visible state reverted away from it. Each call
+  /// captures the generation at entry; only the call whose generation
+  /// still matches [_operationGeneration] when its write resolves is
+  /// allowed to mutate [state] or publish a failure/breadcrumb.
+  int _operationGeneration = 0;
+
   @override
   Future<ThemeMode> build() async {
     final repository = await ref.watch(themeModeRepositoryProvider.future);
 
-    return repository.read().fold(
-      (_) => ThemeMode.system,
-      (mode) => mode.toFlutterThemeMode(),
-    );
+    return repository.read().fold((_) {
+      // The repository's own catch-block already logs the low-level
+      // cause (decode error vs. platform exception). This adds the
+      // Notifier-level signal that was previously missing: "a fresh
+      // install with no preference saved yet" and "a preference existed
+      // but failed to read this session" both silently collapsed into
+      // the same ThemeMode.system default with nothing here to tell
+      // them apart later from observability data alone.
+      ref
+          .read(talkerProvider)
+          .info(
+            'ThemeModeNotifier: no usable persisted theme mode this session '
+            '— defaulting to ThemeMode.system.',
+          );
+      return ThemeMode.system;
+    }, (mode) => mode.toFlutterThemeMode());
   }
 
   /// Applies [mode] immediately and persists it.
@@ -104,6 +131,7 @@ class ThemeModeNotifier extends _$ThemeModeNotifier {
   /// `late` field, eliminating [LateInitializationError] when called during
   /// [AsyncLoading] state on low-end devices with slow SharedPreferences init.
   Future<void> setThemeMode(ThemeMode mode) async {
+    final generation = ++_operationGeneration;
     final previous = state.asData?.value ?? ThemeMode.system;
 
     state = AsyncData(mode);
@@ -112,6 +140,23 @@ class ThemeModeNotifier extends _$ThemeModeNotifier {
     // resolves immediately after the first build completes.
     final repository = await ref.read(themeModeRepositoryProvider.future);
     final result = await repository.write(mode.toAppThemeMode());
+
+    // A newer setThemeMode call started while this write was in flight —
+    // that call now owns `state`. Applying THIS call's outcome (success or
+    // failure) at this point would either redundantly re-set a value the
+    // newer call already set, or — the actual bug this guards against —
+    // roll `state` back to THIS call's `previous`, silently clobbering the
+    // newer call's already-applied, already-successful change. Log and
+    // stop; don't touch state, the failure provider, or the breadcrumb.
+    if (generation != _operationGeneration) {
+      ref
+          .read(talkerProvider)
+          .debug(
+            'ThemeModeNotifier: stale setThemeMode("${mode.name}") completion '
+            'ignored — a newer call has since taken over.',
+          );
+      return;
+    }
 
     result.fold(
       (failure) {
@@ -123,25 +168,29 @@ class ThemeModeNotifier extends _$ThemeModeNotifier {
         // raw exception or false-return detail; this log adds the Notifier's
         // perspective — useful when correlating a user's "toggled twice fast"
         // report with which of the two writes is the one that actually failed.
-        ref.read(talkerProvider).warning(
-          'ThemeModeNotifier: write failed — '
-          'attempted "${mode.name}", rolling back to "${previous.name}". '
-          'See ThemeModeRepository log for the low-level cause.',
-        );
+        ref
+            .read(talkerProvider)
+            .warning(
+              'ThemeModeNotifier: write failed — '
+              'attempted "${mode.name}", rolling back to "${previous.name}". '
+              'See ThemeModeRepository log for the low-level cause.',
+            );
         ref.read(themeModeWriteFailureProvider.notifier).failure = failure;
       },
       (_) {
         // Record a breadcrumb so Sentry issue reports surface the active theme
         // mode at the time of any crash — especially valuable for dark-mode
         // visual bugs that are hard to reproduce without knowing the user's state.
-        unawaited(Sentry.addBreadcrumb(
-          Breadcrumb(
-            message: 'Theme mode changed',
-            category: 'ui.theme',
-            level: SentryLevel.info,
-            data: {'mode': mode.name},
+        unawaited(
+          Sentry.addBreadcrumb(
+            Breadcrumb(
+              message: 'Theme mode changed',
+              category: 'ui.theme',
+              level: SentryLevel.info,
+              data: {'mode': mode.name},
+            ),
           ),
-        ));
+        );
       },
     );
   }

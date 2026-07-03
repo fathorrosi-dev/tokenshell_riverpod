@@ -25,6 +25,20 @@ abstract interface class IThemeModeRepository {
   /// Returns [Left] with a [Failure] — in practice always
   /// [Failure.cache] — only when the underlying storage raises an
   /// unexpected platform error.
+  ///
+  /// Deliberately **synchronous** — not `Future<Either<...>>` — even
+  /// though [write] below is async. This is safe today because the
+  /// current [SharedPreferences] instance is already resolved
+  /// asynchronously *upstream*, at the provider level
+  /// (`themeModeRepositoryProvider`, via `sharedPreferencesProvider.future`)
+  /// before any [IThemeModeRepository] implementation is even constructed
+  /// — so by the time [read] can be called, the underlying storage handle
+  /// is already synchronously available in memory. A future implementation
+  /// with genuinely async per-call I/O (e.g. a remote-synced or encrypted
+  /// preference store queried live rather than cached) would need to
+  /// either front-load that I/O the same way, or this contract would need
+  /// to become async — noted here so that tradeoff is a deliberate choice,
+  /// not a surprise, for whoever implements it.
   Either<Failure, AppThemeMode> read();
 
   /// Persists [mode] to the underlying storage.
