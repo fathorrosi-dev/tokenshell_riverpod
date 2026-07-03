@@ -43,12 +43,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 /// ```
 Future<void> setSentryUser(String userId, {String? email}) async {
   await Sentry.configureScope(
-    (scope) => scope.setUser(
-      SentryUser(
-        id: userId,
-        email: email,
-      ),
-    ),
+    (scope) => scope.setUser(SentryUser(id: userId, email: email)),
   );
 }
 
@@ -69,7 +64,5 @@ Future<void> setSentryUser(String userId, {String? email}) async {
 /// state = const AsyncData(null);
 /// ```
 Future<void> clearSentryUser() async {
-  await Sentry.configureScope(
-    (scope) => scope.setUser(null),
-  );
+  await Sentry.configureScope((scope) => scope.setUser(null));
 }

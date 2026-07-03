@@ -114,7 +114,8 @@ extension AppContextX on BuildContext {
   ///   child: child,
   /// )
   /// ```
-  AppDurations get durations => AppDurations.forReduceMotion(reduceMotion: reduceMotion);
+  AppDurations get durations =>
+      AppDurations.forReduceMotion(reduceMotion: reduceMotion);
 
   // ── Spacing shortcuts ─────────────────────────────────────────────────────────
 
@@ -206,5 +207,6 @@ extension StringX on String {
   /// 'hello world'.capitalised  // → 'Hello world'
   /// ''.capitalised             // → ''
   /// ```
-  String get capitalised => isEmpty ? this : this[0].toUpperCase() + substring(1);
+  String get capitalised =>
+      isEmpty ? this : this[0].toUpperCase() + substring(1);
 }

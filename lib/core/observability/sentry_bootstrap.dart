@@ -34,32 +34,29 @@ import 'package:tokenshell_riverpod/core/env/app_flavor.dart';
 /// effectively a no-op. No conditional branching needed here for that
 /// case; it falls out of the SDK's own documented behavior.
 Future<void> initSentry({required FutureOr<void> Function() appRunner}) {
-  return SentryFlutter.init(
-    (options) {
-      options
-        ..dsn = AppEnv.sentryDsn
-        // Mirrors AppFlavor so Sentry's own environment filter (separate
-        // from this app's --dart-define=APP_FLAVOR) lines up with the same
-        // three values used everywhere else in this codebase.
-        ..environment = currentFlavor().name
-        // Full tracing in dev/staging — there's no production traffic
-        // volume to worry about, and seeing every transaction is more
-        // useful than sampling while iterating. Sampled in prod: capturing
-        // every single transaction at real user volume costs Sentry quota
-        // for marginal additional insight once you have enough samples to
-        // see the shape of your latency distribution. 0.2 is a starting
-        // point, not a permanent value — revisit once real prod traffic
-        // volume is known.
-        ..tracesSampleRate = currentFlavor() == AppFlavor.prod ? 0.2 : 1.0;
+  return SentryFlutter.init((options) {
+    options
+      ..dsn = AppEnv.sentryDsn
+      // Mirrors AppFlavor so Sentry's own environment filter (separate
+      // from this app's --dart-define=APP_FLAVOR) lines up with the same
+      // three values used everywhere else in this codebase.
+      ..environment = currentFlavor().name
+      // Full tracing in dev/staging — there's no production traffic
+      // volume to worry about, and seeing every transaction is more
+      // useful than sampling while iterating. Sampled in prod: capturing
+      // every single transaction at real user volume costs Sentry quota
+      // for marginal additional insight once you have enough samples to
+      // see the shape of your latency distribution. 0.2 is a starting
+      // point, not a permanent value — revisit once real prod traffic
+      // volume is known.
+      ..tracesSampleRate = currentFlavor() == AppFlavor.prod ? 0.2 : 1.0;
 
-      // Deliberately NOT setting `sendDefaultPii = true`. Sentry's SDK
-      // defaults this to `false` — i.e. headers/cookies/IP are already
-      // excluded from captured events and breadcrumbs out of the box.
-      // Leaving the default alone here is itself the security-conscious
-      // choice; explicitly writing `false` would just restate the
-      // default, so it's left unset rather than added for the sake of
-      // looking thorough.
-    },
-    appRunner: appRunner,
-  );
+    // Deliberately NOT setting `sendDefaultPii = true`. Sentry's SDK
+    // defaults this to `false` — i.e. headers/cookies/IP are already
+    // excluded from captured events and breadcrumbs out of the box.
+    // Leaving the default alone here is itself the security-conscious
+    // choice; explicitly writing `false` would just restate the
+    // default, so it's left unset rather than added for the sake of
+    // looking thorough.
+  }, appRunner: appRunner);
 }

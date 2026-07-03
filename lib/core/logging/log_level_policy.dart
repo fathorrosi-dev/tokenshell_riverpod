@@ -45,9 +45,8 @@ final class LogLevelPolicy {
   /// in-memory only (never written to disk), and it feeds the Sentry
   /// forwarding observer set up alongside this — turning it off in prod
   /// would silently weaken that pipeline too.
-  static TalkerSettings get talkerSettings => TalkerSettings(
-    useConsoleLogs: !_isProd,
-  );
+  static TalkerSettings get talkerSettings =>
+      TalkerSettings(useConsoleLogs: !_isProd);
 
   /// Headers that must never be printed in ANY build mode, not just prod.
   ///
