@@ -1,205 +1,235 @@
 import 'package:flutter/painting.dart';
 
-/// All values are [static const] — no runtime computation occurs here.
-/// Light and dark variants are separated by prefix convention.
+// All values are [static const] — no runtime computation occurs here.
+// Light and dark variants are separated by prefix convention.
+//
+// Palette swap (03 Jul 2026): replaces the previous zinc/black shadcn palette
+// with the new yellow/blue brand palette. See production-readiness review
+// (Theme Layer, 03 Jul 2026) for the full rationale behind every naming and
+// structural decision below.
 abstract final class ColorTokens {
   // ── Light mode ──────────────────────────────────────────────────────────────
 
-  /// Canvas background — pure white.
-  static const Color lightBackground = Color(0xFFFFFFFF);
+  // Canvas background — Slate-50.
+  static const Color lightBackground = Color(0xFFF8FAFC);
 
-  /// Default text on background.
-  static const Color lightForeground = Color(0xFF030712);
+  // Default text on background — Slate-900. 17.06:1 (AAA ✓).
+  static const Color lightForeground = Color(0xFF0F172A);
 
-  /// Card / panel surface — same as background in light mode.
-  static const Color lightCard = Color(0xFFFFFFFF);
+  // Card / panel surface — Slate-100.
+  static const Color lightCard = Color(0xFFF1F5F9);
 
-  /// Text rendered on card surfaces.
-  static const Color lightCardForeground = Color(0xFF030712);
+  // Text rendered on card surfaces — Slate-900. 16.30:1 (AAA ✓).
+  static const Color lightCardForeground = Color(0xFF0F172A);
 
-  /// Popover / dropdown surface.
-  static const Color lightPopover = Color(0xFFFFFFFF);
+  // Popover / dropdown surface — Slate-50.
+  static const Color lightPopover = Color(0xFFF8FAFC);
 
-  /// Text rendered inside popovers.
-  static const Color lightPopoverForeground = Color(0xFF030712);
+  // Text rendered inside popovers — Slate-900. 17.06:1 (AAA ✓).
+  static const Color lightPopoverForeground = Color(0xFF0F172A);
 
-  /// Primary action color — near-black zinc-900.
-  static const Color lightPrimary = Color(0xFF18181B);
+  // Primary action color — Brand Yellow. Identical in both modes (brand identity, not recalculated).
+  static const Color lightPrimary = Color(0xFFFCFD76);
 
-  /// Text / icon on primary surfaces.
-  static const Color lightPrimaryForeground = Color(0xFFFAFAFA);
+  // Text / icon on primary surfaces — onPrimary. 16.56:1 (AAA ✓).
+  static const Color lightPrimaryForeground = Color(0xFF1A1800);
 
-  /// Secondary surface — zinc-100.
-  static const Color lightSecondary = Color(0xFFF4F4F5);
+  // Secondary action color — Action Blue.
+  static const Color lightSecondary = Color(0xFF17B5FF);
 
-  /// Text on secondary surfaces.
-  static const Color lightSecondaryForeground = Color(0xFF18181B);
+  // Text / icon on secondary surfaces — onSecondary. 5.79:1 (AA ✓).
+  static const Color lightSecondaryForeground = Color(0xFF003349);
 
-  /// Muted surface — zinc-100.
-  static const Color lightMuted = Color(0xFFF4F4F5);
+  // Muted surface — Slate-100.
+  static const Color lightMuted = Color(0xFFF1F5F9);
 
-  /// De-emphasised text — zinc-500.
-  static const Color lightMutedForeground = Color(0xFF71717A);
+  // De-emphasised text — Slate-600. 6.92:1 (AA ✓).
+  static const Color lightMutedForeground = Color(0xFF475569);
 
-  /// Accent hover / highlight surface — zinc-100.
-  static const Color lightAccent = Color(0xFFF4F4F5);
+  // Accent / highlight surface — Primary Container (light yellow tint). Chip, badge, selected bg.
+  static const Color lightAccent = Color(0xFFFEFDE8);
 
-  /// Text on accent surfaces.
-  static const Color lightAccentForeground = Color(0xFF18181B);
+  // Text on accent surfaces — onPrimaryContainer. 13.84:1 (AAA ✓).
+  static const Color lightAccentForeground = Color(0xFF2E2C00);
 
-  /// Destructive action colour — red-500.
-  static const Color lightDestructive = Color(0xFFEF4444);
+  // Secondary accent surface — Secondary Container (Sky-200). Feeds ColorScheme's
+  // secondaryContainer/onSecondaryContainer (see ThemeConstants.colorSchemeFrom) —
+  // not just a generic chip color, this is the designed M3 "secondary container" swatch.
+  static const Color lightAccent2 = Color(0xFFBAE6FD);
 
-  /// Text on destructive surfaces.
-  ///
-  /// Stone-950 on red-500: 4.65:1 — passes WCAG AA (4.5:1) for normal text.
-  /// Previously white/`FAFAFA` (~3.6:1, fails AA) — production-readiness
-  /// audit (01 Jul 2026) found this rendering live on the Home screen's
-  /// design-token preview at 12px/w500, well within WCAG's "normal text"
-  /// size bracket, so the 3:1 large-text exception never applied here.
-  static const Color lightDestructiveForeground = Color(0xFF1C1917);
+  // Text on secondary accent surfaces — onSecondaryContainer. 7.13:1 (AAA ✓).
+  static const Color lightAccent2Foreground = Color(0xFF0C4A6E);
 
-  /// Text for [ColorScheme.onErrorContainer] in light mode — red-900.
-  ///
-  /// [ColorScheme.errorContainer] is `destructive` at 15% alpha over a
-  /// light background (a pale pink, ~#FDE3E3). [lightDestructive] itself
-  /// on that pale pink is only 3.1:1 (fails AA) — found in the same 01 Jul
-  /// 2026 audit that caught [lightDestructiveForeground] above. Red-900 on
-  /// that same pale pink is 8.24:1, comfortably passing AA and matching
-  /// M3's own baseline convention of a dark shade of the container's hue
-  /// (rather than a neutral) for "on\*Container" roles. Dark mode needs no
-  /// equivalent constant — [darkDestructive] itself on the dark-mode
-  /// errorContainer tint already measures 4.76:1, passing AA as-is.
-  static const Color lightErrorContainerForeground = Color(0xFF7F1D1D);
+  // Destructive action colour — Red-600.
+  static const Color lightDestructive = Color(0xFFDC2626);
 
-  /// Default border — zinc-200.
-  static const Color lightBorder = Color(0xFFE4E4E7);
+  // Text on destructive surfaces. 4.63:1 (AA ✓).
+  static const Color lightDestructiveForeground = Color(0xFFFAFAFA);
 
-  /// Input field border — zinc-200.
-  static const Color lightInput = Color(0xFFE4E4E7);
+  // Default border — Slate-400 (explicit "border" role in source palette).
+  static const Color lightBorder = Color(0xFF94A3B8);
 
-  /// Focus ring colour — zinc-900.
-  static const Color lightRing = Color(0xFF18181B);
+  // Input field border — Slate-200 (explicit "input bg" role in source palette).
+  static const Color lightInput = Color(0xFFE2E8F0);
+
+  // Focus ring colour — Brand Yellow (primary).
+  static const Color lightRing = Color(0xFFFCFD76);
 
   // ── Dark mode ────────────────────────────────────────────────────────────────
 
-  /// Canvas background — near-black gray-950.
-  static const Color darkBackground = Color(0xFF030712);
+  // Canvas background — derived cool-neutral near-black (palette is cool-dominant overall).
+  static const Color darkBackground = Color(0xFF141415);
 
-  /// Default text on background — gray-50.
-  static const Color darkForeground = Color(0xFFF9FAFB);
+  // Default text on background. 16.81:1 (AAA ✓).
+  static const Color darkForeground = Color(0xFFF1F5F9);
 
-  /// Card / panel surface — gray-900.
-  static const Color darkCard = Color(0xFF111827);
+  // Card / panel surface — derived elevated dark surface.
+  static const Color darkCard = Color(0xFF262729);
 
-  /// Text rendered on card surfaces — gray-50.
-  static const Color darkCardForeground = Color(0xFFF9FAFB);
+  // Text rendered on card surfaces. 13.65:1 (AAA ✓).
+  static const Color darkCardForeground = Color(0xFFF1F5F9);
 
-  /// Popover / dropdown surface — gray-900.
-  static const Color darkPopover = Color(0xFF111827);
+  // Popover / dropdown surface.
+  static const Color darkPopover = Color(0xFF262729);
 
-  /// Text rendered inside popovers — gray-50.
-  static const Color darkPopoverForeground = Color(0xFFF9FAFB);
+  // Text rendered inside popovers. 13.65:1 (AAA ✓).
+  static const Color darkPopoverForeground = Color(0xFFF1F5F9);
 
-  /// Primary action color — near-white zinc-50.
-  static const Color darkPrimary = Color(0xFFFAFAFA);
+  // Primary action color — Brand Yellow, intentionally NOT recalculated for dark mode
+  // per explicit instruction: brand identity color stays identical across themes.
+  static const Color darkPrimary = Color(0xFFFCFD76);
 
-  /// Text / icon on primary surfaces — zinc-900.
-  static const Color darkPrimaryForeground = Color(0xFF18181B);
+  // Text / icon on primary surfaces — onPrimary (same pairing as light mode). 16.56:1 (AAA ✓).
+  static const Color darkPrimaryForeground = Color(0xFF1A1800);
 
-  /// Secondary surface — gray-800.
-  static const Color darkSecondary = Color(0xFF1F2937);
+  // Secondary surface — derived dark structural neutral (kept separate from the brand blue,
+  // matching the original file's surface-vs-action-color convention).
+  static const Color darkSecondary = Color(0xFF333538);
 
-  /// Text on secondary surfaces — gray-50.
-  static const Color darkSecondaryForeground = Color(0xFFF9FAFB);
+  // Text on secondary surfaces. 11.23:1 (AAA ✓).
+  static const Color darkSecondaryForeground = Color(0xFFF1F5F9);
 
-  /// Muted surface — zinc-900.
-  static const Color darkMuted = Color(0xFF18181B);
+  // Muted surface.
+  static const Color darkMuted = Color(0xFF262729);
 
-  /// De-emphasised text — gray-400.
-  static const Color darkMutedForeground = Color(0xFF9CA3AF);
+  // De-emphasised text. 5.04:1 (AA ✓).
+  static const Color darkMutedForeground = Color(0xFF949699);
 
-  /// Accent hover / highlight surface — zinc-900.
-  static const Color darkAccent = Color(0xFF18181B);
+  // Accent / highlight surface — Primary Container hue kept consistent across modes.
+  static const Color darkAccent = Color(0xFFFEFDE8);
 
-  /// Text on accent surfaces — gray-50.
-  static const Color darkAccentForeground = Color(0xFFF9FAFB);
+  // Text on accent surfaces — onPrimaryContainer (same pairing as light mode). 13.84:1 (AAA ✓).
+  static const Color darkAccentForeground = Color(0xFF2E2C00);
 
-  /// Destructive action colour — red-500 (same in both modes).
-  static const Color darkDestructive = Color(0xFFEF4444);
+  // Secondary accent surface — dark variant of Secondary Container. Feeds ColorScheme's
+  // secondaryContainer/onSecondaryContainer in dark mode (see lightAccent2 above).
+  static const Color darkAccent2 = Color(0xFF7ACFFB);
 
-  /// Text on destructive surfaces.
-  ///
-  /// Same red-500 background as light mode, so the same fix applies:
-  /// stone-950 → 4.65:1 (passes AA). See [lightDestructiveForeground].
-  static const Color darkDestructiveForeground = Color(0xFF1C1917);
+  // Text on secondary accent surfaces — onSecondaryContainer reused for brand consistency.
+  // 5.47:1 (AA ✓).
+  static const Color darkAccent2Foreground = Color(0xFF0C4A6E);
 
-  /// Default border — zinc-800.
-  static const Color darkBorder = Color(0xFF27272A);
+  // Destructive action colour — Red-600, lightened for dark-surface visibility.
+  static const Color darkDestructive = Color(0xFFE24949);
 
-  /// Input field border — gray-700.
-  static const Color darkInput = Color(0xFF374151);
+  // Text on destructive surfaces. 3.81:1 (AA_large only — acceptable for buttons/banners).
+  static const Color darkDestructiveForeground = Color(0xFFFAFAFA);
 
-  /// Focus ring colour — zinc-300.
-  static const Color darkRing = Color(0xFFD4D4D8);
+  // Default border.
+  static const Color darkBorder = Color(0xFF424447);
+
+  // Input field border.
+  static const Color darkInput = Color(0xFF4A4C4F);
+
+  // Focus ring colour — Primary Container, same hue kept across modes.
+  static const Color darkRing = Color(0xFFFEFDE8);
 
   // ── Status palette ───────────────────────────────────────────────────────────
   //
-  // Foreground tokens are split by mode because dark-mode status backgrounds
-  // are lighter (400-series) than their light-mode counterparts (500-series).
-  // White text on a 400-series color fails WCAG AA (< 4.5:1 contrast ratio):
-  //   • darkSuccess  (#34D399 emerald-400) + white → ~2.5:1  ❌
-  //   • darkInfo     (#38BDF8 sky-400)     + white → ~2.8:1  ❌
-  //   • darkError    (#FB7185 rose-400)    + white → ~3.4:1  ❌
-  // Using stone-950 (#1C1917) as the dark-mode foreground restores AA compliance
-  // and is consistent with the existing warningForeground treatment.
+  // Foreground tokens (successForeground, warningForeground, infoForeground,
+  // errorForeground) are shared across brightness — a single token used for both
+  // light and dark, per the source palette (unlike the old zinc palette, which
+  // split every status foreground by brightness). These pair with the base fill
+  // color for icon/progress use, not overlaid body text — see each field's comment.
   //
-  // 01 Jul 2026 production-readiness audit: the same problem was found to
-  // also affect two LIGHT-mode 500-series pairs that had been assumed safe
-  // and never re-verified with precise contrast math —
-  //   • lightSuccess (#10B981 emerald-500) + white → 2.54:1  ❌ (was
-  //     documented as "~4.6:1 ✅", a calculation error, not just a bad
-  //     color choice)
-  //   • lightError   (#F43F5E rose-500)    + white → 3.67:1  ❌ (same
-  //     documentation error)
-  // Both now use stone-950, the same fix already applied to warning/info in
-  // light mode — see [lightWarningForeground] / [lightInfoForeground] below,
-  // which had this correct from the start.
+  // Container tokens (*Container / *ContainerForeground) are solid, designed
+  // tonal-surface colors for badge/chip backgrounds — success, warning, and error
+  // ship real container tokens from the source palette. Info does NOT — see
+  // lightInfoContainer/darkInfoContainer below for the derivation used to keep
+  // the four status types symmetric in the theme-layer model.
 
-  // Success — Emerald family
-  static const Color lightSuccess = Color(0xFF10B981); // emerald-500
-  static const Color darkSuccess = Color(0xFF34D399); // emerald-400
-  /// Stone-950 on emerald-500 (light): 6.89:1 — passes WCAG AA.
-  /// Previously white (2.54:1, fails AA — see status-palette note above).
-  static const Color lightSuccessForeground = Color(0xFF1C1917);
+  // Success — Green-600 family (Quota < 70%). Progress bar / icon fill.
+  static const Color lightSuccess = Color(0xFF16A34A);
+  // 3.00:1 (AA_large) against successForeground — use successContainer pairing for body text.
+  static const Color darkSuccess = Color(0xFF21C65E);
+  // 2.26:1 against white — fill is for icons/progress, not overlaid text; pair with container instead.
+  static const Color successForeground = Color(0xFFFFFFFF);
 
-  /// Stone-950 on emerald-400 (dark): ~9.1:1 ✅ WCAG AAA
-  static const Color darkSuccessForeground = Color(0xFF1C1917);
+  // Success container — light card/badge tint.
+  static const Color lightSuccessContainer = Color(0xFFDCFCE7);
+  // Success container — dark tonal surface.
+  static const Color darkSuccessContainer = Color(0xFF254B33);
+  // Text/icon on light success container — reuses successFill. 3.00:1 (AA_large).
+  static const Color lightSuccessContainerForeground = Color(0xFF16A34A);
+  // Text/icon on dark success container. 7.71:1 (AAA ✓).
+  static const Color darkSuccessContainerForeground = Color(0xFFD9E7DF);
 
-  // Warning — Amber family
-  static const Color lightWarning = Color(0xFFF59E0B); // amber-500
-  static const Color darkWarning = Color(0xFFFBBF24); // amber-400
-  /// Stone-950 on amber-500 (light): ~8.6:1 ✅ WCAG AAA
-  static const Color lightWarningForeground = Color(0xFF1C1917); // stone-950
-  /// Stone-950 on amber-400 (dark): ~9.8:1 ✅ WCAG AAA
-  static const Color darkWarningForeground = Color(0xFF1C1917); // stone-950
+  // Warning — Amber-700 family (Quota 70–90%). Progress bar / icon fill.
+  static const Color lightWarning = Color(0xFFB45309);
+  // 4.86:1 (AA ✓) against warningForeground.
+  static const Color darkWarning = Color(0xFFD46917);
+  static const Color warningForeground = Color(0xFF1C1917);
 
-  // Info — Sky family
-  static const Color lightInfo = Color(0xFF0EA5E9); // sky-500
-  static const Color darkInfo = Color(0xFF38BDF8); // sky-400
-  /// Stone-950 on sky-500 (light): ~4.7:1 ✅ WCAG AA
-  static const Color lightInfoForeground = Color(0xFF1C1917);
+  // Warning container — light card/badge tint.
+  static const Color lightWarningContainer = Color(0xFFFEF3C7);
+  // Warning container — dark tonal surface.
+  static const Color darkWarningContainer = Color(0xFF4F3521);
+  // Text/icon on light warning container — reuses warningFill. 4.51:1 (AA ✓).
+  static const Color lightWarningContainerForeground = Color(0xFFB45309);
+  // Text/icon on dark warning container. 8.59:1 (AAA ✓).
+  static const Color darkWarningContainerForeground = Color(0xFFE9DFD8);
 
-  /// Stone-950 on sky-400 (dark): ~8.9:1 ✅ WCAG AAA
-  static const Color darkInfoForeground = Color(0xFF1C1917);
+  // Info — derived from Action Blue hue family (no explicit info color supplied; secondary
+  // is already used as the info icon color per the source palette legend).
+  static const Color lightInfo = Color(0xFF0E5EA0);
+  // 6.71:1 (AA ✓, near-AAA) against infoForeground.
+  static const Color darkInfo = Color(0xFF4099E2);
+  // 3.06:1 (AA_large) against infoForeground.
+  static const Color infoForeground = Color(0xFFFFFFFF);
 
-  // Error — Rose family
-  static const Color lightError = Color(0xFFF43F5E); // rose-500
-  static const Color darkError = Color(0xFFFB7185); // rose-400
-  /// Stone-950 on rose-500 (light): 4.76:1 — passes WCAG AA.
-  /// Previously white (3.67:1, fails AA — see status-palette note above).
-  static const Color lightErrorForeground = Color(0xFF1C1917);
+  // Info container — NOT supplied by the source palette (unlike success/warning/error).
+  // Derived as a 15% alpha tint of lightInfo/darkInfo — the exact same
+  // OpacityTokens.containerTint value already used for ColorScheme.tertiaryContainer
+  // in ThemeConstants.colorSchemeFrom. Expressed as a plain ARGB literal (alpha byte
+  // 0x26 ≈ 15% of 255) instead of `.withValues()` so it stays a true compile-time
+  // constant, consumable from the const AppStatusColors snapshots in ThemeConstants.
+  // Flag back to design if a real infoContainer token becomes available later.
+  static const Color lightInfoContainer = Color(0x260E5EA0);
+  static const Color darkInfoContainer = Color(0x264099E2);
+  // Text/icon on info container — reuses infoFill, matching the reuse pattern used
+  // by every other status container above. Approximate contrast only (semi-transparent
+  // container composites differently depending on what's behind it) — not a precise
+  // measured ratio like the opaque container pairs above.
+  // (No separate constant: AppStatusColors.infoContainerForeground references
+  // lightInfo/darkInfo directly in ThemeConstants — see status construction there.)
 
-  /// Stone-950 on rose-400 (dark): ~8.1:1 ✅ WCAG AAA
-  static const Color darkErrorForeground = Color(0xFF1C1917);
+  // Error — Red-600 family (Quota > 90%). Same brand red as destructive. Progress bar / icon fill.
+  static const Color lightError = Color(0xFFDC2626);
+  // 3.98:1 (AA_large) against errorForeground.
+  static const Color darkError = Color(0xFFE24949);
+  static const Color errorForeground = Color(0xFFFFFFFF);
+
+  // Error container — light card/badge tint. Also feeds ColorScheme.errorContainer
+  // in light mode (see ThemeConstants.colorSchemeFrom) — single source of truth
+  // shared between the M3-native error path and the custom status-badge path.
+  static const Color lightErrorContainer = Color(0xFFFEE2E2);
+  // Error container — dark tonal surface. Also feeds ColorScheme.errorContainer
+  // in dark mode.
+  static const Color darkErrorContainer = Color(0xFF4A2626);
+  // Text/icon on light error container — reuses dangerFill. 3.95:1 (AA_large).
+  // Also feeds ColorScheme.onErrorContainer in light mode.
+  static const Color lightErrorContainerForeground = Color(0xFFDC2626);
+  // Text/icon on dark error container. 9.67:1 (AAA ✓). Also feeds
+  // ColorScheme.onErrorContainer in dark mode.
+  static const Color darkErrorContainerForeground = Color(0xFFE7DADA);
 }

@@ -25,6 +25,8 @@ abstract final class ThemeConstants {
     mutedForeground: ColorTokens.lightMutedForeground,
     accent: ColorTokens.lightAccent,
     accentForeground: ColorTokens.lightAccentForeground,
+    accent2: ColorTokens.lightAccent2,
+    accent2Foreground: ColorTokens.lightAccent2Foreground,
     destructive: ColorTokens.lightDestructive,
     destructiveForeground: ColorTokens.lightDestructiveForeground,
     border: ColorTokens.lightBorder,
@@ -32,13 +34,22 @@ abstract final class ThemeConstants {
     ring: ColorTokens.lightRing,
     status: AppStatusColors(
       success: ColorTokens.lightSuccess,
-      successForeground: ColorTokens.lightSuccessForeground,
+      successForeground: ColorTokens.successForeground,
+      successContainer: ColorTokens.lightSuccessContainer,
+      successContainerForeground: ColorTokens.lightSuccessContainerForeground,
       warning: ColorTokens.lightWarning,
-      warningForeground: ColorTokens.lightWarningForeground,
+      warningForeground: ColorTokens.warningForeground,
+      warningContainer: ColorTokens.lightWarningContainer,
+      warningContainerForeground: ColorTokens.lightWarningContainerForeground,
       info: ColorTokens.lightInfo,
-      infoForeground: ColorTokens.lightInfoForeground,
+      infoForeground: ColorTokens.infoForeground,
+      // Derived — see ColorTokens.lightInfoContainer for rationale.
+      infoContainer: ColorTokens.lightInfoContainer,
+      infoContainerForeground: ColorTokens.lightInfo,
       error: ColorTokens.lightError,
-      errorForeground: ColorTokens.lightErrorForeground,
+      errorForeground: ColorTokens.errorForeground,
+      errorContainer: ColorTokens.lightErrorContainer,
+      errorContainerForeground: ColorTokens.lightErrorContainerForeground,
     ),
   );
 
@@ -57,6 +68,8 @@ abstract final class ThemeConstants {
     mutedForeground: ColorTokens.darkMutedForeground,
     accent: ColorTokens.darkAccent,
     accentForeground: ColorTokens.darkAccentForeground,
+    accent2: ColorTokens.darkAccent2,
+    accent2Foreground: ColorTokens.darkAccent2Foreground,
     destructive: ColorTokens.darkDestructive,
     destructiveForeground: ColorTokens.darkDestructiveForeground,
     border: ColorTokens.darkBorder,
@@ -64,13 +77,22 @@ abstract final class ThemeConstants {
     ring: ColorTokens.darkRing,
     status: AppStatusColors(
       success: ColorTokens.darkSuccess,
-      successForeground: ColorTokens.darkSuccessForeground,
+      successForeground: ColorTokens.successForeground,
+      successContainer: ColorTokens.darkSuccessContainer,
+      successContainerForeground: ColorTokens.darkSuccessContainerForeground,
       warning: ColorTokens.darkWarning,
-      warningForeground: ColorTokens.darkWarningForeground,
+      warningForeground: ColorTokens.warningForeground,
+      warningContainer: ColorTokens.darkWarningContainer,
+      warningContainerForeground: ColorTokens.darkWarningContainerForeground,
       info: ColorTokens.darkInfo,
-      infoForeground: ColorTokens.darkInfoForeground,
+      infoForeground: ColorTokens.infoForeground,
+      // Derived — see ColorTokens.darkInfoContainer for rationale.
+      infoContainer: ColorTokens.darkInfoContainer,
+      infoContainerForeground: ColorTokens.darkInfo,
       error: ColorTokens.darkError,
-      errorForeground: ColorTokens.darkErrorForeground,
+      errorForeground: ColorTokens.errorForeground,
+      errorContainer: ColorTokens.darkErrorContainer,
+      errorContainerForeground: ColorTokens.darkErrorContainerForeground,
     ),
   );
 
@@ -110,8 +132,12 @@ abstract final class ThemeConstants {
       // Secondary — mapped to shadcn `secondary` (surface-like in shadcn)
       secondary: c.secondary,
       onSecondary: c.secondaryForeground,
-      secondaryContainer: c.muted,
-      onSecondaryContainer: c.mutedForeground,
+      // `accent2`/`accent2Foreground` is a purpose-built "Secondary Container"
+      // swatch per the source palette's own token comments (03 Jul 2026 swap) —
+      // replaces the earlier `muted`/`mutedForeground` approximation, which was
+      // only ever a stand-in for not having a real designed container color.
+      secondaryContainer: c.accent2,
+      onSecondaryContainer: c.accent2Foreground,
       secondaryFixed: ColorTokens.lightMuted,
       secondaryFixedDim: ColorTokens.lightSecondary,
       onSecondaryFixed: ColorTokens.lightSecondaryForeground,
@@ -134,21 +160,19 @@ abstract final class ThemeConstants {
       // Error — mapped to shadcn `destructive`
       error: c.destructive,
       onError: c.destructiveForeground,
-      // Semi-transparent destructive fill for error containers.
-      errorContainer: c.destructive.withValues(
-        alpha: OpacityTokens.errorContainer,
-      ),
-      // Split by brightness: `destructive` itself reads at 4.76:1 on the
-      // dark-mode errorContainer tint (passes AA, kept as-is), but only
-      // 3.1:1 on the light-mode tint (fails AA) — a gap found during the
-      // 01 Jul 2026 production-readiness audit, alongside the
-      // destructive/status-foreground fixes above. Light mode uses a
-      // dedicated dark-red token instead; see
-      // [ColorTokens.lightErrorContainerForeground] for the full contrast
-      // math and rationale.
+      // Solid, designed container tokens (03 Jul 2026 swap) — replaces the
+      // earlier semi-transparent alpha-blend of `destructive`, which was a
+      // workaround for not having a real container color. Same source
+      // tokens as `AppStatusColors.error`'s container pair (single source
+      // of truth — see ColorTokens.lightErrorContainer/darkErrorContainer),
+      // so the M3-native error path and the custom status-badge path never
+      // silently drift apart.
+      errorContainer: brightness == Brightness.light
+          ? ColorTokens.lightErrorContainer
+          : ColorTokens.darkErrorContainer,
       onErrorContainer: brightness == Brightness.light
           ? ColorTokens.lightErrorContainerForeground
-          : c.destructive,
+          : ColorTokens.darkErrorContainerForeground,
 
       // Surface hierarchy — shadcn/ui has three meaningful surface tiers:
       // background, card, and muted. The M3 spec defines five container tiers

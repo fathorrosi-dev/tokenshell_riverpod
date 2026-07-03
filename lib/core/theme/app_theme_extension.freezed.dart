@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppStatusColors {
 
- Color get success; Color get successForeground; Color get warning; Color get warningForeground; Color get info; Color get infoForeground; Color get error; Color get errorForeground;
+ Color get success; Color get successForeground; Color get warning; Color get warningForeground; Color get info; Color get infoForeground; Color get error; Color get errorForeground; Color get successContainer; Color get successContainerForeground; Color get warningContainer; Color get warningContainerForeground; Color get infoContainer; Color get infoContainerForeground; Color get errorContainer; Color get errorContainerForeground;
 /// Create a copy of AppStatusColors
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $AppStatusColorsCopyWith<AppStatusColors> get copyWith => _$AppStatusColorsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppStatusColors&&(identical(other.success, success) || other.success == success)&&(identical(other.successForeground, successForeground) || other.successForeground == successForeground)&&(identical(other.warning, warning) || other.warning == warning)&&(identical(other.warningForeground, warningForeground) || other.warningForeground == warningForeground)&&(identical(other.info, info) || other.info == info)&&(identical(other.infoForeground, infoForeground) || other.infoForeground == infoForeground)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorForeground, errorForeground) || other.errorForeground == errorForeground));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppStatusColors&&(identical(other.success, success) || other.success == success)&&(identical(other.successForeground, successForeground) || other.successForeground == successForeground)&&(identical(other.warning, warning) || other.warning == warning)&&(identical(other.warningForeground, warningForeground) || other.warningForeground == warningForeground)&&(identical(other.info, info) || other.info == info)&&(identical(other.infoForeground, infoForeground) || other.infoForeground == infoForeground)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorForeground, errorForeground) || other.errorForeground == errorForeground)&&(identical(other.successContainer, successContainer) || other.successContainer == successContainer)&&(identical(other.successContainerForeground, successContainerForeground) || other.successContainerForeground == successContainerForeground)&&(identical(other.warningContainer, warningContainer) || other.warningContainer == warningContainer)&&(identical(other.warningContainerForeground, warningContainerForeground) || other.warningContainerForeground == warningContainerForeground)&&(identical(other.infoContainer, infoContainer) || other.infoContainer == infoContainer)&&(identical(other.infoContainerForeground, infoContainerForeground) || other.infoContainerForeground == infoContainerForeground)&&(identical(other.errorContainer, errorContainer) || other.errorContainer == errorContainer)&&(identical(other.errorContainerForeground, errorContainerForeground) || other.errorContainerForeground == errorContainerForeground));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,success,successForeground,warning,warningForeground,info,infoForeground,error,errorForeground);
+int get hashCode => Object.hash(runtimeType,success,successForeground,warning,warningForeground,info,infoForeground,error,errorForeground,successContainer,successContainerForeground,warningContainer,warningContainerForeground,infoContainer,infoContainerForeground,errorContainer,errorContainerForeground);
 
 @override
 String toString() {
-  return 'AppStatusColors(success: $success, successForeground: $successForeground, warning: $warning, warningForeground: $warningForeground, info: $info, infoForeground: $infoForeground, error: $error, errorForeground: $errorForeground)';
+  return 'AppStatusColors(success: $success, successForeground: $successForeground, warning: $warning, warningForeground: $warningForeground, info: $info, infoForeground: $infoForeground, error: $error, errorForeground: $errorForeground, successContainer: $successContainer, successContainerForeground: $successContainerForeground, warningContainer: $warningContainer, warningContainerForeground: $warningContainerForeground, infoContainer: $infoContainer, infoContainerForeground: $infoContainerForeground, errorContainer: $errorContainer, errorContainerForeground: $errorContainerForeground)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $AppStatusColorsCopyWith<$Res>  {
   factory $AppStatusColorsCopyWith(AppStatusColors value, $Res Function(AppStatusColors) _then) = _$AppStatusColorsCopyWithImpl;
 @useResult
 $Res call({
- Color success, Color successForeground, Color warning, Color warningForeground, Color info, Color infoForeground, Color error, Color errorForeground
+ Color success, Color successForeground, Color warning, Color warningForeground, Color info, Color infoForeground, Color error, Color errorForeground, Color successContainer, Color successContainerForeground, Color warningContainer, Color warningContainerForeground, Color infoContainer, Color infoContainerForeground, Color errorContainer, Color errorContainerForeground
 });
 
 
@@ -62,7 +62,7 @@ class _$AppStatusColorsCopyWithImpl<$Res>
 
 /// Create a copy of AppStatusColors
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? successForeground = null,Object? warning = null,Object? warningForeground = null,Object? info = null,Object? infoForeground = null,Object? error = null,Object? errorForeground = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? successForeground = null,Object? warning = null,Object? warningForeground = null,Object? info = null,Object? infoForeground = null,Object? error = null,Object? errorForeground = null,Object? successContainer = null,Object? successContainerForeground = null,Object? warningContainer = null,Object? warningContainerForeground = null,Object? infoContainer = null,Object? infoContainerForeground = null,Object? errorContainer = null,Object? errorContainerForeground = null,}) {
   return _then(_self.copyWith(
 success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as Color,successForeground: null == successForeground ? _self.successForeground : successForeground // ignore: cast_nullable_to_non_nullable
@@ -72,6 +72,14 @@ as Color,info: null == info ? _self.info : info // ignore: cast_nullable_to_non_
 as Color,infoForeground: null == infoForeground ? _self.infoForeground : infoForeground // ignore: cast_nullable_to_non_nullable
 as Color,error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as Color,errorForeground: null == errorForeground ? _self.errorForeground : errorForeground // ignore: cast_nullable_to_non_nullable
+as Color,successContainer: null == successContainer ? _self.successContainer : successContainer // ignore: cast_nullable_to_non_nullable
+as Color,successContainerForeground: null == successContainerForeground ? _self.successContainerForeground : successContainerForeground // ignore: cast_nullable_to_non_nullable
+as Color,warningContainer: null == warningContainer ? _self.warningContainer : warningContainer // ignore: cast_nullable_to_non_nullable
+as Color,warningContainerForeground: null == warningContainerForeground ? _self.warningContainerForeground : warningContainerForeground // ignore: cast_nullable_to_non_nullable
+as Color,infoContainer: null == infoContainer ? _self.infoContainer : infoContainer // ignore: cast_nullable_to_non_nullable
+as Color,infoContainerForeground: null == infoContainerForeground ? _self.infoContainerForeground : infoContainerForeground // ignore: cast_nullable_to_non_nullable
+as Color,errorContainer: null == errorContainer ? _self.errorContainer : errorContainer // ignore: cast_nullable_to_non_nullable
+as Color,errorContainerForeground: null == errorContainerForeground ? _self.errorContainerForeground : errorContainerForeground // ignore: cast_nullable_to_non_nullable
 as Color,
   ));
 }
@@ -157,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Color success,  Color successForeground,  Color warning,  Color warningForeground,  Color info,  Color infoForeground,  Color error,  Color errorForeground)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Color success,  Color successForeground,  Color warning,  Color warningForeground,  Color info,  Color infoForeground,  Color error,  Color errorForeground,  Color successContainer,  Color successContainerForeground,  Color warningContainer,  Color warningContainerForeground,  Color infoContainer,  Color infoContainerForeground,  Color errorContainer,  Color errorContainerForeground)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppStatusColors() when $default != null:
-return $default(_that.success,_that.successForeground,_that.warning,_that.warningForeground,_that.info,_that.infoForeground,_that.error,_that.errorForeground);case _:
+return $default(_that.success,_that.successForeground,_that.warning,_that.warningForeground,_that.info,_that.infoForeground,_that.error,_that.errorForeground,_that.successContainer,_that.successContainerForeground,_that.warningContainer,_that.warningContainerForeground,_that.infoContainer,_that.infoContainerForeground,_that.errorContainer,_that.errorContainerForeground);case _:
   return orElse();
 
 }
@@ -178,10 +186,10 @@ return $default(_that.success,_that.successForeground,_that.warning,_that.warnin
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Color success,  Color successForeground,  Color warning,  Color warningForeground,  Color info,  Color infoForeground,  Color error,  Color errorForeground)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Color success,  Color successForeground,  Color warning,  Color warningForeground,  Color info,  Color infoForeground,  Color error,  Color errorForeground,  Color successContainer,  Color successContainerForeground,  Color warningContainer,  Color warningContainerForeground,  Color infoContainer,  Color infoContainerForeground,  Color errorContainer,  Color errorContainerForeground)  $default,) {final _that = this;
 switch (_that) {
 case _AppStatusColors():
-return $default(_that.success,_that.successForeground,_that.warning,_that.warningForeground,_that.info,_that.infoForeground,_that.error,_that.errorForeground);case _:
+return $default(_that.success,_that.successForeground,_that.warning,_that.warningForeground,_that.info,_that.infoForeground,_that.error,_that.errorForeground,_that.successContainer,_that.successContainerForeground,_that.warningContainer,_that.warningContainerForeground,_that.infoContainer,_that.infoContainerForeground,_that.errorContainer,_that.errorContainerForeground);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +206,10 @@ return $default(_that.success,_that.successForeground,_that.warning,_that.warnin
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Color success,  Color successForeground,  Color warning,  Color warningForeground,  Color info,  Color infoForeground,  Color error,  Color errorForeground)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Color success,  Color successForeground,  Color warning,  Color warningForeground,  Color info,  Color infoForeground,  Color error,  Color errorForeground,  Color successContainer,  Color successContainerForeground,  Color warningContainer,  Color warningContainerForeground,  Color infoContainer,  Color infoContainerForeground,  Color errorContainer,  Color errorContainerForeground)?  $default,) {final _that = this;
 switch (_that) {
 case _AppStatusColors() when $default != null:
-return $default(_that.success,_that.successForeground,_that.warning,_that.warningForeground,_that.info,_that.infoForeground,_that.error,_that.errorForeground);case _:
+return $default(_that.success,_that.successForeground,_that.warning,_that.warningForeground,_that.info,_that.infoForeground,_that.error,_that.errorForeground,_that.successContainer,_that.successContainerForeground,_that.warningContainer,_that.warningContainerForeground,_that.infoContainer,_that.infoContainerForeground,_that.errorContainer,_that.errorContainerForeground);case _:
   return null;
 
 }
@@ -213,7 +221,7 @@ return $default(_that.success,_that.successForeground,_that.warning,_that.warnin
 
 
 class _AppStatusColors implements AppStatusColors {
-  const _AppStatusColors({required this.success, required this.successForeground, required this.warning, required this.warningForeground, required this.info, required this.infoForeground, required this.error, required this.errorForeground});
+  const _AppStatusColors({required this.success, required this.successForeground, required this.warning, required this.warningForeground, required this.info, required this.infoForeground, required this.error, required this.errorForeground, required this.successContainer, required this.successContainerForeground, required this.warningContainer, required this.warningContainerForeground, required this.infoContainer, required this.infoContainerForeground, required this.errorContainer, required this.errorContainerForeground});
   
 
 @override final  Color success;
@@ -224,6 +232,14 @@ class _AppStatusColors implements AppStatusColors {
 @override final  Color infoForeground;
 @override final  Color error;
 @override final  Color errorForeground;
+@override final  Color successContainer;
+@override final  Color successContainerForeground;
+@override final  Color warningContainer;
+@override final  Color warningContainerForeground;
+@override final  Color infoContainer;
+@override final  Color infoContainerForeground;
+@override final  Color errorContainer;
+@override final  Color errorContainerForeground;
 
 /// Create a copy of AppStatusColors
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +251,16 @@ _$AppStatusColorsCopyWith<_AppStatusColors> get copyWith => __$AppStatusColorsCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppStatusColors&&(identical(other.success, success) || other.success == success)&&(identical(other.successForeground, successForeground) || other.successForeground == successForeground)&&(identical(other.warning, warning) || other.warning == warning)&&(identical(other.warningForeground, warningForeground) || other.warningForeground == warningForeground)&&(identical(other.info, info) || other.info == info)&&(identical(other.infoForeground, infoForeground) || other.infoForeground == infoForeground)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorForeground, errorForeground) || other.errorForeground == errorForeground));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppStatusColors&&(identical(other.success, success) || other.success == success)&&(identical(other.successForeground, successForeground) || other.successForeground == successForeground)&&(identical(other.warning, warning) || other.warning == warning)&&(identical(other.warningForeground, warningForeground) || other.warningForeground == warningForeground)&&(identical(other.info, info) || other.info == info)&&(identical(other.infoForeground, infoForeground) || other.infoForeground == infoForeground)&&(identical(other.error, error) || other.error == error)&&(identical(other.errorForeground, errorForeground) || other.errorForeground == errorForeground)&&(identical(other.successContainer, successContainer) || other.successContainer == successContainer)&&(identical(other.successContainerForeground, successContainerForeground) || other.successContainerForeground == successContainerForeground)&&(identical(other.warningContainer, warningContainer) || other.warningContainer == warningContainer)&&(identical(other.warningContainerForeground, warningContainerForeground) || other.warningContainerForeground == warningContainerForeground)&&(identical(other.infoContainer, infoContainer) || other.infoContainer == infoContainer)&&(identical(other.infoContainerForeground, infoContainerForeground) || other.infoContainerForeground == infoContainerForeground)&&(identical(other.errorContainer, errorContainer) || other.errorContainer == errorContainer)&&(identical(other.errorContainerForeground, errorContainerForeground) || other.errorContainerForeground == errorContainerForeground));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,success,successForeground,warning,warningForeground,info,infoForeground,error,errorForeground);
+int get hashCode => Object.hash(runtimeType,success,successForeground,warning,warningForeground,info,infoForeground,error,errorForeground,successContainer,successContainerForeground,warningContainer,warningContainerForeground,infoContainer,infoContainerForeground,errorContainer,errorContainerForeground);
 
 @override
 String toString() {
-  return 'AppStatusColors(success: $success, successForeground: $successForeground, warning: $warning, warningForeground: $warningForeground, info: $info, infoForeground: $infoForeground, error: $error, errorForeground: $errorForeground)';
+  return 'AppStatusColors(success: $success, successForeground: $successForeground, warning: $warning, warningForeground: $warningForeground, info: $info, infoForeground: $infoForeground, error: $error, errorForeground: $errorForeground, successContainer: $successContainer, successContainerForeground: $successContainerForeground, warningContainer: $warningContainer, warningContainerForeground: $warningContainerForeground, infoContainer: $infoContainer, infoContainerForeground: $infoContainerForeground, errorContainer: $errorContainer, errorContainerForeground: $errorContainerForeground)';
 }
 
 
@@ -255,7 +271,7 @@ abstract mixin class _$AppStatusColorsCopyWith<$Res> implements $AppStatusColors
   factory _$AppStatusColorsCopyWith(_AppStatusColors value, $Res Function(_AppStatusColors) _then) = __$AppStatusColorsCopyWithImpl;
 @override @useResult
 $Res call({
- Color success, Color successForeground, Color warning, Color warningForeground, Color info, Color infoForeground, Color error, Color errorForeground
+ Color success, Color successForeground, Color warning, Color warningForeground, Color info, Color infoForeground, Color error, Color errorForeground, Color successContainer, Color successContainerForeground, Color warningContainer, Color warningContainerForeground, Color infoContainer, Color infoContainerForeground, Color errorContainer, Color errorContainerForeground
 });
 
 
@@ -272,7 +288,7 @@ class __$AppStatusColorsCopyWithImpl<$Res>
 
 /// Create a copy of AppStatusColors
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? successForeground = null,Object? warning = null,Object? warningForeground = null,Object? info = null,Object? infoForeground = null,Object? error = null,Object? errorForeground = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? successForeground = null,Object? warning = null,Object? warningForeground = null,Object? info = null,Object? infoForeground = null,Object? error = null,Object? errorForeground = null,Object? successContainer = null,Object? successContainerForeground = null,Object? warningContainer = null,Object? warningContainerForeground = null,Object? infoContainer = null,Object? infoContainerForeground = null,Object? errorContainer = null,Object? errorContainerForeground = null,}) {
   return _then(_AppStatusColors(
 success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as Color,successForeground: null == successForeground ? _self.successForeground : successForeground // ignore: cast_nullable_to_non_nullable
@@ -282,6 +298,14 @@ as Color,info: null == info ? _self.info : info // ignore: cast_nullable_to_non_
 as Color,infoForeground: null == infoForeground ? _self.infoForeground : infoForeground // ignore: cast_nullable_to_non_nullable
 as Color,error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as Color,errorForeground: null == errorForeground ? _self.errorForeground : errorForeground // ignore: cast_nullable_to_non_nullable
+as Color,successContainer: null == successContainer ? _self.successContainer : successContainer // ignore: cast_nullable_to_non_nullable
+as Color,successContainerForeground: null == successContainerForeground ? _self.successContainerForeground : successContainerForeground // ignore: cast_nullable_to_non_nullable
+as Color,warningContainer: null == warningContainer ? _self.warningContainer : warningContainer // ignore: cast_nullable_to_non_nullable
+as Color,warningContainerForeground: null == warningContainerForeground ? _self.warningContainerForeground : warningContainerForeground // ignore: cast_nullable_to_non_nullable
+as Color,infoContainer: null == infoContainer ? _self.infoContainer : infoContainer // ignore: cast_nullable_to_non_nullable
+as Color,infoContainerForeground: null == infoContainerForeground ? _self.infoContainerForeground : infoContainerForeground // ignore: cast_nullable_to_non_nullable
+as Color,errorContainer: null == errorContainer ? _self.errorContainer : errorContainer // ignore: cast_nullable_to_non_nullable
+as Color,errorContainerForeground: null == errorContainerForeground ? _self.errorContainerForeground : errorContainerForeground // ignore: cast_nullable_to_non_nullable
 as Color,
   ));
 }
@@ -292,7 +316,7 @@ as Color,
 /// @nodoc
 mixin _$AppThemeColors {
 
- Color get background; Color get foreground; Color get card; Color get cardForeground; Color get popover; Color get popoverForeground; Color get primary; Color get primaryForeground; Color get secondary; Color get secondaryForeground; Color get muted; Color get mutedForeground; Color get accent; Color get accentForeground; Color get destructive; Color get destructiveForeground; Color get border; Color get input; Color get ring; AppStatusColors get status;
+ Color get background; Color get foreground; Color get card; Color get cardForeground; Color get popover; Color get popoverForeground; Color get primary; Color get primaryForeground; Color get secondary; Color get secondaryForeground; Color get muted; Color get mutedForeground; Color get accent; Color get accentForeground; Color get accent2; Color get accent2Foreground; Color get destructive; Color get destructiveForeground; Color get border; Color get input; Color get ring; AppStatusColors get status;
 /// Create a copy of AppThemeColors
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -303,16 +327,16 @@ $AppThemeColorsCopyWith<AppThemeColors> get copyWith => _$AppThemeColorsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppThemeColors&&(identical(other.background, background) || other.background == background)&&(identical(other.foreground, foreground) || other.foreground == foreground)&&(identical(other.card, card) || other.card == card)&&(identical(other.cardForeground, cardForeground) || other.cardForeground == cardForeground)&&(identical(other.popover, popover) || other.popover == popover)&&(identical(other.popoverForeground, popoverForeground) || other.popoverForeground == popoverForeground)&&(identical(other.primary, primary) || other.primary == primary)&&(identical(other.primaryForeground, primaryForeground) || other.primaryForeground == primaryForeground)&&(identical(other.secondary, secondary) || other.secondary == secondary)&&(identical(other.secondaryForeground, secondaryForeground) || other.secondaryForeground == secondaryForeground)&&(identical(other.muted, muted) || other.muted == muted)&&(identical(other.mutedForeground, mutedForeground) || other.mutedForeground == mutedForeground)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.accentForeground, accentForeground) || other.accentForeground == accentForeground)&&(identical(other.destructive, destructive) || other.destructive == destructive)&&(identical(other.destructiveForeground, destructiveForeground) || other.destructiveForeground == destructiveForeground)&&(identical(other.border, border) || other.border == border)&&(identical(other.input, input) || other.input == input)&&(identical(other.ring, ring) || other.ring == ring)&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppThemeColors&&(identical(other.background, background) || other.background == background)&&(identical(other.foreground, foreground) || other.foreground == foreground)&&(identical(other.card, card) || other.card == card)&&(identical(other.cardForeground, cardForeground) || other.cardForeground == cardForeground)&&(identical(other.popover, popover) || other.popover == popover)&&(identical(other.popoverForeground, popoverForeground) || other.popoverForeground == popoverForeground)&&(identical(other.primary, primary) || other.primary == primary)&&(identical(other.primaryForeground, primaryForeground) || other.primaryForeground == primaryForeground)&&(identical(other.secondary, secondary) || other.secondary == secondary)&&(identical(other.secondaryForeground, secondaryForeground) || other.secondaryForeground == secondaryForeground)&&(identical(other.muted, muted) || other.muted == muted)&&(identical(other.mutedForeground, mutedForeground) || other.mutedForeground == mutedForeground)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.accentForeground, accentForeground) || other.accentForeground == accentForeground)&&(identical(other.accent2, accent2) || other.accent2 == accent2)&&(identical(other.accent2Foreground, accent2Foreground) || other.accent2Foreground == accent2Foreground)&&(identical(other.destructive, destructive) || other.destructive == destructive)&&(identical(other.destructiveForeground, destructiveForeground) || other.destructiveForeground == destructiveForeground)&&(identical(other.border, border) || other.border == border)&&(identical(other.input, input) || other.input == input)&&(identical(other.ring, ring) || other.ring == ring)&&(identical(other.status, status) || other.status == status));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,background,foreground,card,cardForeground,popover,popoverForeground,primary,primaryForeground,secondary,secondaryForeground,muted,mutedForeground,accent,accentForeground,destructive,destructiveForeground,border,input,ring,status]);
+int get hashCode => Object.hashAll([runtimeType,background,foreground,card,cardForeground,popover,popoverForeground,primary,primaryForeground,secondary,secondaryForeground,muted,mutedForeground,accent,accentForeground,accent2,accent2Foreground,destructive,destructiveForeground,border,input,ring,status]);
 
 @override
 String toString() {
-  return 'AppThemeColors(background: $background, foreground: $foreground, card: $card, cardForeground: $cardForeground, popover: $popover, popoverForeground: $popoverForeground, primary: $primary, primaryForeground: $primaryForeground, secondary: $secondary, secondaryForeground: $secondaryForeground, muted: $muted, mutedForeground: $mutedForeground, accent: $accent, accentForeground: $accentForeground, destructive: $destructive, destructiveForeground: $destructiveForeground, border: $border, input: $input, ring: $ring, status: $status)';
+  return 'AppThemeColors(background: $background, foreground: $foreground, card: $card, cardForeground: $cardForeground, popover: $popover, popoverForeground: $popoverForeground, primary: $primary, primaryForeground: $primaryForeground, secondary: $secondary, secondaryForeground: $secondaryForeground, muted: $muted, mutedForeground: $mutedForeground, accent: $accent, accentForeground: $accentForeground, accent2: $accent2, accent2Foreground: $accent2Foreground, destructive: $destructive, destructiveForeground: $destructiveForeground, border: $border, input: $input, ring: $ring, status: $status)';
 }
 
 
@@ -323,7 +347,7 @@ abstract mixin class $AppThemeColorsCopyWith<$Res>  {
   factory $AppThemeColorsCopyWith(AppThemeColors value, $Res Function(AppThemeColors) _then) = _$AppThemeColorsCopyWithImpl;
 @useResult
 $Res call({
- Color background, Color foreground, Color card, Color cardForeground, Color popover, Color popoverForeground, Color primary, Color primaryForeground, Color secondary, Color secondaryForeground, Color muted, Color mutedForeground, Color accent, Color accentForeground, Color destructive, Color destructiveForeground, Color border, Color input, Color ring, AppStatusColors status
+ Color background, Color foreground, Color card, Color cardForeground, Color popover, Color popoverForeground, Color primary, Color primaryForeground, Color secondary, Color secondaryForeground, Color muted, Color mutedForeground, Color accent, Color accentForeground, Color accent2, Color accent2Foreground, Color destructive, Color destructiveForeground, Color border, Color input, Color ring, AppStatusColors status
 });
 
 
@@ -340,7 +364,7 @@ class _$AppThemeColorsCopyWithImpl<$Res>
 
 /// Create a copy of AppThemeColors
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? background = null,Object? foreground = null,Object? card = null,Object? cardForeground = null,Object? popover = null,Object? popoverForeground = null,Object? primary = null,Object? primaryForeground = null,Object? secondary = null,Object? secondaryForeground = null,Object? muted = null,Object? mutedForeground = null,Object? accent = null,Object? accentForeground = null,Object? destructive = null,Object? destructiveForeground = null,Object? border = null,Object? input = null,Object? ring = null,Object? status = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? background = null,Object? foreground = null,Object? card = null,Object? cardForeground = null,Object? popover = null,Object? popoverForeground = null,Object? primary = null,Object? primaryForeground = null,Object? secondary = null,Object? secondaryForeground = null,Object? muted = null,Object? mutedForeground = null,Object? accent = null,Object? accentForeground = null,Object? accent2 = null,Object? accent2Foreground = null,Object? destructive = null,Object? destructiveForeground = null,Object? border = null,Object? input = null,Object? ring = null,Object? status = null,}) {
   return _then(_self.copyWith(
 background: null == background ? _self.background : background // ignore: cast_nullable_to_non_nullable
 as Color,foreground: null == foreground ? _self.foreground : foreground // ignore: cast_nullable_to_non_nullable
@@ -356,6 +380,8 @@ as Color,muted: null == muted ? _self.muted : muted // ignore: cast_nullable_to_
 as Color,mutedForeground: null == mutedForeground ? _self.mutedForeground : mutedForeground // ignore: cast_nullable_to_non_nullable
 as Color,accent: null == accent ? _self.accent : accent // ignore: cast_nullable_to_non_nullable
 as Color,accentForeground: null == accentForeground ? _self.accentForeground : accentForeground // ignore: cast_nullable_to_non_nullable
+as Color,accent2: null == accent2 ? _self.accent2 : accent2 // ignore: cast_nullable_to_non_nullable
+as Color,accent2Foreground: null == accent2Foreground ? _self.accent2Foreground : accent2Foreground // ignore: cast_nullable_to_non_nullable
 as Color,destructive: null == destructive ? _self.destructive : destructive // ignore: cast_nullable_to_non_nullable
 as Color,destructiveForeground: null == destructiveForeground ? _self.destructiveForeground : destructiveForeground // ignore: cast_nullable_to_non_nullable
 as Color,border: null == border ? _self.border : border // ignore: cast_nullable_to_non_nullable
@@ -456,10 +482,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Color background,  Color foreground,  Color card,  Color cardForeground,  Color popover,  Color popoverForeground,  Color primary,  Color primaryForeground,  Color secondary,  Color secondaryForeground,  Color muted,  Color mutedForeground,  Color accent,  Color accentForeground,  Color destructive,  Color destructiveForeground,  Color border,  Color input,  Color ring,  AppStatusColors status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Color background,  Color foreground,  Color card,  Color cardForeground,  Color popover,  Color popoverForeground,  Color primary,  Color primaryForeground,  Color secondary,  Color secondaryForeground,  Color muted,  Color mutedForeground,  Color accent,  Color accentForeground,  Color accent2,  Color accent2Foreground,  Color destructive,  Color destructiveForeground,  Color border,  Color input,  Color ring,  AppStatusColors status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppThemeColors() when $default != null:
-return $default(_that.background,_that.foreground,_that.card,_that.cardForeground,_that.popover,_that.popoverForeground,_that.primary,_that.primaryForeground,_that.secondary,_that.secondaryForeground,_that.muted,_that.mutedForeground,_that.accent,_that.accentForeground,_that.destructive,_that.destructiveForeground,_that.border,_that.input,_that.ring,_that.status);case _:
+return $default(_that.background,_that.foreground,_that.card,_that.cardForeground,_that.popover,_that.popoverForeground,_that.primary,_that.primaryForeground,_that.secondary,_that.secondaryForeground,_that.muted,_that.mutedForeground,_that.accent,_that.accentForeground,_that.accent2,_that.accent2Foreground,_that.destructive,_that.destructiveForeground,_that.border,_that.input,_that.ring,_that.status);case _:
   return orElse();
 
 }
@@ -477,10 +503,10 @@ return $default(_that.background,_that.foreground,_that.card,_that.cardForegroun
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Color background,  Color foreground,  Color card,  Color cardForeground,  Color popover,  Color popoverForeground,  Color primary,  Color primaryForeground,  Color secondary,  Color secondaryForeground,  Color muted,  Color mutedForeground,  Color accent,  Color accentForeground,  Color destructive,  Color destructiveForeground,  Color border,  Color input,  Color ring,  AppStatusColors status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Color background,  Color foreground,  Color card,  Color cardForeground,  Color popover,  Color popoverForeground,  Color primary,  Color primaryForeground,  Color secondary,  Color secondaryForeground,  Color muted,  Color mutedForeground,  Color accent,  Color accentForeground,  Color accent2,  Color accent2Foreground,  Color destructive,  Color destructiveForeground,  Color border,  Color input,  Color ring,  AppStatusColors status)  $default,) {final _that = this;
 switch (_that) {
 case _AppThemeColors():
-return $default(_that.background,_that.foreground,_that.card,_that.cardForeground,_that.popover,_that.popoverForeground,_that.primary,_that.primaryForeground,_that.secondary,_that.secondaryForeground,_that.muted,_that.mutedForeground,_that.accent,_that.accentForeground,_that.destructive,_that.destructiveForeground,_that.border,_that.input,_that.ring,_that.status);case _:
+return $default(_that.background,_that.foreground,_that.card,_that.cardForeground,_that.popover,_that.popoverForeground,_that.primary,_that.primaryForeground,_that.secondary,_that.secondaryForeground,_that.muted,_that.mutedForeground,_that.accent,_that.accentForeground,_that.accent2,_that.accent2Foreground,_that.destructive,_that.destructiveForeground,_that.border,_that.input,_that.ring,_that.status);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -497,10 +523,10 @@ return $default(_that.background,_that.foreground,_that.card,_that.cardForegroun
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Color background,  Color foreground,  Color card,  Color cardForeground,  Color popover,  Color popoverForeground,  Color primary,  Color primaryForeground,  Color secondary,  Color secondaryForeground,  Color muted,  Color mutedForeground,  Color accent,  Color accentForeground,  Color destructive,  Color destructiveForeground,  Color border,  Color input,  Color ring,  AppStatusColors status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Color background,  Color foreground,  Color card,  Color cardForeground,  Color popover,  Color popoverForeground,  Color primary,  Color primaryForeground,  Color secondary,  Color secondaryForeground,  Color muted,  Color mutedForeground,  Color accent,  Color accentForeground,  Color accent2,  Color accent2Foreground,  Color destructive,  Color destructiveForeground,  Color border,  Color input,  Color ring,  AppStatusColors status)?  $default,) {final _that = this;
 switch (_that) {
 case _AppThemeColors() when $default != null:
-return $default(_that.background,_that.foreground,_that.card,_that.cardForeground,_that.popover,_that.popoverForeground,_that.primary,_that.primaryForeground,_that.secondary,_that.secondaryForeground,_that.muted,_that.mutedForeground,_that.accent,_that.accentForeground,_that.destructive,_that.destructiveForeground,_that.border,_that.input,_that.ring,_that.status);case _:
+return $default(_that.background,_that.foreground,_that.card,_that.cardForeground,_that.popover,_that.popoverForeground,_that.primary,_that.primaryForeground,_that.secondary,_that.secondaryForeground,_that.muted,_that.mutedForeground,_that.accent,_that.accentForeground,_that.accent2,_that.accent2Foreground,_that.destructive,_that.destructiveForeground,_that.border,_that.input,_that.ring,_that.status);case _:
   return null;
 
 }
@@ -512,7 +538,7 @@ return $default(_that.background,_that.foreground,_that.card,_that.cardForegroun
 
 
 class _AppThemeColors implements AppThemeColors {
-  const _AppThemeColors({required this.background, required this.foreground, required this.card, required this.cardForeground, required this.popover, required this.popoverForeground, required this.primary, required this.primaryForeground, required this.secondary, required this.secondaryForeground, required this.muted, required this.mutedForeground, required this.accent, required this.accentForeground, required this.destructive, required this.destructiveForeground, required this.border, required this.input, required this.ring, required this.status});
+  const _AppThemeColors({required this.background, required this.foreground, required this.card, required this.cardForeground, required this.popover, required this.popoverForeground, required this.primary, required this.primaryForeground, required this.secondary, required this.secondaryForeground, required this.muted, required this.mutedForeground, required this.accent, required this.accentForeground, required this.accent2, required this.accent2Foreground, required this.destructive, required this.destructiveForeground, required this.border, required this.input, required this.ring, required this.status});
   
 
 @override final  Color background;
@@ -529,6 +555,8 @@ class _AppThemeColors implements AppThemeColors {
 @override final  Color mutedForeground;
 @override final  Color accent;
 @override final  Color accentForeground;
+@override final  Color accent2;
+@override final  Color accent2Foreground;
 @override final  Color destructive;
 @override final  Color destructiveForeground;
 @override final  Color border;
@@ -546,16 +574,16 @@ _$AppThemeColorsCopyWith<_AppThemeColors> get copyWith => __$AppThemeColorsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppThemeColors&&(identical(other.background, background) || other.background == background)&&(identical(other.foreground, foreground) || other.foreground == foreground)&&(identical(other.card, card) || other.card == card)&&(identical(other.cardForeground, cardForeground) || other.cardForeground == cardForeground)&&(identical(other.popover, popover) || other.popover == popover)&&(identical(other.popoverForeground, popoverForeground) || other.popoverForeground == popoverForeground)&&(identical(other.primary, primary) || other.primary == primary)&&(identical(other.primaryForeground, primaryForeground) || other.primaryForeground == primaryForeground)&&(identical(other.secondary, secondary) || other.secondary == secondary)&&(identical(other.secondaryForeground, secondaryForeground) || other.secondaryForeground == secondaryForeground)&&(identical(other.muted, muted) || other.muted == muted)&&(identical(other.mutedForeground, mutedForeground) || other.mutedForeground == mutedForeground)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.accentForeground, accentForeground) || other.accentForeground == accentForeground)&&(identical(other.destructive, destructive) || other.destructive == destructive)&&(identical(other.destructiveForeground, destructiveForeground) || other.destructiveForeground == destructiveForeground)&&(identical(other.border, border) || other.border == border)&&(identical(other.input, input) || other.input == input)&&(identical(other.ring, ring) || other.ring == ring)&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppThemeColors&&(identical(other.background, background) || other.background == background)&&(identical(other.foreground, foreground) || other.foreground == foreground)&&(identical(other.card, card) || other.card == card)&&(identical(other.cardForeground, cardForeground) || other.cardForeground == cardForeground)&&(identical(other.popover, popover) || other.popover == popover)&&(identical(other.popoverForeground, popoverForeground) || other.popoverForeground == popoverForeground)&&(identical(other.primary, primary) || other.primary == primary)&&(identical(other.primaryForeground, primaryForeground) || other.primaryForeground == primaryForeground)&&(identical(other.secondary, secondary) || other.secondary == secondary)&&(identical(other.secondaryForeground, secondaryForeground) || other.secondaryForeground == secondaryForeground)&&(identical(other.muted, muted) || other.muted == muted)&&(identical(other.mutedForeground, mutedForeground) || other.mutedForeground == mutedForeground)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.accentForeground, accentForeground) || other.accentForeground == accentForeground)&&(identical(other.accent2, accent2) || other.accent2 == accent2)&&(identical(other.accent2Foreground, accent2Foreground) || other.accent2Foreground == accent2Foreground)&&(identical(other.destructive, destructive) || other.destructive == destructive)&&(identical(other.destructiveForeground, destructiveForeground) || other.destructiveForeground == destructiveForeground)&&(identical(other.border, border) || other.border == border)&&(identical(other.input, input) || other.input == input)&&(identical(other.ring, ring) || other.ring == ring)&&(identical(other.status, status) || other.status == status));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,background,foreground,card,cardForeground,popover,popoverForeground,primary,primaryForeground,secondary,secondaryForeground,muted,mutedForeground,accent,accentForeground,destructive,destructiveForeground,border,input,ring,status]);
+int get hashCode => Object.hashAll([runtimeType,background,foreground,card,cardForeground,popover,popoverForeground,primary,primaryForeground,secondary,secondaryForeground,muted,mutedForeground,accent,accentForeground,accent2,accent2Foreground,destructive,destructiveForeground,border,input,ring,status]);
 
 @override
 String toString() {
-  return 'AppThemeColors(background: $background, foreground: $foreground, card: $card, cardForeground: $cardForeground, popover: $popover, popoverForeground: $popoverForeground, primary: $primary, primaryForeground: $primaryForeground, secondary: $secondary, secondaryForeground: $secondaryForeground, muted: $muted, mutedForeground: $mutedForeground, accent: $accent, accentForeground: $accentForeground, destructive: $destructive, destructiveForeground: $destructiveForeground, border: $border, input: $input, ring: $ring, status: $status)';
+  return 'AppThemeColors(background: $background, foreground: $foreground, card: $card, cardForeground: $cardForeground, popover: $popover, popoverForeground: $popoverForeground, primary: $primary, primaryForeground: $primaryForeground, secondary: $secondary, secondaryForeground: $secondaryForeground, muted: $muted, mutedForeground: $mutedForeground, accent: $accent, accentForeground: $accentForeground, accent2: $accent2, accent2Foreground: $accent2Foreground, destructive: $destructive, destructiveForeground: $destructiveForeground, border: $border, input: $input, ring: $ring, status: $status)';
 }
 
 
@@ -566,7 +594,7 @@ abstract mixin class _$AppThemeColorsCopyWith<$Res> implements $AppThemeColorsCo
   factory _$AppThemeColorsCopyWith(_AppThemeColors value, $Res Function(_AppThemeColors) _then) = __$AppThemeColorsCopyWithImpl;
 @override @useResult
 $Res call({
- Color background, Color foreground, Color card, Color cardForeground, Color popover, Color popoverForeground, Color primary, Color primaryForeground, Color secondary, Color secondaryForeground, Color muted, Color mutedForeground, Color accent, Color accentForeground, Color destructive, Color destructiveForeground, Color border, Color input, Color ring, AppStatusColors status
+ Color background, Color foreground, Color card, Color cardForeground, Color popover, Color popoverForeground, Color primary, Color primaryForeground, Color secondary, Color secondaryForeground, Color muted, Color mutedForeground, Color accent, Color accentForeground, Color accent2, Color accent2Foreground, Color destructive, Color destructiveForeground, Color border, Color input, Color ring, AppStatusColors status
 });
 
 
@@ -583,7 +611,7 @@ class __$AppThemeColorsCopyWithImpl<$Res>
 
 /// Create a copy of AppThemeColors
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? background = null,Object? foreground = null,Object? card = null,Object? cardForeground = null,Object? popover = null,Object? popoverForeground = null,Object? primary = null,Object? primaryForeground = null,Object? secondary = null,Object? secondaryForeground = null,Object? muted = null,Object? mutedForeground = null,Object? accent = null,Object? accentForeground = null,Object? destructive = null,Object? destructiveForeground = null,Object? border = null,Object? input = null,Object? ring = null,Object? status = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? background = null,Object? foreground = null,Object? card = null,Object? cardForeground = null,Object? popover = null,Object? popoverForeground = null,Object? primary = null,Object? primaryForeground = null,Object? secondary = null,Object? secondaryForeground = null,Object? muted = null,Object? mutedForeground = null,Object? accent = null,Object? accentForeground = null,Object? accent2 = null,Object? accent2Foreground = null,Object? destructive = null,Object? destructiveForeground = null,Object? border = null,Object? input = null,Object? ring = null,Object? status = null,}) {
   return _then(_AppThemeColors(
 background: null == background ? _self.background : background // ignore: cast_nullable_to_non_nullable
 as Color,foreground: null == foreground ? _self.foreground : foreground // ignore: cast_nullable_to_non_nullable
@@ -599,6 +627,8 @@ as Color,muted: null == muted ? _self.muted : muted // ignore: cast_nullable_to_
 as Color,mutedForeground: null == mutedForeground ? _self.mutedForeground : mutedForeground // ignore: cast_nullable_to_non_nullable
 as Color,accent: null == accent ? _self.accent : accent // ignore: cast_nullable_to_non_nullable
 as Color,accentForeground: null == accentForeground ? _self.accentForeground : accentForeground // ignore: cast_nullable_to_non_nullable
+as Color,accent2: null == accent2 ? _self.accent2 : accent2 // ignore: cast_nullable_to_non_nullable
+as Color,accent2Foreground: null == accent2Foreground ? _self.accent2Foreground : accent2Foreground // ignore: cast_nullable_to_non_nullable
 as Color,destructive: null == destructive ? _self.destructive : destructive // ignore: cast_nullable_to_non_nullable
 as Color,destructiveForeground: null == destructiveForeground ? _self.destructiveForeground : destructiveForeground // ignore: cast_nullable_to_non_nullable
 as Color,border: null == border ? _self.border : border // ignore: cast_nullable_to_non_nullable

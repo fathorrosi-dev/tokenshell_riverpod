@@ -7,7 +7,7 @@ part 'app_theme_extension.freezed.dart';
 // ── AppStatusColors ───────────────────────────────────────────────────────────
 
 /// Immutable snapshot of all status/semantic color tokens — success, warning,
-/// info, error — along with their foregrounds.
+/// info, error — along with their foregrounds and container variants.
 ///
 /// Extracted from the flat [AppThemeColors] field list so that:
 ///   1. Status tokens can be extended independently (e.g. adding `successSubtle`)
@@ -18,10 +18,20 @@ part 'app_theme_extension.freezed.dart';
 ///   3. Consumer API is more expressive:
 ///        `colors.status.success`  vs  `colors.success`
 ///
+/// ## Container fields (added 03 Jul 2026 palette swap)
+///
+/// Every status type carries a `*Container`/`*ContainerForeground` pair for
+/// tonal/soft-filled badge UI, symmetric across success/warning/info/error —
+/// even though the source palette only supplies real designed container
+/// tokens for success/warning/error. `info`'s container is derived (see
+/// [ColorTokens.lightInfoContainer]) precisely so this API stays symmetric;
+/// consumers should never need to special-case info.
+///
 /// ## Usage
 /// ```dart
 /// final s = context.colors.status;
 /// Container(color: s.warning, child: Text('!', style: TextStyle(color: s.warningForeground)));
+/// Container(color: s.successContainer, child: Text('OK', style: TextStyle(color: s.successContainerForeground)));
 /// ```
 @freezed
 abstract class AppStatusColors with _$AppStatusColors {
@@ -34,6 +44,15 @@ abstract class AppStatusColors with _$AppStatusColors {
     required Color infoForeground,
     required Color error,
     required Color errorForeground,
+    // ── Container variants (tonal badge/chip surfaces) ────────────────────────
+    required Color successContainer,
+    required Color successContainerForeground,
+    required Color warningContainer,
+    required Color warningContainerForeground,
+    required Color infoContainer,
+    required Color infoContainerForeground,
+    required Color errorContainer,
+    required Color errorContainerForeground,
   }) = _AppStatusColors;
 
   /// Linearly interpolates between [a] and [b] at fraction [t].
@@ -57,6 +76,30 @@ abstract class AppStatusColors with _$AppStatusColors {
       infoForeground: Color.lerp(a.infoForeground, b.infoForeground, t)!,
       error: Color.lerp(a.error, b.error, t)!,
       errorForeground: Color.lerp(a.errorForeground, b.errorForeground, t)!,
+      successContainer: Color.lerp(a.successContainer, b.successContainer, t)!,
+      successContainerForeground: Color.lerp(
+        a.successContainerForeground,
+        b.successContainerForeground,
+        t,
+      )!,
+      warningContainer: Color.lerp(a.warningContainer, b.warningContainer, t)!,
+      warningContainerForeground: Color.lerp(
+        a.warningContainerForeground,
+        b.warningContainerForeground,
+        t,
+      )!,
+      infoContainer: Color.lerp(a.infoContainer, b.infoContainer, t)!,
+      infoContainerForeground: Color.lerp(
+        a.infoContainerForeground,
+        b.infoContainerForeground,
+        t,
+      )!,
+      errorContainer: Color.lerp(a.errorContainer, b.errorContainer, t)!,
+      errorContainerForeground: Color.lerp(
+        a.errorContainerForeground,
+        b.errorContainerForeground,
+        t,
+      )!,
     );
   }
 }
@@ -79,6 +122,15 @@ abstract class AppStatusColors with _$AppStatusColors {
 /// Status colors live in the [AppStatusColors] sub-record ([status] field)
 /// rather than as flat fields. This keeps the core semantic section lean
 /// and makes [lerp] maintenance O(1) for the status group.
+///
+/// ## accent2 (added 03 Jul 2026 palette swap)
+///
+/// Maps to Material 3's `secondaryContainer`/`onSecondaryContainer` roles in
+/// [ThemeConstants.colorSchemeFrom] — per the source palette's own token
+/// comments, this is a purpose-built "Secondary Container" swatch, not a
+/// generic extra accent. Kept as a flat field (like the rest of the core
+/// section) rather than its own sub-record, since it's a single pair, not a
+/// family of roles the way status colors are.
 ///
 /// ## What Freezed does NOT generate
 ///
@@ -104,6 +156,8 @@ abstract class AppThemeColors with _$AppThemeColors {
     required Color mutedForeground,
     required Color accent,
     required Color accentForeground,
+    required Color accent2,
+    required Color accent2Foreground,
     required Color destructive,
     required Color destructiveForeground,
     required Color border,
@@ -149,6 +203,12 @@ abstract class AppThemeColors with _$AppThemeColors {
       mutedForeground: Color.lerp(a.mutedForeground, b.mutedForeground, t)!,
       accent: Color.lerp(a.accent, b.accent, t)!,
       accentForeground: Color.lerp(a.accentForeground, b.accentForeground, t)!,
+      accent2: Color.lerp(a.accent2, b.accent2, t)!,
+      accent2Foreground: Color.lerp(
+        a.accent2Foreground,
+        b.accent2Foreground,
+        t,
+      )!,
       destructive: Color.lerp(a.destructive, b.destructive, t)!,
       destructiveForeground: Color.lerp(
         a.destructiveForeground,
