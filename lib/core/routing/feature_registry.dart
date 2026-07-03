@@ -29,8 +29,32 @@ export 'package:tokenshell_riverpod/core/routing/shell_feature.dart'
 /// its own `*_routes.dart` (importing `shell_feature.dart`, not this
 /// file), import it here, and add it to this list. That's the only edit
 /// needed.
-List<ShellFeature> get shellFeatures => [
+///
+/// ## Why this is a cached `final`, not a `get` (perf, 3 Jul 2026 audit)
+///
+/// This used to be `List<ShellFeature> get shellFeatures => [...]` — a
+/// getter that re-evaluated `homeShellFeature`, `settingsShellFeature`,
+/// and `postsShellFeature` on every read. Each of *those* is itself a
+/// getter that builds a new [ShellFeature] and calls its feature's
+/// `*ShellRoutes` getter, which allocates a fresh `List<RouteBase>`
+/// containing brand-new `GoRoute`s (with new `pageBuilder` closures)
+/// every time. `shared/shell/app_shell.dart` reads the destinations
+/// derived from this list at least twice per build (once for the
+/// selected-tab index, once to lay out the nav bar/rail), and `AppShell`
+/// rebuilds on every navigation event — so every tab switch was
+/// reconstructing this app's entire routing object graph twice over,
+/// purely to read three icon/label pairs.
+///
+/// Dart top-level `final`s initialize lazily, once, on first access — so
+/// making this a `final` instead of a `get` means `homeShellFeature` /
+/// `settingsShellFeature` / `postsShellFeature` (and therefore every
+/// feature's `*ShellRoutes`) now run exactly once for the lifetime of the
+/// isolate, no matter how many times `shellFeatures` is read afterwards.
+/// `app_router.dart`'s one-time `GoRouter` construction and
+/// `nav_destinations.dart`'s `appNavDestinations` both now share that
+/// single cached list instead of each triggering their own rebuild.
+final List<ShellFeature> shellFeatures = List.unmodifiable([
   homeShellFeature,
   settingsShellFeature,
   postsShellFeature,
-];
+]);

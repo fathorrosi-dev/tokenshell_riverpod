@@ -19,9 +19,7 @@ List<RouteBase> get homeShellRoutes => [
   GoRoute(
     path: AppPath.home,
     name: AppRoute.home.name,
-    pageBuilder: (context, state) => const NoTransitionPage(
-      child: HomePage(),
-    ),
+    pageBuilder: (context, state) => const NoTransitionPage(child: HomePage()),
   ),
 ];
 

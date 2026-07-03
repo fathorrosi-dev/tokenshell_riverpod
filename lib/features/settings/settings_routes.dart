@@ -17,9 +17,8 @@ List<RouteBase> get settingsShellRoutes => [
   GoRoute(
     path: AppPath.settings,
     name: AppRoute.settings.name,
-    pageBuilder: (context, state) => const NoTransitionPage(
-      child: SettingsPage(),
-    ),
+    pageBuilder: (context, state) =>
+        const NoTransitionPage(child: SettingsPage()),
   ),
 ];
 

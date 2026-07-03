@@ -17,9 +17,7 @@ List<RouteBase> get postsShellRoutes => [
   GoRoute(
     path: AppPath.posts,
     name: AppRoute.posts.name,
-    pageBuilder: (context, state) => const NoTransitionPage(
-      child: PostsPage(),
-    ),
+    pageBuilder: (context, state) => const NoTransitionPage(child: PostsPage()),
   ),
 ];
 

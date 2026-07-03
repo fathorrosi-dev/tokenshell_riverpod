@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
+import 'package:tokenshell_riverpod/core/logging/talker_provider.dart';
 import 'package:tokenshell_riverpod/core/routing/feature_registry.dart';
 import 'package:tokenshell_riverpod/core/routing/routes.dart';
 import 'package:tokenshell_riverpod/core/utils/extensions.dart';
@@ -46,6 +47,15 @@ GoRouter appRouter(Ref ref) {
     debugLogDiagnostics: kDebugMode,
 
     // ── Auth redirect placeholder ────────────────────────────────────────────
+    // R-13 (2 Jul 2026, production readiness audit — core/routing): tracked
+    // as a REQUIRED companion task for whenever the login feature is built —
+    // not something to implement speculatively now, consistent with
+    // `AuthInterceptor`'s own reasoning for staying a no-op until then (see
+    // `core/network/interceptors/auth_interceptor.dart`). `FailureMapper`
+    // already classifies 401/403 as `AuthFailure` (see failure_mapper.dart),
+    // but nothing here consumes that signal yet — closing that loop is part
+    // of this task, alongside the `refreshListenable` wiring noted below.
+    //
     // Replace the null return below with your auth redirect logic.
     // Example:
     //   final isAuthenticated = ref.read(authStateProvider).isAuthenticated;
@@ -71,7 +81,23 @@ GoRouter appRouter(Ref ref) {
 
     // Default go_router error page is unbranded and not user-friendly —
     // this keeps an unmatched/broken deep link inside the app's own look.
-    errorBuilder: (context, state) => _NotFoundPage(uri: state.uri),
+    //
+    // R-12 (2 Jul 2026): also reports the failed uri through `talker`, so a
+    // broken deep link becomes a visible Sentry event instead of something
+    // only discoverable if a user happens to report it manually. Every
+    // `talker.handle()` call is auto-forwarded to Sentry by
+    // `_SentryForwardingObserver` (see `talker_provider.dart`) — no direct
+    // Sentry call needed here, same pattern `FailureMapper` already uses.
+    errorBuilder: (context, state) {
+      ref
+          .read(talkerProvider)
+          .handle(
+            state.error ?? Exception('No route matched for ${state.uri}'),
+            StackTrace.current,
+            'GoRouter — unmatched route: ${state.uri}',
+          );
+      return _NotFoundPage(uri: state.uri);
+    },
 
     routes: [
       // ── Shell route — wraps all main app destinations ────────────────────
