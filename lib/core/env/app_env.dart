@@ -38,7 +38,17 @@ abstract final class AppEnv {
   /// Optional API key sent as the `X-Api-Key` header (see `dio_client.dart`
   /// — deliberately not `Authorization`, which is reserved for the
   /// per-user token from `AuthInterceptor`).
-  /// Obfuscated so the raw value is not stored as a plain string in the binary.
+  ///
+  /// Obfuscated so the raw value is not stored as a plain string in the
+  /// binary. IMPORTANT: `envied`'s `obfuscate: true` XORs the value against
+  /// a randomly generated key at build time and embeds *both* the
+  /// ciphertext and the key in the compiled binary — this deters casual
+  /// `strings`-on-the-APK inspection, it is not encryption. A determined
+  /// attacker with a decompiler can still recover this value. Treat it as
+  /// obfuscation-grade protection only; if a genuinely high-value secret is
+  /// ever added via this same mechanism, it needs a stronger story (e.g.
+  /// fetched from a backend after authentication, not shipped in the
+  /// client binary at all).
   @EnviedField(varName: 'API_KEY', defaultValue: '', obfuscate: true)
   static final String apiKey = _AppEnv.apiKey;
 
@@ -55,6 +65,12 @@ abstract final class AppEnv {
   /// Empty default so a developer who hasn't set up a Sentry project yet
   /// (or is running a local `flutter run`) doesn't get a build failure —
   /// `sentry_bootstrap.dart` treats an empty DSN as "Sentry disabled."
-  @EnviedField(varName: 'SENTRY_DSN', defaultValue: '', obfuscate: true)
+  ///
+  /// R17: previously had `obfuscate: true` here, directly contradicting
+  /// this doc comment's own stated rationale for *not* obfuscating it —
+  /// harmless (obfuscation is a no-op from a correctness standpoint) but a
+  /// documentation/code drift that made the rationale above misleading.
+  /// Removed to match what was actually documented and intended.
+  @EnviedField(varName: 'SENTRY_DSN', defaultValue: '')
   static String sentryDsn = _AppEnv.sentryDsn;
 }

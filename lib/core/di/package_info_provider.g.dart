@@ -32,6 +32,18 @@ part of 'package_info_provider.dart';
 /// provider for the app version label and hardcode the SDK version in a
 /// separate constant updated at upgrade time — there is no public runtime
 /// API to read the Flutter SDK version in a production build.
+///
+/// ## Error observability (R17)
+///
+/// `SettingsPage` reads this via `packageInfoAsync.asData?.value.version ??
+/// AppStrings.settingsAboutVersionFallback` — a safe UI fallback for the
+/// `AsyncError` case, but on its own that silently swallows the failure:
+/// nothing was ever logged, so a real platform-channel failure here was
+/// invisible in Sentry/Talker. The try/catch below logs it — mirroring the
+/// same `talker.handle()` pattern `app.dart` already uses for its
+/// light/dark `ThemeData` fallback — before rethrowing, so `AsyncError` and
+/// the existing UI fallback behavior are unchanged; only the observability
+/// gap is closed.
 
 @ProviderFor(packageInfo)
 final packageInfoProvider = PackageInfoProvider._();
@@ -60,6 +72,18 @@ final packageInfoProvider = PackageInfoProvider._();
 /// provider for the app version label and hardcode the SDK version in a
 /// separate constant updated at upgrade time — there is no public runtime
 /// API to read the Flutter SDK version in a production build.
+///
+/// ## Error observability (R17)
+///
+/// `SettingsPage` reads this via `packageInfoAsync.asData?.value.version ??
+/// AppStrings.settingsAboutVersionFallback` — a safe UI fallback for the
+/// `AsyncError` case, but on its own that silently swallows the failure:
+/// nothing was ever logged, so a real platform-channel failure here was
+/// invisible in Sentry/Talker. The try/catch below logs it — mirroring the
+/// same `talker.handle()` pattern `app.dart` already uses for its
+/// light/dark `ThemeData` fallback — before rethrowing, so `AsyncError` and
+/// the existing UI fallback behavior are unchanged; only the observability
+/// gap is closed.
 
 final class PackageInfoProvider
     extends
@@ -93,6 +117,18 @@ final class PackageInfoProvider
   /// provider for the app version label and hardcode the SDK version in a
   /// separate constant updated at upgrade time — there is no public runtime
   /// API to read the Flutter SDK version in a production build.
+  ///
+  /// ## Error observability (R17)
+  ///
+  /// `SettingsPage` reads this via `packageInfoAsync.asData?.value.version ??
+  /// AppStrings.settingsAboutVersionFallback` — a safe UI fallback for the
+  /// `AsyncError` case, but on its own that silently swallows the failure:
+  /// nothing was ever logged, so a real platform-channel failure here was
+  /// invisible in Sentry/Talker. The try/catch below logs it — mirroring the
+  /// same `talker.handle()` pattern `app.dart` already uses for its
+  /// light/dark `ThemeData` fallback — before rethrowing, so `AsyncError` and
+  /// the existing UI fallback behavior are unchanged; only the observability
+  /// gap is closed.
   PackageInfoProvider._()
     : super(
         from: null,
@@ -119,4 +155,4 @@ final class PackageInfoProvider
   }
 }
 
-String _$packageInfoHash() => r'41f10b7668cfc9d09df704d18b851ed9440397d6';
+String _$packageInfoHash() => r'a25db51ac2378bec57dca904714bf56c58337b90';
