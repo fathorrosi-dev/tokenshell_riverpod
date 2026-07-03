@@ -40,10 +40,8 @@ sealed class Failure with _$Failure implements Exception {
   /// Server-side failure that isn't an auth or validation problem — other
   /// 4xx/5xx status codes, or a response that could not be parsed into the
   /// expected model.
-  const factory Failure.server({
-    required String message,
-    int? statusCode,
-  }) = ServerFailure;
+  const factory Failure.server({required String message, int? statusCode}) =
+      ServerFailure;
 
   /// Expired session or insufficient permission (401 / 403). Kept separate
   /// from [ServerFailure] because the UI response is fundamentally
