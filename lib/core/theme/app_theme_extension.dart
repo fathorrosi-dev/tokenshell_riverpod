@@ -39,11 +39,7 @@ abstract class AppStatusColors with _$AppStatusColors {
   /// Linearly interpolates between [a] and [b] at fraction [t].
   /// Delegated to from [AppThemeColors.lerp] — keeps the parent lerp
   /// to a single line for the entire status group.
-  factory AppStatusColors.lerp(
-    AppStatusColors a,
-    AppStatusColors b,
-    double t,
-  ) {
+  factory AppStatusColors.lerp(AppStatusColors a, AppStatusColors b, double t) {
     return AppStatusColors(
       success: Color.lerp(a.success, b.success, t)!,
       successForeground: Color.lerp(
@@ -125,11 +121,7 @@ abstract class AppThemeColors with _$AppThemeColors {
   /// MAINTENANCE NOTE: when you add a new core token field above, add the
   /// corresponding [Color.lerp] line here. Status tokens are handled by
   /// [AppStatusColors.lerp] — no changes needed here for status additions.
-  factory AppThemeColors.lerp(
-    AppThemeColors a,
-    AppThemeColors b,
-    double t,
-  ) {
+  factory AppThemeColors.lerp(AppThemeColors a, AppThemeColors b, double t) {
     return AppThemeColors(
       background: Color.lerp(a.background, b.background, t)!,
       foreground: Color.lerp(a.foreground, b.foreground, t)!,
@@ -156,11 +148,7 @@ abstract class AppThemeColors with _$AppThemeColors {
       muted: Color.lerp(a.muted, b.muted, t)!,
       mutedForeground: Color.lerp(a.mutedForeground, b.mutedForeground, t)!,
       accent: Color.lerp(a.accent, b.accent, t)!,
-      accentForeground: Color.lerp(
-        a.accentForeground,
-        b.accentForeground,
-        t,
-      )!,
+      accentForeground: Color.lerp(a.accentForeground, b.accentForeground, t)!,
       destructive: Color.lerp(a.destructive, b.destructive, t)!,
       destructiveForeground: Color.lerp(
         a.destructiveForeground,
@@ -205,10 +193,7 @@ final class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   }
 
   @override
-  AppThemeExtension lerp(
-    ThemeExtension<AppThemeExtension>? other,
-    double t,
-  ) {
+  AppThemeExtension lerp(ThemeExtension<AppThemeExtension>? other, double t) {
     if (other is! AppThemeExtension) return this;
     return AppThemeExtension(
       colors: AppThemeColors.lerp(colors, other.colors, t),

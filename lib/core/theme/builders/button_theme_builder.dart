@@ -16,6 +16,17 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 /// Pure functions — given the same [colors]/[textTheme] they always
 /// return the same `ThemeData` sub-object, exactly like [AppTheme] itself.
 abstract final class ButtonThemeBuilder {
+  /// Minimum tap target for every themed button family below.
+  ///
+  /// Height was previously 40 — below both Android's Material 48dp and iOS
+  /// HIG's 44pt minimum touch-target guidance. Bumped to 48 as part of the
+  /// 01 Jul 2026 production-readiness audit: this app already invests in
+  /// keyboard-focus and reduce-motion accessibility (see the `focused`
+  /// state handling throughout this file), so touch-target size was the
+  /// one accessibility dimension still below standard. Width (64) is
+  /// unaffected — only height mattered for the touch-target guideline.
+  static const Size _minimumButtonSize = Size(64, 48);
+
   /// Elevated button — shadcn/ui "default" / primary variant.
   static ElevatedButtonThemeData elevatedButton(
     AppThemeColors colors,
@@ -78,7 +89,7 @@ abstract final class ButtonThemeBuilder {
             fontWeight: TypographyTokens.weightMedium,
           ),
         ),
-        minimumSize: const WidgetStatePropertyAll(Size(64, 40)),
+        minimumSize: const WidgetStatePropertyAll(_minimumButtonSize),
       ),
     );
   }
@@ -114,14 +125,9 @@ abstract final class ButtonThemeBuilder {
             );
           }
           if (states.contains(WidgetState.focused)) {
-            return BorderSide(
-              color: colors.ring,
-              width: BorderWidthTokens.lg,
-            );
+            return BorderSide(color: colors.ring, width: BorderWidthTokens.lg);
           }
-          return BorderSide(
-            color: colors.border,
-          );
+          return BorderSide(color: colors.border);
         }),
         elevation: const WidgetStatePropertyAll(0),
         shadowColor: const WidgetStatePropertyAll(Colors.transparent),
@@ -141,7 +147,7 @@ abstract final class ButtonThemeBuilder {
             fontWeight: TypographyTokens.weightMedium,
           ),
         ),
-        minimumSize: const WidgetStatePropertyAll(Size(64, 40)),
+        minimumSize: const WidgetStatePropertyAll(_minimumButtonSize),
       ),
     );
   }
@@ -196,7 +202,7 @@ abstract final class ButtonThemeBuilder {
             fontWeight: TypographyTokens.weightMedium,
           ),
         ),
-        minimumSize: const WidgetStatePropertyAll(Size(64, 40)),
+        minimumSize: const WidgetStatePropertyAll(_minimumButtonSize),
       ),
     );
   }
@@ -232,6 +238,14 @@ abstract final class ButtonThemeBuilder {
           return colors.foreground;
         }),
         overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        // Explicit 48dp minimum, matching [elevatedButton] / [outlinedButton]
+        // / [textButton] above. Added during the same audit that raised
+        // those three from 40 → 48 — this one was the gap left behind: it
+        // never had an explicit minimumSize at all, relying on
+        // SegmentedButton's Material 3 default sizing instead of this
+        // builder's own touch-target guarantee. Used live in
+        // `SettingsPage` for the light/dark/system theme-mode toggle.
+        minimumSize: const WidgetStatePropertyAll(_minimumButtonSize),
         side: WidgetStateProperty.resolveWith((states) {
           // Was `BorderSide(color: colors.border)` returned unconditionally
           // — `states` was read but never branched on, so every segment
@@ -239,10 +253,7 @@ abstract final class ButtonThemeBuilder {
           // mirrors [outlinedButton]'s ring treatment so a focused segment
           // is actually distinguishable from its neighbours.
           if (states.contains(WidgetState.focused)) {
-            return BorderSide(
-              color: colors.ring,
-              width: BorderWidthTokens.lg,
-            );
+            return BorderSide(color: colors.ring, width: BorderWidthTokens.lg);
           }
           return BorderSide(color: colors.border);
         }),

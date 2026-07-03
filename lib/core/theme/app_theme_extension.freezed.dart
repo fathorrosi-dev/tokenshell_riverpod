@@ -292,9 +292,7 @@ as Color,
 /// @nodoc
 mixin _$AppThemeColors {
 
-// ── Core semantic tokens ─────────────────────────────────────────────────
- Color get background; Color get foreground; Color get card; Color get cardForeground; Color get popover; Color get popoverForeground; Color get primary; Color get primaryForeground; Color get secondary; Color get secondaryForeground; Color get muted; Color get mutedForeground; Color get accent; Color get accentForeground; Color get destructive; Color get destructiveForeground; Color get border; Color get input; Color get ring;// ── Status tokens (grouped) ───────────────────────────────────────────────
- AppStatusColors get status;
+ Color get background; Color get foreground; Color get card; Color get cardForeground; Color get popover; Color get popoverForeground; Color get primary; Color get primaryForeground; Color get secondary; Color get secondaryForeground; Color get muted; Color get mutedForeground; Color get accent; Color get accentForeground; Color get destructive; Color get destructiveForeground; Color get border; Color get input; Color get ring; AppStatusColors get status;
 /// Create a copy of AppThemeColors
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -517,7 +515,6 @@ class _AppThemeColors implements AppThemeColors {
   const _AppThemeColors({required this.background, required this.foreground, required this.card, required this.cardForeground, required this.popover, required this.popoverForeground, required this.primary, required this.primaryForeground, required this.secondary, required this.secondaryForeground, required this.muted, required this.mutedForeground, required this.accent, required this.accentForeground, required this.destructive, required this.destructiveForeground, required this.border, required this.input, required this.ring, required this.status});
   
 
-// ── Core semantic tokens ─────────────────────────────────────────────────
 @override final  Color background;
 @override final  Color foreground;
 @override final  Color card;
@@ -537,7 +534,6 @@ class _AppThemeColors implements AppThemeColors {
 @override final  Color border;
 @override final  Color input;
 @override final  Color ring;
-// ── Status tokens (grouped) ───────────────────────────────────────────────
 @override final  AppStatusColors status;
 
 /// Create a copy of AppThemeColors

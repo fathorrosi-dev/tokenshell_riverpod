@@ -38,12 +38,13 @@ enum AppDurations {
   _reduced._(reduceMotion: true);
 
   // Private constructor — all callers must go through [forReduceMotion].
-  const AppDurations._({required bool reduceMotion}) : _reduceMotion = reduceMotion;
+  const AppDurations._({required this._reduceMotion});
 
   /// Returns the cached [AppDurations] instance for the given [reduceMotion]
   /// flag. Only two instances ever exist, allocated once and reused for the
   /// lifetime of the app — same pattern as [AppSpacing.forSizeClass].
-  static AppDurations forReduceMotion({required bool reduceMotion}) => reduceMotion ? _reduced : _normal;
+  static AppDurations forReduceMotion({required bool reduceMotion}) =>
+      reduceMotion ? _reduced : _normal;
 
   final bool _reduceMotion;
 

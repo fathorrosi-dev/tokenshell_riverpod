@@ -85,17 +85,11 @@ abstract final class FeedbackThemeBuilder {
       side: WidgetStateBorderSide.resolveWith((states) {
         // selected → primary (solid fill matches the border — clear checked state).
         if (states.contains(WidgetState.selected)) {
-          return BorderSide(
-            color: colors.primary,
-            width: BorderWidthTokens.md,
-          );
+          return BorderSide(color: colors.primary, width: BorderWidthTokens.md);
         }
         // disabled → muted (recedes, signals non-interactable).
         if (states.contains(WidgetState.disabled)) {
-          return BorderSide(
-            color: colors.muted,
-            width: BorderWidthTokens.md,
-          );
+          return BorderSide(color: colors.muted, width: BorderWidthTokens.md);
         }
         // focused → ring color at 2 px width. Mirrors the focused input border
         // treatment (focusedBorder uses ring + BorderWidthTokens.lg) so keyboard
@@ -104,18 +98,12 @@ abstract final class FeedbackThemeBuilder {
         // visual signal a keyboard/tab user gets when this checkbox is focused —
         // without it, the control would show zero focus indicator.
         if (states.contains(WidgetState.focused)) {
-          return BorderSide(
-            color: colors.ring,
-            width: BorderWidthTokens.lg,
-          );
+          return BorderSide(color: colors.ring, width: BorderWidthTokens.lg);
         }
         // hovered → primary border at normal width. More prominent than input
         // color at rest, signalling the control is about to be clicked.
         if (states.contains(WidgetState.hovered)) {
-          return BorderSide(
-            color: colors.primary,
-            width: BorderWidthTokens.md,
-          );
+          return BorderSide(color: colors.primary, width: BorderWidthTokens.md);
         }
         // unselected (default) → input token (zinc-200 light / gray-700 dark).
         // Using the input border color (same as TextField) makes unchecked
@@ -123,10 +111,7 @@ abstract final class FeedbackThemeBuilder {
         // weight so they don't compete for attention in a list of fields.
         // The previous value (colors.primary, near-black) made every unchecked
         // checkbox as visually heavy as a selected one.
-        return BorderSide(
-          color: colors.input,
-          width: BorderWidthTokens.md,
-        );
+        return BorderSide(color: colors.input, width: BorderWidthTokens.md);
       }),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(RadiusTokens.sm),

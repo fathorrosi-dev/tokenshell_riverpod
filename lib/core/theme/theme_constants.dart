@@ -82,10 +82,7 @@ abstract final class ThemeConstants {
   /// as structural scaffolding only. Widgets that haven't been explicitly themed
   /// in [AppTheme] will fall back to these role mappings — audit those widgets
   /// if they look inconsistent with the shadcn feel.
-  static ColorScheme colorSchemeFrom(
-    AppThemeColors c,
-    Brightness brightness,
-  ) {
+  static ColorScheme colorSchemeFrom(AppThemeColors c, Brightness brightness) {
     return ColorScheme(
       brightness: brightness,
 
@@ -125,7 +122,9 @@ abstract final class ThemeConstants {
       // that rely on container/base distinction have a visually distinct surface.
       tertiary: c.accent,
       onTertiary: c.accentForeground,
-      tertiaryContainer: c.accent.withValues(alpha: 0.15),
+      tertiaryContainer: c.accent.withValues(
+        alpha: OpacityTokens.containerTint,
+      ),
       onTertiaryContainer: c.accentForeground,
       tertiaryFixed: ColorTokens.lightAccent,
       tertiaryFixedDim: ColorTokens.lightAccent,
@@ -139,7 +138,17 @@ abstract final class ThemeConstants {
       errorContainer: c.destructive.withValues(
         alpha: OpacityTokens.errorContainer,
       ),
-      onErrorContainer: c.destructive,
+      // Split by brightness: `destructive` itself reads at 4.76:1 on the
+      // dark-mode errorContainer tint (passes AA, kept as-is), but only
+      // 3.1:1 on the light-mode tint (fails AA) — a gap found during the
+      // 01 Jul 2026 production-readiness audit, alongside the
+      // destructive/status-foreground fixes above. Light mode uses a
+      // dedicated dark-red token instead; see
+      // [ColorTokens.lightErrorContainerForeground] for the full contrast
+      // math and rationale.
+      onErrorContainer: brightness == Brightness.light
+          ? ColorTokens.lightErrorContainerForeground
+          : c.destructive,
 
       // Surface hierarchy — shadcn/ui has three meaningful surface tiers:
       // background, card, and muted. The M3 spec defines five container tiers
@@ -195,7 +204,7 @@ abstract final class ThemeConstants {
       // outline      → component borders (full-weight).
       // outlineVariant → decorative dividers / lighter separators (half-opacity).
       outline: c.border,
-      outlineVariant: c.border.withValues(alpha: 0.5),
+      outlineVariant: c.border.withValues(alpha: OpacityTokens.outlineVariant),
 
       // Scrim / shadow — always opaque black
       shadow: const Color(0xFF000000),

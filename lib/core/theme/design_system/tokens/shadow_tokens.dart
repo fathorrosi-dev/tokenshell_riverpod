@@ -1,4 +1,4 @@
-import 'package:flutter/painting.dart';
+import 'package:flutter/material.dart';
 
 /// Box-shadow tokens inspired by shadcn/ui's subtle elevation system.
 ///
@@ -89,4 +89,34 @@ abstract final class ShadowTokens {
       offset: Offset(0, 25),
     ),
   ];
+
+  /// Resolves [shadow] for the given [brightness].
+  ///
+  /// Every tier above is calibrated as semi-transparent black, tuned for
+  /// legibility against light surfaces. In dark mode that same black is
+  /// barely distinguishable from typical dark-mode surface colors (e.g.
+  /// `darkPopover`/`darkCard` #111827 sitting on `darkBackground`
+  /// #030712) — a production-readiness audit (01 Jul 2026) found the
+  /// elevation cue effectively disappears for every dark-mode session.
+  /// Rather than hand-tune a second, parallel dark-mode shadow palette
+  /// (twice the tokens to keep in sync), this boosts each tier's alpha
+  /// for [Brightness.dark] so the same shape/blur/offset stays visually
+  /// perceptible against dark surfaces. [Brightness.light] returns
+  /// [shadow] unchanged — zero behavior change for the common case.
+  static List<BoxShadow> resolve(
+    Brightness brightness,
+    List<BoxShadow> shadow,
+  ) {
+    if (brightness == Brightness.light || shadow.isEmpty) return shadow;
+    return [
+      for (final s in shadow)
+        BoxShadow(
+          color: s.color.withValues(alpha: (s.color.a * 2.2).clamp(0.0, 1.0)),
+          blurRadius: s.blurRadius,
+          spreadRadius: s.spreadRadius,
+          offset: s.offset,
+          blurStyle: s.blurStyle,
+        ),
+    ];
+  }
 }

@@ -59,19 +59,13 @@ abstract final class InputThemeBuilder {
         horizontal: SpacingTokens.xl,
         vertical: SpacingTokens.lg,
       ),
-      hintStyle: textTheme.bodyMedium?.copyWith(
-        color: colors.mutedForeground,
-      ),
-      labelStyle: textTheme.bodyMedium?.copyWith(
-        color: colors.mutedForeground,
-      ),
+      hintStyle: textTheme.bodyMedium?.copyWith(color: colors.mutedForeground),
+      labelStyle: textTheme.bodyMedium?.copyWith(color: colors.mutedForeground),
       floatingLabelStyle: textTheme.bodySmall?.copyWith(
         color: colors.foreground,
         fontWeight: TypographyTokens.weightMedium,
       ),
-      errorStyle: textTheme.bodySmall?.copyWith(
-        color: colors.destructive,
-      ),
+      errorStyle: textTheme.bodySmall?.copyWith(color: colors.destructive),
       border: _outlineBorder(colors.input),
       enabledBorder: _outlineBorder(colors.input),
       focusedBorder: _focusedBorder(colors.ring),

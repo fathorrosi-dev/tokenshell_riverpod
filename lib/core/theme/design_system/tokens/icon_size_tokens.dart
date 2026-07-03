@@ -25,4 +25,12 @@ abstract final class IconSizeTokens {
 
   /// 32 px — extra-large / illustrative icons.
   static const double x3l = 32;
+
+  /// 48 px — full-bleed empty/error state icons (see [AppStateView]).
+  ///
+  /// Added during the 01 Jul 2026 production-readiness audit: this exact
+  /// size was already in use as a raw `48` literal in `app_state_view.dart`
+  /// — added here (rather than resizing to the nearest existing step) to
+  /// close the token-discipline gap without an uncommunicated visual change.
+  static const double x4l = 48;
 }

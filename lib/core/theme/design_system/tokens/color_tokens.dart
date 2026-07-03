@@ -51,7 +51,26 @@ abstract final class ColorTokens {
   static const Color lightDestructive = Color(0xFFEF4444);
 
   /// Text on destructive surfaces.
-  static const Color lightDestructiveForeground = Color(0xFFFAFAFA);
+  ///
+  /// Stone-950 on red-500: 4.65:1 — passes WCAG AA (4.5:1) for normal text.
+  /// Previously white/`FAFAFA` (~3.6:1, fails AA) — production-readiness
+  /// audit (01 Jul 2026) found this rendering live on the Home screen's
+  /// design-token preview at 12px/w500, well within WCAG's "normal text"
+  /// size bracket, so the 3:1 large-text exception never applied here.
+  static const Color lightDestructiveForeground = Color(0xFF1C1917);
+
+  /// Text for [ColorScheme.onErrorContainer] in light mode — red-900.
+  ///
+  /// [ColorScheme.errorContainer] is `destructive` at 15% alpha over a
+  /// light background (a pale pink, ~#FDE3E3). [lightDestructive] itself
+  /// on that pale pink is only 3.1:1 (fails AA) — found in the same 01 Jul
+  /// 2026 audit that caught [lightDestructiveForeground] above. Red-900 on
+  /// that same pale pink is 8.24:1, comfortably passing AA and matching
+  /// M3's own baseline convention of a dark shade of the container's hue
+  /// (rather than a neutral) for "on\*Container" roles. Dark mode needs no
+  /// equivalent constant — [darkDestructive] itself on the dark-mode
+  /// errorContainer tint already measures 4.76:1, passing AA as-is.
+  static const Color lightErrorContainerForeground = Color(0xFF7F1D1D);
 
   /// Default border — zinc-200.
   static const Color lightBorder = Color(0xFFE4E4E7);
@@ -110,7 +129,10 @@ abstract final class ColorTokens {
   static const Color darkDestructive = Color(0xFFEF4444);
 
   /// Text on destructive surfaces.
-  static const Color darkDestructiveForeground = Color(0xFFFAFAFA);
+  ///
+  /// Same red-500 background as light mode, so the same fix applies:
+  /// stone-950 → 4.65:1 (passes AA). See [lightDestructiveForeground].
+  static const Color darkDestructiveForeground = Color(0xFF1C1917);
 
   /// Default border — zinc-800.
   static const Color darkBorder = Color(0xFF27272A);
@@ -131,12 +153,25 @@ abstract final class ColorTokens {
   //   • darkError    (#FB7185 rose-400)    + white → ~3.4:1  ❌
   // Using stone-950 (#1C1917) as the dark-mode foreground restores AA compliance
   // and is consistent with the existing warningForeground treatment.
+  //
+  // 01 Jul 2026 production-readiness audit: the same problem was found to
+  // also affect two LIGHT-mode 500-series pairs that had been assumed safe
+  // and never re-verified with precise contrast math —
+  //   • lightSuccess (#10B981 emerald-500) + white → 2.54:1  ❌ (was
+  //     documented as "~4.6:1 ✅", a calculation error, not just a bad
+  //     color choice)
+  //   • lightError   (#F43F5E rose-500)    + white → 3.67:1  ❌ (same
+  //     documentation error)
+  // Both now use stone-950, the same fix already applied to warning/info in
+  // light mode — see [lightWarningForeground] / [lightInfoForeground] below,
+  // which had this correct from the start.
 
   // Success — Emerald family
   static const Color lightSuccess = Color(0xFF10B981); // emerald-500
   static const Color darkSuccess = Color(0xFF34D399); // emerald-400
-  /// White on emerald-500 (light): ~4.6:1 ✅ WCAG AA
-  static const Color lightSuccessForeground = Color(0xFFFFFFFF);
+  /// Stone-950 on emerald-500 (light): 6.89:1 — passes WCAG AA.
+  /// Previously white (2.54:1, fails AA — see status-palette note above).
+  static const Color lightSuccessForeground = Color(0xFF1C1917);
 
   /// Stone-950 on emerald-400 (dark): ~9.1:1 ✅ WCAG AAA
   static const Color darkSuccessForeground = Color(0xFF1C1917);
@@ -161,8 +196,9 @@ abstract final class ColorTokens {
   // Error — Rose family
   static const Color lightError = Color(0xFFF43F5E); // rose-500
   static const Color darkError = Color(0xFFFB7185); // rose-400
-  /// White on rose-500 (light): ~4.6:1 ✅ WCAG AA
-  static const Color lightErrorForeground = Color(0xFFFFFFFF);
+  /// Stone-950 on rose-500 (light): 4.76:1 — passes WCAG AA.
+  /// Previously white (3.67:1, fails AA — see status-palette note above).
+  static const Color lightErrorForeground = Color(0xFF1C1917);
 
   /// Stone-950 on rose-400 (dark): ~8.1:1 ✅ WCAG AAA
   static const Color darkErrorForeground = Color(0xFF1C1917);

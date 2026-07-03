@@ -2,7 +2,7 @@
 ///
 /// Import this file anywhere in the project to access all design tokens:
 /// ```dart
-/// import 'package:tokenshell_riverpod/core/design_system/design_system.dart';
+/// import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 /// ```
 library;
 

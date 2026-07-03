@@ -59,10 +59,14 @@ class App extends ConsumerWidget {
             'Material defaults with AppThemeExtension registered',
           );
       lightTheme = ThemeData.light(useMaterial3: true).copyWith(
-        extensions: [const AppThemeExtension(colors: ThemeConstants.lightColors)],
+        extensions: [
+          const AppThemeExtension(colors: ThemeConstants.lightColors),
+        ],
       );
       darkTheme = ThemeData.dark(useMaterial3: true).copyWith(
-        extensions: [const AppThemeExtension(colors: ThemeConstants.darkColors)],
+        extensions: [
+          const AppThemeExtension(colors: ThemeConstants.darkColors),
+        ],
       );
     }
 
@@ -97,9 +101,29 @@ class App extends ConsumerWidget {
       // medium  (600-839 px): factor 1.1 — handled by lightThemeMediumProvider.
       // expanded (≥ 840 px): factor 1.2 — handled by lightThemeExpandedProvider.
       builder: (context, child) {
+        // Clamp the OS-level text scale factor so it can never stack
+        // *unboundedly* with the breakpoint-driven font scale below
+        // (fontSizeFactor 1.1/1.2 on medium/expanded — see
+        // _ScaledThemeOverlay). Without this, a low-vision user with a
+        // large OS text-scale setting on a tablet/desktop would receive
+        // both multipliers at once, multiplicatively — risking clipped
+        // or overflowing labels inside fixed-size UI (button
+        // minimumSize, chips, badges). Clamping to 1.6x — not disabling
+        // scaling entirely — keeps the accessibility feature working for
+        // the vast majority of real-world OS text-scale settings while
+        // bounding the worst case. Applied once, above the breakpoint
+        // check, so both the compact and scaled-overlay paths inherit it.
+        final mediaQuery = MediaQuery.of(context);
+        final clampedChild = MediaQuery(
+          data: mediaQuery.copyWith(
+            textScaler: mediaQuery.textScaler.clamp(maxScaleFactor: 1.6),
+          ),
+          child: child!,
+        );
+
         final sizeClass = ResponsiveHelper.of(context);
-        if (sizeClass == ScreenSizeClass.compact) return child!;
-        return _ScaledThemeOverlay(sizeClass: sizeClass, child: child!);
+        if (sizeClass == ScreenSizeClass.compact) return clampedChild;
+        return _ScaledThemeOverlay(sizeClass: sizeClass, child: clampedChild);
       },
     );
   }
@@ -128,10 +152,7 @@ class App extends ConsumerWidget {
 /// [Duration] so this transition is also zeroed under OS-level
 /// reduce-motion, same as every other animation in the app.
 class _ScaledThemeOverlay extends ConsumerWidget {
-  const _ScaledThemeOverlay({
-    required this.sizeClass,
-    required this.child,
-  });
+  const _ScaledThemeOverlay({required this.sizeClass, required this.child});
 
   final ScreenSizeClass sizeClass;
   final Widget child;
@@ -151,9 +172,6 @@ class _ScaledThemeOverlay extends ConsumerWidget {
           : ref.watch(lightThemeExpandedProvider);
     }
 
-    return AnimatedTheme(
-      data: scaled,
-      child: child,
-    );
+    return AnimatedTheme(data: scaled, child: child);
   }
 }

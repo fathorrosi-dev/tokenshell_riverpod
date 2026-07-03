@@ -121,19 +121,22 @@ abstract final class SurfaceThemeBuilder {
     );
   }
 
-  static TooltipThemeData tooltip(AppThemeColors colors, TextTheme textTheme) {
+  static TooltipThemeData tooltip(
+    AppThemeColors colors,
+    TextTheme textTheme,
+    Brightness brightness,
+  ) {
     return TooltipThemeData(
       decoration: BoxDecoration(
         color: colors.popover,
-        border: Border.all(
-          color: colors.border,
-        ),
+        border: Border.all(color: colors.border),
         borderRadius: BorderRadius.circular(RadiusTokens.sm),
-        boxShadow: ShadowTokens.sm,
+        // Brightness-resolved so the shadow stays perceptible in dark
+        // mode instead of blending into a near-black surface — see
+        // [ShadowTokens.resolve] for the full rationale.
+        boxShadow: ShadowTokens.resolve(brightness, ShadowTokens.sm),
       ),
-      textStyle: textTheme.bodySmall?.copyWith(
-        color: colors.popoverForeground,
-      ),
+      textStyle: textTheme.bodySmall?.copyWith(color: colors.popoverForeground),
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.lg,
         vertical: SpacingTokens.sm,

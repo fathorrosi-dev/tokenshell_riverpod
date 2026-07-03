@@ -95,7 +95,7 @@ abstract final class AppTheme {
       listTileTheme: SurfaceThemeBuilder.listTile(colors, textTheme),
       popupMenuTheme: SurfaceThemeBuilder.popupMenu(colors, textTheme),
       bottomSheetTheme: SurfaceThemeBuilder.bottomSheet(colors),
-      tooltipTheme: SurfaceThemeBuilder.tooltip(colors, textTheme),
+      tooltipTheme: SurfaceThemeBuilder.tooltip(colors, textTheme, brightness),
 
       // ── Form inputs ───────────────────────────────────────────────────────────
       inputDecorationTheme: InputThemeBuilder.inputDecoration(

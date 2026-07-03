@@ -68,9 +68,7 @@ abstract final class NavigationThemeBuilder {
             fontWeight: TypographyTokens.weightSemiBold,
           );
         }
-        return textTheme.labelSmall?.copyWith(
-          color: colors.mutedForeground,
-        );
+        return textTheme.labelSmall?.copyWith(color: colors.mutedForeground);
       }),
       labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
     );

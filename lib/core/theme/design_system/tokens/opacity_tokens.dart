@@ -50,4 +50,31 @@ abstract final class OpacityTokens {
 
   /// 0.15 — [ColorScheme.errorContainer] fill (semi-transparent destructive color).
   static const double errorContainer = 0.15;
+
+  /// 0.15 — generic semi-transparent "container" fill for M3 roles that tint
+  /// a base color rather than defining a dedicated solid one (e.g.
+  /// [ColorScheme.tertiaryContainer]).
+  ///
+  /// Same numeric value as [errorContainer] — both express the same M3
+  /// "*Container" role convention (a light tint of the paired base color)
+  /// — kept as separate named constants so `error` and `tertiary` container
+  /// intensity can diverge later without an accidental cross-coupling,
+  /// same reasoning as [focusOverlay] vs [pressed] above. Previously
+  /// [ThemeConstants.tertiaryContainer] hardcoded this as a raw `0.15`
+  /// literal, the one gap in an otherwise fully token-driven file.
+  static const double containerTint = 0.15;
+
+  // ── Borders & dividers ───────────────────────────────────────────────────────
+
+  /// 0.5 — [ColorScheme.outlineVariant] fill (half-opacity border, for
+  /// decorative dividers / lighter separators, as opposed to full-weight
+  /// [ColorScheme.outline] component borders).
+  ///
+  /// Same numeric value as [disabledSurface] but intentionally a separate
+  /// constant — one expresses "this element is disabled," the other
+  /// expresses "this divider is meant to be visually lighter than a real
+  /// border," and conflating the two would make future adjustments to
+  /// either semantic accidentally affect the other. Previously
+  /// [ThemeConstants.outlineVariant] hardcoded this as a raw `0.5` literal.
+  static const double outlineVariant = 0.5;
 }
