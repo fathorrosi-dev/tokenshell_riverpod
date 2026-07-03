@@ -63,6 +63,25 @@ abstract final class AppTheme {
       brightness: brightness,
       colorScheme: colorScheme,
       textTheme: textTheme,
+      // Explicitly mirror [textTheme] instead of leaving this unset.
+      // When omitted, ThemeData falls back to `Typography(...).black` /
+      // `.white` — a GEOMETRY-LESS text theme (color + fontFamily only,
+      // every `fontSize` deliberately left `null` — see the framework's
+      // own `Typography.black` doc comment, it's meant to be merged into
+      // a real TextTheme, not read directly). `theme_data_provider.dart`'s
+      // `*Medium`/`*Expanded` providers call
+      // `.apply(fontSizeFactor: 1.1/1.2)` on `primaryTextTheme` for
+      // responsive font scaling, and `TextStyle.apply()` asserts
+      // `fontSize != null` whenever the factor isn't 1.0 — so the
+      // framework default crashes there. It only fires on screens wide
+      // enough to hit the medium/expanded breakpoint (>= 600px): real
+      // phones almost never are, wide web/desktop windows almost always
+      // are — which is why this was invisible on mobile and instant on
+      // web. Pointing this at the same fully-specified [textTheme] this
+      // design system already builds removes the null-fontSize footgun
+      // everywhere `primaryTextTheme` gets read, not just today's two
+      // call sites.
+      primaryTextTheme: textTheme,
 
       // Register the shadcn/ui extension — required for AppThemeExtension.of(ctx)
       extensions: [AppThemeExtension(colors: colors)],
