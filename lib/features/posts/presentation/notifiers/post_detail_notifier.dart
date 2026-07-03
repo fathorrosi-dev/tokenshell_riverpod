@@ -61,8 +61,5 @@ Future<Post> postDetail(Ref ref, int id) async {
   // Same Either → AsyncValue bridge as `PostsNotifier._fetchPosts` — see
   // that file for the full rationale. Kept identical on purpose so the
   // two error-handling paths in this feature don't diverge.
-  return result.fold(
-    (failure) => throw failure,
-    (post) => post,
-  );
+  return result.fold((failure) => throw failure, (post) => post);
 }

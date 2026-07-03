@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 // DI wiring has moved to the feature-level `di/` folder so Presentation
 // never imports Data-layer types directly.
 import 'package:tokenshell_riverpod/features/posts/di/posts_providers.dart';
+import 'package:tokenshell_riverpod/features/posts/domain/entities/post.dart';
 import 'package:tokenshell_riverpod/features/posts/presentation/notifiers/posts_list_state.dart';
 
 part 'posts_notifier.g.dart';
@@ -41,7 +42,9 @@ part 'posts_notifier.g.dart';
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
 /// screen re-focus via a GoRouter listener or AppLifecycleState observer
-/// once real quota data is in place.
+/// once real quota data is in place. For unbounded *growth* mitigation,
+/// see [_maxRetainedPages] — keepAlive alone only answers "when is this
+/// disposed," not "how large is it allowed to get while alive."
 @Riverpod(keepAlive: true)
 class PostsNotifier extends _$PostsNotifier {
   /// Posts per page. jsonplaceholder has exactly 100 posts; 20 keeps the
@@ -50,6 +53,45 @@ class PostsNotifier extends _$PostsNotifier {
   /// `_limit` query params in
   /// `features/posts/data/datasources/post_remote_source.dart`.
   static const int _pageSize = 20;
+
+  /// Maximum number of most-recently-loaded pages kept in
+  /// [PostsListState.posts] at once (R-18, 3 Jul 2026 — production
+  /// readiness audit, Pillar 1).
+  ///
+  /// [PostsNotifier] is `keepAlive` (R-06) specifically so pagination
+  /// state survives tab switches — but keepAlive only controls *when*
+  /// this notifier is disposed, not how large its state is allowed to
+  /// grow while alive. Before this constant existed, [loadMore] only
+  /// ever appended pages, with no upper bound: harmless for
+  /// jsonplaceholder's 100-post ceiling (~2000 [Post] objects
+  /// worst-case), but this notifier is written as the reference pattern
+  /// every future paginated feature in Baseline is expected to copy —
+  /// and a real backend rarely caps itself at 100 records. Without a
+  /// retention window, that copy-paste would silently inherit an
+  /// unbounded memory-growth footgun the day it's pointed at a real API.
+  ///
+  /// Deliberately set higher than this app's own 5-page maximum (100
+  /// posts ÷ 20 per page) rather than tuned to it: the point is a
+  /// general-purpose safety ceiling for whatever feature reuses this
+  /// pattern next, not a value that happens to make eviction fire in
+  /// *this* demo. jsonplaceholder's own list never actually reaches 10
+  /// retained pages, so this ships with zero visible behavior change to
+  /// Baseline's current Posts screen — the ceiling exists for the next
+  /// feature that copies this notifier against a larger dataset.
+  ///
+  /// ## UX tradeoff (read before changing this)
+  ///
+  /// Eviction means a user who scrolls back up past the retained window
+  /// no longer sees posts from pages that were evicted — the list
+  /// starts at whatever [PostsListState.oldestRetainedPage] currently
+  /// is, not page 1. That's a deliberate memory-vs-completeness
+  /// tradeoff, not a bug: most production infinite-scroll feeds already
+  /// behave this way once a session runs long enough. A feature that
+  /// genuinely needs full scroll-back history kept in memory (not just
+  /// re-fetchable from the network) should override this constant to a
+  /// value comfortably above its realistic max dataset size — not
+  /// remove the windowing mechanism itself.
+  static const int _maxRetainedPages = 10;
 
   @override
   Future<PostsListState> build() => _fetchPage(page: 1);
@@ -98,21 +140,65 @@ class PostsNotifier extends _$PostsNotifier {
         current.copyWith(isLoadingMore: false).withLoadMoreError(failure),
       ),
       (posts) => AsyncData(
-        current.copyWith(
-          posts: [...current.posts, ...posts],
-          currentPage: nextPage,
-          // A page shorter than what was requested is the json-server
-          // pagination contract's way of saying "that was the last one" —
-          // there's no separate total-count field in this API's response
-          // to check instead.
-          hasMore: posts.length == _pageSize,
-          isLoadingMore: false,
+        _appendPageWithRetention(
+          current: current,
+          newPosts: posts,
+          nextPage: nextPage,
         ),
       ),
     );
   }
 
   // ── Private ────────────────────────────────────────────────────────────────
+
+  /// Appends [newPosts] (the just-fetched [nextPage]) to [current], then
+  /// evicts the oldest retained page(s) if the result would exceed
+  /// [_maxRetainedPages] — see that constant's doc comment for the full
+  /// memory-growth rationale and UX tradeoff.
+  ///
+  /// Evicting by `posts.sublist(_pageSize)` — dropping exactly one
+  /// page-size's worth of items from the front — relies on an invariant
+  /// that's worth spelling out: every page eligible for eviction here is
+  /// a page that was *not* the most recently loaded one, and [loadMore]
+  /// only ever runs again while [PostsListState.hasMore] is still true,
+  /// which the notifier itself derives from "the last page came back
+  /// exactly [_pageSize] long" (see the `hasMore` assignment below and in
+  /// [_fetchPage]). So by construction, no page still eligible for a
+  /// future eviction can be short — only the newest, not-yet-evictable
+  /// page ever can be. If [_pageSize] ever became page-dependent (a
+  /// backend with variable page sizes), this method would need each
+  /// evicted page's own length tracked instead of assuming [_pageSize]
+  /// uniformly.
+  PostsListState _appendPageWithRetention({
+    required PostsListState current,
+    required List<Post> newPosts,
+    required int nextPage,
+  }) {
+    var posts = [...current.posts, ...newPosts];
+    var oldestRetainedPage = current.oldestRetainedPage;
+
+    // A `while`, not a single `if`: normal one-page-at-a-time growth from
+    // `loadMore()` only ever needs at most one eviction pass, but this
+    // stays correct even if `_maxRetainedPages` were ever reconfigured to
+    // something smaller than the number of pages a long-lived keepAlive
+    // session had already accumulated.
+    while (nextPage - oldestRetainedPage + 1 > _maxRetainedPages) {
+      posts = posts.sublist(_pageSize);
+      oldestRetainedPage++;
+    }
+
+    return current.copyWith(
+      posts: posts,
+      currentPage: nextPage,
+      // A page shorter than what was requested is the json-server
+      // pagination contract's way of saying "that was the last one" —
+      // there's no separate total-count field in this API's response
+      // to check instead.
+      hasMore: newPosts.length == _pageSize,
+      isLoadingMore: false,
+      oldestRetainedPage: oldestRetainedPage,
+    );
+  }
 
   Future<PostsListState> _fetchPage({required int page}) async {
     final useCase = ref.read(getPostsUseCaseProvider);

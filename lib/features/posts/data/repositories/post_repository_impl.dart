@@ -44,6 +44,12 @@ final class PostRepositoryImpl implements PostRepository {
     required FailureMapper failureMapper,
   }) : _remote = remoteSource,
        _connectivity = connectivityGuard,
+       // Kept as manual assignment (not `this._failureMapper`) to preserve
+       // the public parameter name `failureMapper` at call sites — an
+       // initializing formal here would force callers to pass
+       // `_failureMapper:` instead, which is inconsistent with the other
+       // two named parameters above and would break existing call sites.
+       // ignore: prefer_initializing_formals
        _failureMapper = failureMapper;
 
   final PostRemoteSource _remote;

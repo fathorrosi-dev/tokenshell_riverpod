@@ -27,6 +27,26 @@ import 'package:tokenshell_riverpod/features/posts/domain/entities/post.dart';
 /// with a spinner and lose scroll position. That second case needs a flag
 /// that lives *inside* the `AsyncData` payload, which is exactly what
 /// [isLoadingMore] is for.
+///
+/// ## `.select()` convention (added 3 Jul 2026 — guidance only, no
+/// behavior change)
+///
+/// `posts_page.dart` currently watches this whole state via `Consumer`
+/// rather than `ref.watch(postsProvider).select(...)` on individual
+/// fields — and that's fine today, because every field here
+/// ([posts], [hasMore], [isLoadingMore], [loadMoreError],
+/// [oldestRetainedPage]) is something that specific `Consumer`'s subtree
+/// actually renders or reacts to. Nothing across this app's providers
+/// uses `.select()` yet, for the same reason: no watched state object
+/// currently has a field one consumer needs and another doesn't.
+///
+/// The moment that stops being true for *any* Presentation state class —
+/// e.g. a future field here that only a header widget cares about, while
+/// the list body doesn't — reach for `.select()` on that field rather
+/// than watching the whole object, so an unrelated field changing doesn't
+/// rebuild a subtree that doesn't read it. This note exists so that
+/// decision has a documented reference point instead of being made fresh,
+/// inconsistently, the first time it comes up.
 final class PostsListState {
   // Not `const` — [List.unmodifiable] is not a const expression.
   // The `const` keyword was removed intentionally (R-04, 27 Jun 2026):
@@ -47,9 +67,15 @@ final class PostsListState {
     required this.hasMore,
     this.isLoadingMore = false,
     this.loadMoreError,
+    this.oldestRetainedPage = 1,
   }) : posts = List.unmodifiable(posts);
 
-  /// All posts loaded so far, in page order.
+  /// All posts *currently* held in memory, in page order.
+  ///
+  /// Not necessarily every page ever fetched since [PostsNotifier] last
+  /// reset to page 1 — see [oldestRetainedPage]. `posts.length` is always
+  /// `(currentPage - oldestRetainedPage + 1) * pageSize` (modulo the last
+  /// page being short), not `currentPage * pageSize`.
   final List<Post> posts;
 
   /// The last successfully loaded page number (1-indexed).
@@ -74,8 +100,21 @@ final class PostsListState {
   /// state the way the initial-load error path does.
   final Failure? loadMoreError;
 
-  /// Returns a copy with [posts]/[currentPage]/[hasMore]/[isLoadingMore]
-  /// updated as given, omitted fields preserved.
+  /// The lowest page number still present in [posts].
+  ///
+  /// Always `1` unless [PostsNotifier]'s retention window has evicted the
+  /// oldest loaded page(s) to keep memory bounded — see
+  /// `PostsNotifier._maxRetainedPages`'s doc comment (posts_notifier.dart)
+  /// for the full memory-growth rationale and the UX tradeoff eviction
+  /// implies. `posts_page.dart` doesn't need to read this directly today
+  /// (the list it renders is already just [posts]); it exists on the
+  /// state so the notifier can compute "how many pages are currently
+  /// retained" (`currentPage - oldestRetainedPage + 1`) without needing a
+  /// separate counter that could drift out of sync with [posts] itself.
+  final int oldestRetainedPage;
+
+  /// Returns a copy with the given fields updated, omitted fields
+  /// preserved.
   ///
   /// Always clears [loadMoreError] as a side effect — every real call site
   /// (starting a new "load more" attempt, or a successful page load) is a
@@ -87,12 +126,14 @@ final class PostsListState {
     int? currentPage,
     bool? hasMore,
     bool? isLoadingMore,
+    int? oldestRetainedPage,
   }) {
     return PostsListState(
       posts: posts ?? this.posts,
       currentPage: currentPage ?? this.currentPage,
       hasMore: hasMore ?? this.hasMore,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      oldestRetainedPage: oldestRetainedPage ?? this.oldestRetainedPage,
     );
   }
 
@@ -112,5 +153,6 @@ final class PostsListState {
     hasMore: hasMore,
     isLoadingMore: isLoadingMore,
     loadMoreError: error,
+    oldestRetainedPage: oldestRetainedPage,
   );
 }

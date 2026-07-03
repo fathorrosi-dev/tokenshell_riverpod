@@ -39,7 +39,9 @@ part of 'posts_notifier.dart';
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
 /// screen re-focus via a GoRouter listener or AppLifecycleState observer
-/// once real quota data is in place.
+/// once real quota data is in place. For unbounded *growth* mitigation,
+/// see [_maxRetainedPages] — keepAlive alone only answers "when is this
+/// disposed," not "how large is it allowed to get while alive."
 
 @ProviderFor(PostsNotifier)
 final postsProvider = PostsNotifierProvider._();
@@ -75,7 +77,9 @@ final postsProvider = PostsNotifierProvider._();
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
 /// screen re-focus via a GoRouter listener or AppLifecycleState observer
-/// once real quota data is in place.
+/// once real quota data is in place. For unbounded *growth* mitigation,
+/// see [_maxRetainedPages] — keepAlive alone only answers "when is this
+/// disposed," not "how large is it allowed to get while alive."
 final class PostsNotifierProvider
     extends $AsyncNotifierProvider<PostsNotifier, PostsListState> {
   /// Manages the async, paginated state of the posts list.
@@ -109,7 +113,9 @@ final class PostsNotifierProvider
   /// Tradeoff: keepAlive means the list stays in memory for the app's
   /// lifetime. For stale-data mitigation, consider calling [refresh] on
   /// screen re-focus via a GoRouter listener or AppLifecycleState observer
-  /// once real quota data is in place.
+  /// once real quota data is in place. For unbounded *growth* mitigation,
+  /// see [_maxRetainedPages] — keepAlive alone only answers "when is this
+  /// disposed," not "how large is it allowed to get while alive."
   PostsNotifierProvider._()
     : super(
         from: null,
@@ -129,7 +135,7 @@ final class PostsNotifierProvider
   PostsNotifier create() => PostsNotifier();
 }
 
-String _$postsNotifierHash() => r'e16fc077aab0ef25fadfbc2267a15e0f26da6643';
+String _$postsNotifierHash() => r'24cf06e8e68192bfa644137ea0fe147053e58515';
 
 /// Manages the async, paginated state of the posts list.
 ///
@@ -162,13 +168,15 @@ String _$postsNotifierHash() => r'e16fc077aab0ef25fadfbc2267a15e0f26da6643';
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
 /// screen re-focus via a GoRouter listener or AppLifecycleState observer
-/// once real quota data is in place.
+/// once real quota data is in place. For unbounded *growth* mitigation,
+/// see [_maxRetainedPages] — keepAlive alone only answers "when is this
+/// disposed," not "how large is it allowed to get while alive."
 
 abstract class _$PostsNotifier extends $AsyncNotifier<PostsListState> {
   FutureOr<PostsListState> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<PostsListState>, PostsListState>;
     final element =
         ref.element
@@ -178,6 +186,6 @@ abstract class _$PostsNotifier extends $AsyncNotifier<PostsListState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

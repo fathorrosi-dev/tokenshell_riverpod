@@ -30,10 +30,5 @@ abstract class PostModel with _$PostModel {
 /// Extension providing clean conversion from [PostModel] to domain [Post].
 extension PostModelX on PostModel {
   /// Converts this DTO into the pure domain [Post] entity.
-  Post toDomain() => Post(
-    id: id,
-    userId: userId,
-    title: title,
-    body: body,
-  );
+  Post toDomain() => Post(id: id, userId: userId, title: title, body: body);
 }
