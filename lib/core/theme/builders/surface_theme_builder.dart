@@ -8,18 +8,25 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 /// sheet, tooltip).
 ///
 /// See `button_theme_builder.dart` for the rationale behind splitting
-/// `app_theme.dart` by widget family — every value here is unchanged from
-/// the pre-split implementation.
+/// `app_theme.dart` by widget family.
+///
+/// Wave 1 M3 core refactor: shapes moved onto the M3 per-component shape
+/// categories (card=medium 12dp, dialog/bottom-sheet=extraLarge 28dp,
+/// popup menu/tooltip=extraSmall 4dp, list tile=rectangular), the flat
+/// shadcn-era elevation/surfaceTint/shadow overrides removed so each
+/// component falls back to its M3 elevation default, and the outline
+/// borders on card/dialog/menu dropped (M3 elevated surfaces are
+/// borderless).
 abstract final class SurfaceThemeBuilder {
   static CardThemeData card(AppThemeColors colors) {
     return CardThemeData(
       color: colors.card,
-      shadowColor: Colors.transparent,
-      elevation: 0,
       margin: EdgeInsets.zero,
+      // M3 elevated card: medium (12dp) shape, no outline border. The old
+      // `elevation: 0` + transparent shadow are dropped — the M3 defaults
+      // (elevation 1 with colorScheme.shadow) restore the tonal lift.
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(RadiusTokens.lg),
-        side: BorderSide(color: colors.border),
+        borderRadius: BorderRadius.circular(RadiusTokens.medium),
       ),
     );
   }
@@ -35,12 +42,11 @@ abstract final class SurfaceThemeBuilder {
   static DialogThemeData dialog(AppThemeColors colors, TextTheme textTheme) {
     return DialogThemeData(
       backgroundColor: colors.popover,
-      elevation: 0,
-      shadowColor: Colors.transparent,
-      surfaceTintColor: Colors.transparent,
+      // M3 dialog: extraLarge (28dp) shape, no outline border, elevation 6
+      // (M3 default). The flat `elevation: 0` + transparent shadow/tint
+      // overrides are dropped.
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(RadiusTokens.lg),
-        side: BorderSide(color: colors.border),
+        borderRadius: BorderRadius.circular(RadiusTokens.extraLarge),
       ),
       titleTextStyle: textTheme.titleLarge?.copyWith(
         color: colors.popoverForeground,
@@ -65,9 +71,8 @@ abstract final class SurfaceThemeBuilder {
         horizontal: SpacingTokens.xl,
         vertical: SpacingTokens.xs,
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(RadiusTokens.md),
-      ),
+      // M3 Lists are rectangular — no container shape override (Flutter M3
+      // ListTile default renders full-bleed edges).
       titleTextStyle: textTheme.bodyMedium?.copyWith(
         color: colors.foreground,
         fontWeight: TypographyTokens.weightMedium,
@@ -84,12 +89,10 @@ abstract final class SurfaceThemeBuilder {
   ) {
     return PopupMenuThemeData(
       color: colors.popover,
-      surfaceTintColor: Colors.transparent,
-      elevation: 0,
-      shadowColor: Colors.transparent,
+      // M3 menu: extraSmall (4dp) shape, no outline border, elevation 3 (M3
+      // default). The flat `elevation: 0` + transparent shadow/tint are dropped.
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(RadiusTokens.md),
-        side: BorderSide(color: colors.border),
+        borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
       ),
       textStyle: textTheme.bodyMedium?.copyWith(
         color: colors.popoverForeground,
@@ -104,18 +107,17 @@ abstract final class SurfaceThemeBuilder {
   static BottomSheetThemeData bottomSheet(AppThemeColors colors) {
     return BottomSheetThemeData(
       backgroundColor: colors.card,
-      surfaceTintColor: Colors.transparent,
-      elevation: 0,
-      shadowColor: Colors.transparent,
       modalBackgroundColor: colors.card,
-      modalElevation: 0,
+      // M3 modal bottom sheet: top corners extraLarge (28dp), elevation 1 (M3
+      // default). The flat `elevation`/`modalElevation: 0` + transparent
+      // shadow/tint overrides are dropped.
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(RadiusTokens.xl),
+          top: Radius.circular(RadiusTokens.extraLarge),
         ),
       ),
       dragHandleColor: colors.mutedForeground,
-      // 32 × 4 matches the shadcn/ui drag handle pill proportion.
+      // 32 × 4 matches the M3 drag handle pill proportion.
       dragHandleSize: const Size(32, 4),
       showDragHandle: true,
     );
@@ -130,7 +132,8 @@ abstract final class SurfaceThemeBuilder {
       decoration: BoxDecoration(
         color: colors.popover,
         border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(RadiusTokens.sm),
+        // M3 tooltip container shape: extraSmall (4dp).
+        borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
         // Brightness-resolved so the shadow stays perceptible in dark
         // mode instead of blending into a near-black surface — see
         // [ShadowTokens.resolve] for the full rationale.
