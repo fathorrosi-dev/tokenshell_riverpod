@@ -21,101 +21,83 @@ class PostCard extends StatelessWidget {
     final colors = context.colors;
     final textTheme = context.textTheme;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colors.card,
-        borderRadius: BorderRadius.circular(RadiusTokens.lg),
-        border: Border.all(color: colors.border),
-        // Brightness-resolved so this card's shadow stays perceptible in
-        // dark mode instead of blending into a near-black surface — same
-        // fix applied to the tooltip theme, see [ShadowTokens.resolve].
-        boxShadow: ShadowTokens.resolve(
-          Theme.of(context).brightness,
-          ShadowTokens.sm,
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.pushNamedRoute(
+          AppRoute.postDetail.name,
+          params: {'id': '${post.id}'},
         ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(RadiusTokens.lg),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(RadiusTokens.lg),
-          splashColor: Colors.transparent,
-          highlightColor: colors.accent.withValues(alpha: 0.5),
-          onTap: () => context.pushNamedRoute(
-            AppRoute.postDetail.name,
-            params: {'id': '${post.id}'},
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(SpacingTokens.xl),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ── Header row — post ID badge + user chip ───────────────────
-                Row(
-                  children: [
-                    _Badge(
-                      label: AppStrings.postCardIdBadge(post.id),
-                      backgroundColor: colors.muted,
-                      foregroundColor: colors.mutedForeground,
-                    ),
-                    const SizedBox(width: SpacingTokens.md),
-                    _Badge(
-                      label: AppStrings.postCardUserBadge(post.userId),
-                      backgroundColor: colors.secondary,
-                      foregroundColor: colors.secondaryForeground,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: SpacingTokens.xl),
-
-                // ── Title ─────────────────────────────────────────────────────
-                Text(
-                  post.title.capitalised,
-                  style: textTheme.titleSmall?.copyWith(
-                    color: colors.cardForeground,
-                    fontWeight: TypographyTokens.weightSemiBold,
+        child: Padding(
+          padding: const EdgeInsets.all(SpacingTokens.xl),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Header row — post ID badge + user chip ───────────────────
+              Row(
+                children: [
+                  _Badge(
+                    label: AppStrings.postCardIdBadge(post.id),
+                    backgroundColor: colors.muted,
+                    foregroundColor: colors.mutedForeground,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: SpacingTokens.md),
-
-                // ── Body preview ──────────────────────────────────────────────
-                Text(
-                  post.body,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
-                    height: TypographyTokens.leadingRelaxed,
+                  const SizedBox(width: SpacingTokens.md),
+                  _Badge(
+                    label: AppStrings.postCardUserBadge(post.userId),
+                    backgroundColor: colors.secondary,
+                    foregroundColor: colors.secondaryForeground,
                   ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+                ],
+              ),
+              const SizedBox(height: SpacingTokens.xl),
+
+              // ── Title ─────────────────────────────────────────────────────
+              Text(
+                post.title.capitalised,
+                style: textTheme.titleSmall?.copyWith(
+                  color: colors.cardForeground,
+                  fontWeight: TypographyTokens.weightSemiBold,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: SpacingTokens.md),
 
-                const SizedBox(height: SpacingTokens.xl),
+              // ── Body preview ──────────────────────────────────────────────
+              Text(
+                post.body,
+                style: textTheme.bodySmall?.copyWith(
+                  color: colors.mutedForeground,
+                  height: TypographyTokens.leadingRelaxed,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
 
-                // ── Footer ────────────────────────────────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      AppStrings.postCardReadMore,
-                      style: textTheme.labelMedium?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
-                    ),
-                    const SizedBox(width: SpacingTokens.xs),
-                    // FIXED: was `size: 14` — use token so this scales with
-                    // future IconSizeTokens changes instead of silently
-                    // diverging from the design system's xs definition.
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: IconSizeTokens.xs,
+              const SizedBox(height: SpacingTokens.xl),
+
+              // ── Footer ────────────────────────────────────────────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    AppStrings.postCardReadMore,
+                    style: textTheme.labelMedium?.copyWith(
                       color: colors.mutedForeground,
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(width: SpacingTokens.xs),
+                  // FIXED: was `size: 14` — use token so this scales with
+                  // future IconSizeTokens changes instead of silently
+                  // diverging from the design system's xs definition.
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    size: IconSizeTokens.xs,
+                    color: colors.mutedForeground,
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -145,7 +127,7 @@ class _Badge extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(RadiusTokens.sm),
+        borderRadius: BorderRadius.circular(RadiusTokens.small),
       ),
       child: Text(
         label,
