@@ -12,8 +12,14 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 /// having a sixth near-empty builder file for each one individually.
 ///
 /// See `button_theme_builder.dart` for the rationale behind splitting
-/// `app_theme.dart` by widget family — every value here is unchanged from
-/// the pre-split implementation.
+/// `app_theme.dart` by widget family.
+///
+/// Wave 1 M3 core refactor: shapes moved onto the M3 per-component shape
+/// categories (chips=small 8dp, checkbox/snackbar/menu=extraSmall 4dp,
+/// scrollbar=full), snackbar elevation restored to the M3 6dp default, and
+/// the shadcn-era manual hover/focus overrides (built on the pre-Wave-0
+/// NoSplash premise) removed in favor of the M3 state layers and ripple that
+/// `app_theme.dart` now renders by default.
 abstract final class FeedbackThemeBuilder {
   static ChipThemeData chip(AppThemeColors colors, TextTheme textTheme) {
     return ChipThemeData(
@@ -27,9 +33,14 @@ abstract final class FeedbackThemeBuilder {
       secondaryLabelStyle: textTheme.labelMedium?.copyWith(
         color: colors.primaryForeground,
       ),
-      side: BorderSide(color: colors.border),
+      // M3 outlined-chip border uses the outline role. `colors.border`
+      // bridges to outlineVariant (decorative dividers) and fails the 3:1
+      // non-text contrast bar on the secondaryContainer fill; `colors.input`
+      // bridges to outline (~3.2:1 light) — a genuine M3 role, not a divider.
+      side: BorderSide(color: colors.input),
+      // M3 chip shape category: small (8dp).
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(RadiusTokens.md),
+        borderRadius: BorderRadius.circular(RadiusTokens.small),
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.md,
@@ -62,6 +73,8 @@ abstract final class FeedbackThemeBuilder {
         }
         return colors.input;
       }),
+      // Unselected track is already the outline-colored solid (colors.input),
+      // so an additional M3 outline border is intentionally suppressed.
       trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
     );
   }
@@ -71,14 +84,10 @@ abstract final class FeedbackThemeBuilder {
       fillColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) return colors.muted;
         if (states.contains(WidgetState.selected)) return colors.primary;
-        // Hover/focus on an unselected checkbox: apply a very subtle accent
-        // background tint so the user sees the control is interactive before
-        // clicking. The border change below is the primary focus indicator —
-        // this fill is additive, not the sole signal.
-        if (states.contains(WidgetState.hovered) ||
-            states.contains(WidgetState.focused)) {
-          return colors.accent;
-        }
+        // Unselected: transparent fill. M3 hover/focus/pressed state layers
+        // (onSurface) render automatically now that the ripple/state-layer
+        // suppression is gone — no manual tint needed (and the old accent fill
+        // would resolve to a near-black solid since accent bridges to primary).
         return Colors.transparent;
       }),
       checkColor: WidgetStatePropertyAll(colors.primaryForeground),
@@ -94,9 +103,9 @@ abstract final class FeedbackThemeBuilder {
         // focused → ring color at 2 px width. Mirrors the focused input border
         // treatment (focusedBorder uses ring + BorderWidthTokens.lg) so keyboard
         // focus on a checkbox looks consistent with focus on any TextField.
-        // splashFactory is NoSplash app-wide, so this border change is the ONLY
-        // visual signal a keyboard/tab user gets when this checkbox is focused —
-        // without it, the control would show zero focus indicator.
+        // Documented exception to the M3 default: the framework's focus state
+        // layer now renders (Wave 0 restored the interaction defaults), but an
+        // explicit 2px border keeps focus unmistakable for keyboard/tab users.
         if (states.contains(WidgetState.focused)) {
           return BorderSide(color: colors.ring, width: BorderWidthTokens.lg);
         }
@@ -105,8 +114,8 @@ abstract final class FeedbackThemeBuilder {
         if (states.contains(WidgetState.hovered)) {
           return BorderSide(color: colors.primary, width: BorderWidthTokens.md);
         }
-        // unselected (default) → input token (zinc-200 light / gray-700 dark).
-        // Using the input border color (same as TextField) makes unchecked
+        // unselected (default) → input token (bridges to M3 outline).
+        // Using the outline color (same as TextField) makes unchecked
         // checkboxes visually consistent with the rest of the form — lighter
         // weight so they don't compete for attention in a list of fields.
         // The previous value (colors.primary, near-black) made every unchecked
@@ -114,7 +123,10 @@ abstract final class FeedbackThemeBuilder {
         return BorderSide(color: colors.input, width: BorderWidthTokens.md);
       }),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(RadiusTokens.sm),
+        // M3 checkbox is a rounded square (spec container shape 2dp; Flutter
+        // M3 default radius 2.0). Our shape scale has no 2dp token —
+        // extraSmall (4dp) is the nearest category.
+        borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
       ),
     );
   }
@@ -128,18 +140,12 @@ abstract final class FeedbackThemeBuilder {
           );
         }
         if (states.contains(WidgetState.selected)) return colors.primary;
-        // Radio doesn't have a separate `side` property like Checkbox, so
-        // fillColor is the only channel for hover/focus visual feedback.
-        // focused → ring color: mirrors the "focused input" signal used
-        //   throughout the rest of the design system. splashFactory is
-        //   NoSplash app-wide, making this the ONLY visible cue for keyboard
-        //   users — without it the focused radio shows zero indicator.
-        // hovered → foreground (near-black / near-white per brightness):
-        //   more prominent than mutedForeground at rest, signals interactability
-        //   before clicking without jumping straight to primary.
-        if (states.contains(WidgetState.focused)) return colors.ring;
-        if (states.contains(WidgetState.hovered)) return colors.foreground;
-        return colors.mutedForeground;
+        // Unselected: transparent fill. M3 hover/focus/pressed state layers
+        // (onSurface) render automatically now that the interaction defaults
+        // are restored — the old focused→ring / hovered→foreground branches
+        // resolved to near-black solids (ring/foreground bridge to primary/
+        // onSurface) and are no longer needed.
+        return Colors.transparent;
       }),
     );
   }
@@ -163,10 +169,13 @@ abstract final class FeedbackThemeBuilder {
       // choice regardless of brightness — explicit and predictable.
       actionTextColor: colors.primaryForeground,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(RadiusTokens.md),
+        // M3 snackbar shape category: extraSmall (4dp).
+        borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
       ),
       behavior: SnackBarBehavior.floating,
-      elevation: 0,
+      // M3 snackbar elevation is 6dp (default). The previous flat
+      // `elevation: 0` override is dropped; in the monochrome scheme the
+      // surfaceTint at 6dp is ~indistinguishable from the container color.
     );
   }
 
@@ -179,7 +188,9 @@ abstract final class FeedbackThemeBuilder {
     );
   }
 
-  /// shadcn/ui slider: no visible overlay, flat track at 4px, solid thumb.
+  /// Flat 4px track, solid thumb; M3 hover/focus/pressed overlay restored
+  /// (the shadcn-era `overlayColor: transparent` + zero-radius overlay
+  /// suppression is dropped so the slider shows its state layer again).
   static SliderThemeData slider(AppThemeColors colors, TextTheme textTheme) {
     return SliderThemeData(
       activeTrackColor: colors.primary,
@@ -192,17 +203,10 @@ abstract final class FeedbackThemeBuilder {
       disabledThumbColor: colors.primary.withValues(
         alpha: OpacityTokens.disabledSurface,
       ),
-      // No focus/hover overlay — keeps the shadcn flat aesthetic.
-      // RoundSliderOverlayShape(overlayRadius: 0) is the semantically correct
-      // way to suppress the overlay; SliderComponentShape.noThumb was intended
-      // for thumbShape, not overlayShape, and could behave unexpectedly on
-      // future Flutter SDK updates.
-      overlayColor: Colors.transparent,
       activeTickMarkColor: Colors.transparent,
       inactiveTickMarkColor: Colors.transparent,
       trackHeight: 4,
       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
-      overlayShape: const RoundSliderOverlayShape(overlayRadius: 0),
       valueIndicatorShape: const DropSliderValueIndicatorShape(),
       valueIndicatorColor: colors.popover,
       valueIndicatorTextStyle: textTheme.labelSmall?.copyWith(
@@ -267,34 +271,24 @@ abstract final class FeedbackThemeBuilder {
     );
   }
 
-  /// MenuAnchor / SubmenuButton items. Accent hover matches the ghost
-  /// button pattern used elsewhere in shadcn.
+  /// MenuAnchor / SubmenuButton items. Transparent rest state; hover/focus/
+  /// pressed feedback comes from the M3 state layer and ripple (restored in
+  /// Wave 0) instead of the old shadcn accent hover.
   static MenuButtonThemeData menuButton(
     AppThemeColors colors,
     TextTheme textTheme,
   ) {
     return MenuButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.hovered) ||
-              states.contains(WidgetState.focused)) {
-            return colors.accent;
-          }
-          return Colors.transparent;
-        }),
+        backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
             return colors.foreground.withValues(
               alpha: OpacityTokens.disabledContent,
             );
           }
-          if (states.contains(WidgetState.hovered) ||
-              states.contains(WidgetState.focused)) {
-            return colors.accentForeground;
-          }
           return colors.foreground;
         }),
-        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
         textStyle: WidgetStatePropertyAll(
           textTheme.bodyMedium?.copyWith(
             fontWeight: TypographyTokens.weightRegular,
@@ -308,7 +302,8 @@ abstract final class FeedbackThemeBuilder {
         ),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(RadiusTokens.sm),
+            // M3 menu container/items use the extraSmall (4dp) shape.
+            borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
           ),
         ),
       ),
