@@ -318,24 +318,34 @@ class _SwatchState extends State<_Swatch> {
         scale: _pressed ? 0.96 : 1.0,
         duration: context.durations.fast,
         curve: Curves.easeOut,
-        child: Container(
-          width: 120,
-          height: 56,
-          decoration: BoxDecoration(
-            color: widget.color,
-            borderRadius: BorderRadius.circular(RadiusTokens.md),
-            border: Border.all(color: context.colors.border),
+        child: Card(
+          // The swatch's own token color is the point of this widget, so it
+          // overrides CardThemeData.color. The border is kept so light-on-light
+          // swatches ('background', 'card') stay visible against the page
+          // background; Card exposes no `side`, so it rides on the shape — the
+          // radius uses the same RadiusTokens.medium token as
+          // SurfaceThemeBuilder.card(), avoiding divergence. Elevation still
+          // comes from CardThemeData.
+          color: widget.color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(RadiusTokens.medium),
+            side: BorderSide(color: context.colors.border),
           ),
-          alignment: Alignment.center,
-          child: Text(
-            widget.label,
-            style: TextStyle(
-              fontFamily: TypographyTokens.fontFamily,
-              fontSize: TypographyTokens.sizeXs,
-              fontWeight: TypographyTokens.weightMedium,
-              color: widget.onColor,
+          child: SizedBox(
+            width: 120,
+            height: 56,
+            child: Center(
+              child: Text(
+                widget.label,
+                style: TextStyle(
+                  fontFamily: TypographyTokens.fontFamily,
+                  fontSize: TypographyTokens.sizeXs,
+                  fontWeight: TypographyTokens.weightMedium,
+                  color: widget.onColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
-            textAlign: TextAlign.center,
           ),
         ),
       ),
