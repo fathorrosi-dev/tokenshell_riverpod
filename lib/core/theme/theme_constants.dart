@@ -9,27 +9,53 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 /// per theme build and cached inside [ThemeData].
 abstract final class ThemeConstants {
   // ── Pre-resolved color snapshots ─────────────────────────────────────────────
+  //
+  // WAVE 0 BRIDGE: [AppThemeColors] fields still carry the old shadcn-era names
+  // (muted, accent, border, input, ring, card, popover, ...) because the
+  // freezed extension is frozen for this wave. Each field below is therefore
+  // filled with the M3 role that now provides the semantic — see the inline
+  // `// bridge:` comments. Renaming the fields on the extension is deferred
+  // to a later wave alongside the builder/feature call-site updates.
 
   static const AppThemeColors lightColors = AppThemeColors(
-    background: ColorTokens.lightBackground,
-    foreground: ColorTokens.lightForeground,
-    card: ColorTokens.lightCard,
-    cardForeground: ColorTokens.lightCardForeground,
-    popover: ColorTokens.lightPopover,
-    popoverForeground: ColorTokens.lightPopoverForeground,
+    // bridge: surface (tone 98)
+    background: ColorTokens.lightSurface,
+    // bridge: onSurface
+    foreground: ColorTokens.lightOnSurface,
+    // bridge: M3 elevated cards live at surfaceContainerLow
+    card: ColorTokens.lightSurfaceContainerLow,
+    // bridge: onSurface
+    cardForeground: ColorTokens.lightOnSurface,
+    // bridge: popovers/menus render at surfaceContainerHigh in M3
+    popover: ColorTokens.lightSurfaceContainerHigh,
+    // bridge: onSurface
+    popoverForeground: ColorTokens.lightOnSurface,
     primary: ColorTokens.lightPrimary,
-    primaryForeground: ColorTokens.lightPrimaryForeground,
-    secondary: ColorTokens.lightSecondary,
-    secondaryForeground: ColorTokens.lightSecondaryForeground,
-    muted: ColorTokens.lightMuted,
-    mutedForeground: ColorTokens.lightMutedForeground,
-    accent: ColorTokens.lightAccent,
-    accentForeground: ColorTokens.lightAccentForeground,
-    destructive: ColorTokens.lightDestructive,
-    destructiveForeground: ColorTokens.lightDestructiveForeground,
-    border: ColorTokens.lightBorder,
-    input: ColorTokens.lightInput,
-    ring: ColorTokens.lightRing,
+    // bridge: onPrimary
+    primaryForeground: ColorTokens.lightOnPrimary,
+    // bridge: shadcn `secondary` was surface-like in this app; map to the M3
+    // secondaryContainer family so existing consumers keep a surface value
+    secondary: ColorTokens.lightSecondaryContainer,
+    // bridge: onSecondaryContainer
+    secondaryForeground: ColorTokens.lightOnSecondaryContainer,
+    // bridge: muted ≈ highest-elevation surface tier
+    muted: ColorTokens.lightSurfaceContainerHighest,
+    // bridge: onSurfaceVariant (muted text role)
+    mutedForeground: ColorTokens.lightOnSurfaceVariant,
+    // bridge: accent ≈ primary emphasis (monochrome scheme has no hue accent)
+    accent: ColorTokens.lightPrimary,
+    // bridge: onPrimary
+    accentForeground: ColorTokens.lightOnPrimary,
+    // bridge: destructive ≈ error role
+    destructive: ColorTokens.lightError,
+    // bridge: onError
+    destructiveForeground: ColorTokens.lightOnError,
+    // bridge: decorative dividers/borders → outlineVariant
+    border: ColorTokens.lightOutlineVariant,
+    // bridge: input borders use full outline in M3
+    input: ColorTokens.lightOutline,
+    // bridge: focus indication ≈ primary (The ring concept is not available on the M3)
+    ring: ColorTokens.lightPrimary,
     status: AppStatusColors(
       success: ColorTokens.lightSuccess,
       successForeground: ColorTokens.lightSuccessForeground,
@@ -37,31 +63,49 @@ abstract final class ThemeConstants {
       warningForeground: ColorTokens.lightWarningForeground,
       info: ColorTokens.lightInfo,
       infoForeground: ColorTokens.lightInfoForeground,
-      error: ColorTokens.lightError,
-      errorForeground: ColorTokens.lightErrorForeground,
+      error: ColorTokens.lightStatusError,
+      errorForeground: ColorTokens.lightStatusErrorForeground,
     ),
   );
 
   static const AppThemeColors darkColors = AppThemeColors(
-    background: ColorTokens.darkBackground,
-    foreground: ColorTokens.darkForeground,
-    card: ColorTokens.darkCard,
-    cardForeground: ColorTokens.darkCardForeground,
-    popover: ColorTokens.darkPopover,
-    popoverForeground: ColorTokens.darkPopoverForeground,
+    // bridge: surface (tone 6)
+    background: ColorTokens.darkSurface,
+    // bridge: onSurface
+    foreground: ColorTokens.darkOnSurface,
+    // bridge: surfaceContainerLow (M3 elevated card)
+    card: ColorTokens.darkSurfaceContainerLow,
+    // bridge: onSurface
+    cardForeground: ColorTokens.darkOnSurface,
+    // bridge: surfaceContainerHigh
+    popover: ColorTokens.darkSurfaceContainerHigh,
+    // bridge: onSurface
+    popoverForeground: ColorTokens.darkOnSurface,
     primary: ColorTokens.darkPrimary,
-    primaryForeground: ColorTokens.darkPrimaryForeground,
-    secondary: ColorTokens.darkSecondary,
-    secondaryForeground: ColorTokens.darkSecondaryForeground,
-    muted: ColorTokens.darkMuted,
-    mutedForeground: ColorTokens.darkMutedForeground,
-    accent: ColorTokens.darkAccent,
-    accentForeground: ColorTokens.darkAccentForeground,
-    destructive: ColorTokens.darkDestructive,
-    destructiveForeground: ColorTokens.darkDestructiveForeground,
-    border: ColorTokens.darkBorder,
-    input: ColorTokens.darkInput,
-    ring: ColorTokens.darkRing,
+    // bridge: onPrimary
+    primaryForeground: ColorTokens.darkOnPrimary,
+    // bridge: secondaryContainer (surface-like, see light comment)
+    secondary: ColorTokens.darkSecondaryContainer,
+    // bridge: onSecondaryContainer
+    secondaryForeground: ColorTokens.darkOnSecondaryContainer,
+    // bridge: surfaceContainerHighest
+    muted: ColorTokens.darkSurfaceContainerHighest,
+    // bridge: onSurfaceVariant
+    mutedForeground: ColorTokens.darkOnSurfaceVariant,
+    // bridge: primary emphasis (monochrome — see light comment)
+    accent: ColorTokens.darkPrimary,
+    // bridge: onPrimary
+    accentForeground: ColorTokens.darkOnPrimary,
+    // bridge: error role
+    destructive: ColorTokens.darkError,
+    // bridge: onError
+    destructiveForeground: ColorTokens.darkOnError,
+    // bridge: outlineVariant
+    border: ColorTokens.darkOutlineVariant,
+    // bridge: outline
+    input: ColorTokens.darkOutline,
+    // bridge: primary
+    ring: ColorTokens.darkPrimary,
     status: AppStatusColors(
       success: ColorTokens.darkSuccess,
       successForeground: ColorTokens.darkSuccessForeground,
@@ -69,144 +113,136 @@ abstract final class ThemeConstants {
       warningForeground: ColorTokens.darkWarningForeground,
       info: ColorTokens.darkInfo,
       infoForeground: ColorTokens.darkInfoForeground,
-      error: ColorTokens.darkError,
-      errorForeground: ColorTokens.darkErrorForeground,
+      error: ColorTokens.darkStatusError,
+      errorForeground: ColorTokens.darkStatusErrorForeground,
     ),
   );
 
   // ── ColorScheme factory ───────────────────────────────────────────────────────
 
-  /// Builds a Material 3 [ColorScheme] fully mapped from shadcn/ui tokens.
+  /// Builds a Material 3 [ColorScheme] mapped 1:1 from the M3 role tokens in
+  /// [ColorTokens]. No cross-design-system translation happens here anymore:
+  /// every role holds a value with a genuine M3 tonal relationship, computed
+  /// in the token file with documented contrast math.
   ///
-  /// Mapping priority: shadcn/ui visual intent wins; M3 role names are used
-  /// as structural scaffolding only. Widgets that haven't been explicitly themed
-  /// in [AppTheme] will fall back to these role mappings — audit those widgets
-  /// if they look inconsistent with the shadcn feel.
+  /// `c` is consumed only through the bridge snapshot (see [lightColors]);
+  /// roles that exist natively in M3 read straight from the ramp constants so
+  /// this factory stays a thin assembler, not a place that invents colors
+  /// (all previous `Color.lerp` / `withValues(alpha:)` pseudo-roles removed).
   static ColorScheme colorSchemeFrom(AppThemeColors c, Brightness brightness) {
+    final isLight = brightness == Brightness.light;
     return ColorScheme(
       brightness: brightness,
 
-      // Primary — mapped to shadcn `primary`
+      // ── Primary ─────────────────────────────────────────────────────────────
       primary: c.primary,
       onPrimary: c.primaryForeground,
-      primaryContainer: c.secondary,
-      onPrimaryContainer: c.secondaryForeground,
-      // `*Fixed` / `*FixedDim` roles below are unconditionally sourced from
-      // the LIGHT palette constants, never from `c` — M3's contract for
-      // these roles is that they stay the SAME color regardless of which
-      // brightness the rest of the scheme resolves to (e.g. a status badge
-      // that must look identical in light and dark mode). Using `c` here
-      // would silently break that contract the moment this method runs for
-      // `Brightness.dark`. shadcn/ui has no equivalent "theme-invariant"
-      // concept, so these are a deliberate, simple approximation — not a
-      // precise M3 tonal-palette derivation — added so a future M3 widget
-      // that reads them directly inherits a chosen value instead of
-      // Flutter's auto-computed tonal default.
-      primaryFixed: ColorTokens.lightSecondary,
-      primaryFixedDim: ColorTokens.lightPrimary,
-      onPrimaryFixed: ColorTokens.lightSecondaryForeground,
-      onPrimaryFixedVariant: ColorTokens.lightMutedForeground,
+      primaryContainer: isLight
+          ? ColorTokens.lightPrimaryContainer
+          : ColorTokens.darkPrimaryContainer,
+      onPrimaryContainer: isLight
+          ? ColorTokens.lightOnPrimaryContainer
+          : ColorTokens.darkOnPrimaryContainer,
+      // Fixed roles are brightness-invariant by M3 contract — same ramp values
+      // regardless of which brightness this scheme resolves to.
+      primaryFixed: ColorTokens.primaryFixed,
+      primaryFixedDim: ColorTokens.primaryFixedDim,
+      onPrimaryFixed: ColorTokens.onPrimaryFixed,
+      onPrimaryFixedVariant: ColorTokens.onPrimaryFixedVariant,
 
-      // Secondary — mapped to shadcn `secondary` (surface-like in shadcn)
-      secondary: c.secondary,
-      onSecondary: c.secondaryForeground,
-      secondaryContainer: c.muted,
-      onSecondaryContainer: c.mutedForeground,
-      secondaryFixed: ColorTokens.lightMuted,
-      secondaryFixedDim: ColorTokens.lightSecondary,
-      onSecondaryFixed: ColorTokens.lightSecondaryForeground,
-      onSecondaryFixedVariant: ColorTokens.lightMutedForeground,
+      // ── Secondary ───────────────────────────────────────────────────────────
+      secondary: isLight ? ColorTokens.lightSecondary : ColorTokens.darkSecondary,
+      onSecondary: isLight
+          ? ColorTokens.lightOnSecondary
+          : ColorTokens.darkOnSecondary,
+      // Bridge fields: `c.secondary` carries the surface-like
+      // secondaryContainer intentionally (see lightColors).
+      secondaryContainer: c.secondary,
+      onSecondaryContainer: c.secondaryForeground,
+      secondaryFixed: ColorTokens.secondaryFixed,
+      secondaryFixedDim: ColorTokens.secondaryFixedDim,
+      onSecondaryFixed: ColorTokens.onSecondaryFixed,
+      onSecondaryFixedVariant: ColorTokens.onSecondaryFixedVariant,
 
-      // Tertiary — mapped to shadcn `accent`
-      // tertiaryContainer uses a semi-transparent tint of accent so M3 widgets
-      // that rely on container/base distinction have a visually distinct surface.
-      tertiary: c.accent,
-      onTertiary: c.accentForeground,
-      tertiaryContainer: c.accent.withValues(
-        alpha: OpacityTokens.containerTint,
-      ),
-      onTertiaryContainer: c.accentForeground,
-      tertiaryFixed: ColorTokens.lightAccent,
-      tertiaryFixedDim: ColorTokens.lightAccent,
-      onTertiaryFixed: ColorTokens.lightAccentForeground,
-      onTertiaryFixedVariant: ColorTokens.lightAccentForeground,
+      // ── Tertiary ────────────────────────────────────────────────────────────
+      // Monochrome scheme: tertiary is an offset neutral ramp (documented in
+      // ColorTokens) so widgets reading tertiary stay distinguishable.
+      tertiary: isLight ? ColorTokens.lightTertiary : ColorTokens.darkTertiary,
+      onTertiary: isLight
+          ? ColorTokens.lightOnTertiary
+          : ColorTokens.darkOnTertiary,
+      tertiaryContainer: isLight
+          ? ColorTokens.lightTertiaryContainer
+          : ColorTokens.darkTertiaryContainer,
+      onTertiaryContainer: isLight
+          ? ColorTokens.lightOnTertiaryContainer
+          : ColorTokens.darkOnTertiaryContainer,
+      tertiaryFixed: ColorTokens.tertiaryFixed,
+      tertiaryFixedDim: ColorTokens.tertiaryFixedDim,
+      onTertiaryFixed: ColorTokens.onTertiaryFixed,
+      onTertiaryFixedVariant: ColorTokens.onTertiaryFixedVariant,
 
-      // Error — mapped to shadcn `destructive`
+      // ── Error — M3 baseline palette, explicit ──────────────────────────────
       error: c.destructive,
       onError: c.destructiveForeground,
-      // Semi-transparent destructive fill for error containers.
-      errorContainer: c.destructive.withValues(
-        alpha: OpacityTokens.errorContainer,
-      ),
-      // Split by brightness: `destructive` itself reads at 4.76:1 on the
-      // dark-mode errorContainer tint (passes AA, kept as-is), but only
-      // 3.1:1 on the light-mode tint (fails AA) — a gap found during the
-      // 01 Jul 2026 production-readiness audit, alongside the
-      // destructive/status-foreground fixes above. Light mode uses a
-      // dedicated dark-red token instead; see
-      // [ColorTokens.lightErrorContainerForeground] for the full contrast
-      // math and rationale.
-      onErrorContainer: brightness == Brightness.light
-          ? ColorTokens.lightErrorContainerForeground
-          : c.destructive,
+      errorContainer: isLight
+          ? ColorTokens.lightErrorContainer
+          : ColorTokens.darkErrorContainer,
+      onErrorContainer: isLight
+          ? ColorTokens.lightOnErrorContainer
+          : ColorTokens.darkOnErrorContainer,
 
-      // Surface hierarchy — shadcn/ui has three meaningful surface tiers:
-      // background, card, and muted. The M3 spec defines five container tiers
-      // (Lowest → Highest) to convey elevation. The mapping strategy below
-      // preserves shadcn's intentionally flat aesthetic while giving M3 widgets
-      // a real — if subtle — distinction between adjacent tiers.
-      //
-      // Lowest = background (0 dp — canvas, behind everything)
-      // Low    = 40% blend toward card  (1 dp — slightly raised panels)
-      // Base   = card                   (2 dp — default cards)
-      // High   = 60% blend toward muted (3 dp — elevated cards)
-      // Highest = muted                 (4 dp — most elevated, chips, tooltips)
-      //
-      // In light mode background == card (both #FFFFFF), so Lowest == Low
-      // and the visual difference is imperceptible — this is intentional;
-      // shadcn light mode is a pure white canvas with no elevation tint.
-      // In dark mode the blends produce visible but subtle gradations
-      // between #030712 and #111827 (background → card) and between
-      // #111827 and #18181B (card → muted), matching shadcn's dark palette.
-      //
-      // If a future M3 component requires a more dramatic elevation delta
-      // (e.g. search bars, side sheets, modal drawers), revisit by adjusting
-      // the blend fractions or introducing a dedicated midtone token.
-      surface: c.background,
-      onSurface: c.foreground,
-      onSurfaceVariant: c.mutedForeground,
-      surfaceContainerLowest: c.background,
-      surfaceContainerLow: Color.lerp(c.background, c.card, 0.4),
-      surfaceContainer: c.card,
-      surfaceContainerHigh: Color.lerp(c.card, c.muted, 0.6),
-      surfaceContainerHighest: c.muted,
-      // `surfaceDim`/`surfaceBright` anchor the darkest/lightest ends of
-      // that same hierarchy — `background` (the canvas, least "lifted")
-      // and `muted` (the most "lifted" tier) respectively. Not a precise
-      // M3 tonal derivation, just a deliberate pick from existing tokens
-      // instead of leaving these unset.
-      surfaceDim: c.background,
-      surfaceBright: c.muted,
-      // Tonal-elevation tinting is switched off everywhere at the widget
-      // level (`surfaceTintColor: Colors.transparent` on every surface
-      // widget in `surface_theme_builder.dart` / `navigation_theme_builder.dart`)
-      // to preserve the flat shadcn look. Mirrored here so a widget that
-      // reads `colorScheme.surfaceTint` directly — instead of the explicit
-      // per-widget override — gets the same "no tint" intent.
-      surfaceTint: Colors.transparent,
+      // ── Surface hierarchy — the five M3 container tiers, explicit ───────────
+      surface: isLight ? ColorTokens.lightSurface : ColorTokens.darkSurface,
+      onSurface: isLight ? ColorTokens.lightOnSurface : ColorTokens.darkOnSurface,
+      onSurfaceVariant: isLight
+          ? ColorTokens.lightOnSurfaceVariant
+          : ColorTokens.darkOnSurfaceVariant,
+      surfaceContainerLowest: isLight
+          ? ColorTokens.lightSurfaceContainerLowest
+          : ColorTokens.darkSurfaceContainerLowest,
+      surfaceContainerLow: isLight
+          ? ColorTokens.lightSurfaceContainerLow
+          : ColorTokens.darkSurfaceContainerLow,
+      surfaceContainer: isLight
+          ? ColorTokens.lightSurfaceContainer
+          : ColorTokens.darkSurfaceContainer,
+      surfaceContainerHigh: isLight
+          ? ColorTokens.lightSurfaceContainerHigh
+          : ColorTokens.darkSurfaceContainerHigh,
+      surfaceContainerHighest: isLight
+          ? ColorTokens.lightSurfaceContainerHighest
+          : ColorTokens.darkSurfaceContainerHighest,
+      surfaceDim: isLight ? ColorTokens.lightSurfaceDim : ColorTokens.darkSurfaceDim,
+      surfaceBright: isLight
+          ? ColorTokens.lightSurfaceBright
+          : ColorTokens.darkSurfaceBright,
 
-      // Inverse surfaces
-      inverseSurface: c.foreground,
-      onInverseSurface: c.background,
-      inversePrimary: c.primaryForeground,
+      // Tonal elevation restored: M3 components tint elevated surfaces with
+      // `surfaceTint` (Flutter defaults to `primary`). The previous override
+      // (`Colors.transparent`, for the flat shadcn look) is removed here; the
+      // remaining per-widget `surfaceTintColor` overrides live in the builder
+      // files and are Wave 1 scope.
+      surfaceTint: isLight ? ColorTokens.lightPrimary : ColorTokens.darkPrimary,
 
-      // Borders and overlays
-      // outline      → component borders (full-weight).
-      // outlineVariant → decorative dividers / lighter separators (half-opacity).
-      outline: c.border,
-      outlineVariant: c.border.withValues(alpha: OpacityTokens.outlineVariant),
+      // ── Inverse surfaces ────────────────────────────────────────────────────
+      inverseSurface: isLight
+          ? ColorTokens.lightInverseSurface
+          : ColorTokens.darkInverseSurface,
+      onInverseSurface: isLight
+          ? ColorTokens.lightOnInverseSurface
+          : ColorTokens.darkOnInverseSurface,
+      inversePrimary: isLight
+          ? ColorTokens.lightInversePrimary
+          : ColorTokens.darkInversePrimary,
 
-      // Scrim / shadow — always opaque black
+      // ── Borders — M3 role semantics ─────────────────────────────────────────
+      // outline        → component borders (full weight, non-text 3:1 contract)
+      // outlineVariant → decorative dividers / separators (solid tone, no alpha)
+      outline: c.input,
+      outlineVariant: c.border,
+
+      // Scrim / shadow — opaque black per M3.
       shadow: const Color(0xFF000000),
       scrim: const Color(0xFF000000),
     );
@@ -214,154 +250,154 @@ abstract final class ThemeConstants {
 
   // ── TextTheme factory ─────────────────────────────────────────────────────────
 
-  /// Builds a [TextTheme] using [TypographyTokens] (Geist font family).
+  /// Builds a [TextTheme] on the M3 baseline type scale (m3.material.io/styles/typography/type-scale-tokens).
+  ///
+  /// Font family stays Geist ([TypographyTokens.fontFamily]) — the M3 spec
+  /// does not mandate a typeface. Size, weight and letter-spacing values are
+  /// snapped 1:1 to the M3 type-scale table and are written as literals with
+  /// inline cross-references because `typography_tokens.dart` is OUTSIDE the
+  /// Wave 0 scope boundary (4-file limit). The tokens file will be brought
+  /// back into sync in a later wave; until then its `size*`/`weight*`/
+  /// `tracking*` values no longer describe the live text theme.
+  ///
+  /// Line height is left at `null` so Geist's natural font metrics apply —
+  /// the M3 spec's leading values (display 64/52/44 px on mobile etc.) are
+  /// platform-font-metric results, not hard multipliers the component layers
+  /// enforce, and Flutter's own `TextTheme` default does the same.
   ///
   /// The [foreground] color is applied to all roles; widget-level overrides
   /// (e.g. muted hint text) are applied inside [AppTheme]'s widget theme configs.
   static TextTheme textThemeFrom(Color foreground) {
+    const font = TypographyTokens.fontFamily;
+    const fallback = TypographyTokens.fontFamilyFallback;
     return TextTheme(
-      // Display — large hero text, light weight, very tight tracking
+      // Display — M3: 57/45/36, regular w400
       displayLarge: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.size6xl,
-        fontWeight: TypographyTokens.weightLight,
-        letterSpacing: TypographyTokens.trackingTighter,
-        height: TypographyTokens.leadingTight,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 57, // M3 displayLarge
+        fontWeight: FontWeight.w400, // M3 displayLarge weight
+        letterSpacing: -0.25, // M3 displayLarge tracking
         color: foreground,
       ),
       displayMedium: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.size5xl,
-        fontWeight: TypographyTokens.weightLight,
-        letterSpacing: TypographyTokens.trackingTighter,
-        height: TypographyTokens.leadingTight,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 45, // M3 displayMedium
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0, // M3 displayMedium tracking
         color: foreground,
       ),
       displaySmall: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.size4xl,
-        fontWeight: TypographyTokens.weightRegular,
-        letterSpacing: TypographyTokens.trackingTight,
-        height: TypographyTokens.leadingTight,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 36, // M3 displaySmall
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0,
         color: foreground,
       ),
 
-      // Headline — section headers, semi-bold, tight
+      // Headline — M3: 32/28/24, regular w400
       headlineLarge: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.size3xl,
-        fontWeight: TypographyTokens.weightSemiBold,
-        letterSpacing: TypographyTokens.trackingTight,
-        height: TypographyTokens.leadingTight,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 32, // M3 headlineLarge
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0,
         color: foreground,
       ),
       headlineMedium: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.size2xl,
-        fontWeight: TypographyTokens.weightSemiBold,
-        letterSpacing: TypographyTokens.trackingTight,
-        height: TypographyTokens.leadingSnug,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 28, // M3 headlineMedium
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0,
         color: foreground,
       ),
       headlineSmall: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeXl,
-        fontWeight: TypographyTokens.weightSemiBold,
-        letterSpacing: TypographyTokens.trackingTight,
-        height: TypographyTokens.leadingSnug,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 24, // M3 headlineSmall
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0,
         color: foreground,
       ),
 
-      // Title — component headers
+      // Title — M3: 22 regular w400 / 16 medium w500 / 14 medium w500
       titleLarge: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeLg,
-        fontWeight: TypographyTokens.weightSemiBold,
-        letterSpacing: TypographyTokens.trackingTight,
-        height: TypographyTokens.leadingSnug,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 22, // M3 titleLarge
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0,
         color: foreground,
       ),
       titleMedium: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeMd,
-        fontWeight: TypographyTokens.weightMedium,
-        letterSpacing: TypographyTokens.trackingNormal,
-        height: TypographyTokens.leadingNormal,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 16, // M3 titleMedium
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.15, // M3 titleMedium tracking
         color: foreground,
       ),
       titleSmall: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeSm,
-        fontWeight: TypographyTokens.weightMedium,
-        letterSpacing: TypographyTokens.trackingNormal,
-        height: TypographyTokens.leadingNormal,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 14, // M3 titleSmall
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.1, // M3 titleSmall tracking
         color: foreground,
       ),
 
-      // Label — buttons, tabs, chips
+      // Label — M3: 14/12/11, medium w500
       labelLarge: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeSm,
-        fontWeight: TypographyTokens.weightMedium,
-        letterSpacing: TypographyTokens.trackingNormal,
-        height: TypographyTokens.leadingNormal,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 14, // M3 labelLarge
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.1,
         color: foreground,
       ),
       labelMedium: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeXs,
-        fontWeight: TypographyTokens.weightMedium,
-        letterSpacing: TypographyTokens.trackingWide,
-        height: TypographyTokens.leadingNormal,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 12, // M3 labelMedium
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.5,
         color: foreground,
       ),
       labelSmall: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeXxs,
-        fontWeight: TypographyTokens.weightMedium,
-        letterSpacing: TypographyTokens.trackingWide,
-        height: TypographyTokens.leadingNormal,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 11, // M3 labelSmall
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.5,
         color: foreground,
       ),
 
-      // Body — readable prose
+      // Body — M3: 16/14/12, regular w400
       bodyLarge: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeMd,
-        fontWeight: TypographyTokens.weightRegular,
-        letterSpacing: TypographyTokens.trackingNormal,
-        height: TypographyTokens.leadingRelaxed,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 16, // M3 bodyLarge
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.5,
         color: foreground,
       ),
       bodyMedium: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeSm,
-        fontWeight: TypographyTokens.weightRegular,
-        letterSpacing: TypographyTokens.trackingNormal,
-        height: TypographyTokens.leadingRelaxed,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 14, // M3 bodyMedium
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.25,
         color: foreground,
       ),
       bodySmall: TextStyle(
-        fontFamily: TypographyTokens.fontFamily,
-        fontFamilyFallback: TypographyTokens.fontFamilyFallback,
-        fontSize: TypographyTokens.sizeXs,
-        fontWeight: TypographyTokens.weightRegular,
-        letterSpacing: TypographyTokens.trackingNormal,
-        height: TypographyTokens.leadingRelaxed,
+        fontFamily: font,
+        fontFamilyFallback: fallback,
+        fontSize: 12, // M3 bodySmall
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.4,
         color: foreground,
       ),
     );

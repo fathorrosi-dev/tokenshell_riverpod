@@ -105,7 +105,6 @@ abstract final class AppTheme {
       // ── Surfaces / containers ────────────────────────────────────────────────
       cardTheme: SurfaceThemeBuilder.card(colors),
       dividerTheme: SurfaceThemeBuilder.divider(colors),
-      dividerColor: colors.border,
       dialogTheme: SurfaceThemeBuilder.dialog(colors, textTheme),
       listTileTheme: SurfaceThemeBuilder.listTile(colors, textTheme),
       popupMenuTheme: SurfaceThemeBuilder.popupMenu(colors, textTheme),
@@ -154,18 +153,19 @@ abstract final class AppTheme {
         size: IconSizeTokens.md,
       ),
 
-      // ── Splash / ink — minimal to keep shadcn feel ───────────────────────────
-      splashFactory: NoSplash.splashFactory,
-      highlightColor: Colors.transparent,
-      hoverColor: colors.accent.withValues(
-        alpha: OpacityTokens.disabledSurface,
-      ),
-      // Use [OpacityTokens.focusOverlay] rather than [OpacityTokens.pressed] —
-      // both are 0.12 today, but they are separate semantics. Keeping them as
-      // distinct constants lets the design system tune pressed and focus
-      // overlays independently as the product matures without an accidental
-      // cross-coupling (see OpacityTokens.focusOverlay doc comment).
-      focusColor: colors.ring.withValues(alpha: OpacityTokens.focusOverlay),
+      // ── Splash / ink / state layers ──────────────────────────────────────────
+      // No overrides at this level: the previous suppression
+      // (`NoSplash.splashFactory`, transparent `highlightColor`, and the
+      // focus/hover overrides that replicated shadcn/ui's flat feel) is removed
+      // so components get the M3 interaction defaults —
+      //   • ripple via the platform InkSparkle/InkRipple splashFactory,
+      //   • state layers per m3.material.io/foundations/interaction/states
+      //     (hover onSurface@8%, focus @12%, pressed @12%, dragged @16%).
+      // The ripple is not a state layer itself — it's the pressed feedback the
+      // M3 spec pairs with those overlays. Tonal elevation is likewise
+      // re-enabled through ColorScheme.surfaceTint = primary (see
+      // theme_constants.dart); per-widget surfaceTintColor overrides that
+      // remain in the builder files are Wave 1 scope.
     );
   }
 }

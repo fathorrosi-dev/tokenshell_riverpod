@@ -1,29 +1,36 @@
-/// Border-radius tokens following shadcn/ui's --radius convention.
+/// Material 3 shape scale — per-category corner radii (m3.material.io/styles/shape).
 ///
-/// The [md] value (6.0 px) is the canonical base radius
-/// (shadcn/ui --radius: 0.5rem translated to Flutter's logical pixels).
+/// Replaces the previous single-base shadcn/ui `--radius` convention with the
+/// M3 shape categories. Values are the M3 baseline dp tokens:
+///
+/// | Category    | Value | Typical M3 families (guidance untuk Wave 1 builders) |
+/// |-------------|-------|------------------------------------------------------|
+/// | none        | 0     | full-bleed / kasus khusus                            |
+/// | extraSmall  | 4     | text fields, small components                         |
+/// | small       | 8     | chips, menus (small interactive)                      |
+/// | medium      | 12    | cards, dialogs kecil (default container)              |
+/// | large       | 16    | large cards, bottom sheets (top corners), drawer      |
+/// | extraLarge  | 28    | dialogs (M3 baseline), FAB extended besar             |
+/// | full        | pill  | buttons, FAB, switch track, badges pill               |
 abstract final class RadiusTokens {
-  /// 0 px — sharp corners.
+  /// 0 px — sharp corners (M3 "none").
   static const double none = 0;
 
-  /// 4 px — subtle rounding, e.g. badges.
-  static const double sm = 4;
+  /// 4 px — M3 extraSmall.
+  static const double extraSmall = 4;
 
-  /// 6 px — default (shadcn/ui base --radius).
-  static const double md = 6;
+  /// 8 px — M3 small.
+  static const double small = 8;
 
-  /// 8 px — cards, dialogs.
-  static const double lg = 8;
+  /// 12 px — M3 medium.
+  static const double medium = 12;
 
-  /// 12 px — large panels.
-  static const double xl = 12;
+  /// 16 px — M3 large.
+  static const double large = 16;
 
-  /// 16 px — extra large containers.
-  static const double x2l = 16;
+  /// 28 px — M3 extraLarge.
+  static const double extraLarge = 28;
 
-  /// 24 px — 3xl.
-  static const double x3l = 24;
-
-  /// 9999 px — pill / circle (fully rounded).
+  /// 9999 px — pill / circle (M3 "full").
   static const double full = 9999;
 }
