@@ -23,26 +23,29 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 abstract final class InputThemeBuilder {
   // ── Private border helpers ─────────────────────────────────────────────────
 
-  /// An [OutlineInputBorder] at the standard [RadiusTokens.md] radius with
-  /// [color] as the single-pixel border side.
+  /// An [OutlineInputBorder] at the M3 text-field shape radius
+  /// ([RadiusTokens.extraSmall], 4 dp) with [color] as the single-pixel border
+  /// side.
   ///
-  /// Used for [InputDecorationTheme.border], [enabledBorder], [errorBorder],
-  /// and [disabledBorder] — any state where the border is normal weight.
+  /// Used for [InputDecorationTheme.border], [enabledBorder], and
+  /// [disabledBorder] — any state where the border is normal weight.
   static OutlineInputBorder _outlineBorder(Color color) => OutlineInputBorder(
-    borderRadius: BorderRadius.circular(RadiusTokens.md),
+    borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
     borderSide: BorderSide(color: color),
   );
 
-  /// An [OutlineInputBorder] at the standard [RadiusTokens.md] radius with
-  /// [ringColor] and [BorderWidthTokens.lg] (2 px) — the "focused" weight.
+  /// An [OutlineInputBorder] at the M3 text-field shape radius
+  /// ([RadiusTokens.extraSmall], 4 dp) with [ringColor] and
+  /// [BorderWidthTokens.lg] (2 px) — the M3 2dp emphasized outline.
   ///
-  /// Used for [InputDecorationTheme.focusedBorder] and
-  /// [InputDecorationTheme.focusedErrorBorder], and mirrored in the dropdown
-  /// [MenuStyle]. Centralised here so changing the focus ring width or radius
-  /// updates every input and dropdown in one place.
+  /// Used for [InputDecorationTheme.focusedBorder] and both error borders
+  /// ([errorBorder] and [focusedErrorBorder]) — M3 specs the outlined
+  /// text-field outline at 2 dp for the focused and error states alike — and
+  /// mirrored in the dropdown [MenuStyle]. Centralised here so changing the
+  /// emphasized width or radius updates every input and dropdown in one place.
   static OutlineInputBorder _focusedBorder(Color ringColor) =>
       OutlineInputBorder(
-        borderRadius: BorderRadius.circular(RadiusTokens.md),
+        borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
         borderSide: BorderSide(color: ringColor, width: BorderWidthTokens.lg),
       );
 
@@ -69,7 +72,7 @@ abstract final class InputThemeBuilder {
       border: _outlineBorder(colors.input),
       enabledBorder: _outlineBorder(colors.input),
       focusedBorder: _focusedBorder(colors.ring),
-      errorBorder: _outlineBorder(colors.destructive),
+      errorBorder: _focusedBorder(colors.destructive),
       focusedErrorBorder: _focusedBorder(colors.destructive),
       disabledBorder: _outlineBorder(
         colors.input.withValues(alpha: OpacityTokens.disabledSurface),
@@ -78,10 +81,12 @@ abstract final class InputThemeBuilder {
   }
 
   /// [DropdownMenuThemeData] — matches popover styling (same bg, border,
-  /// radius, shadow as other overlays). Its nested [InputDecorationTheme]
-  /// intentionally mirrors [inputDecoration] above to stay visually
-  /// consistent; both now delegate to [_outlineBorder] / [_focusedBorder]
-  /// so token changes propagate to both without manual synchronisation.
+  /// radius as other overlays) while its menu container keeps the M3 menu
+  /// elevation default (level 2 shadow) instead of the flat shadcn look. Its
+  /// nested [InputDecorationTheme] intentionally mirrors [inputDecoration]
+  /// above to stay visually consistent; both now delegate to [_outlineBorder]
+  /// / [_focusedBorder] so token changes propagate to both without manual
+  /// synchronisation.
   static DropdownMenuThemeData dropdownMenu(
     AppThemeColors colors,
     TextTheme textTheme,
@@ -90,12 +95,14 @@ abstract final class InputThemeBuilder {
       textStyle: textTheme.bodyMedium?.copyWith(color: colors.foreground),
       menuStyle: MenuStyle(
         backgroundColor: WidgetStatePropertyAll(colors.popover),
+        // Menus stay untinted in M3: Flutter's menu default is a transparent
+        // surfaceTint — menus elevate via shadow (level 2, 3 dp), not tonal
+        // tint. `elevation` / `shadowColor` are left unset so the M3 defaults
+        // (3 dp, scheme.shadow) apply rather than the former flat overrides.
         surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-        elevation: const WidgetStatePropertyAll(0),
-        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(RadiusTokens.md),
+            borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
             side: BorderSide(color: colors.border),
           ),
         ),
