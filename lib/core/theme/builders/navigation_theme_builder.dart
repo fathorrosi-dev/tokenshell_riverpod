@@ -7,8 +7,16 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 /// (app bar, bottom navigation bar, navigation rail, tab bar, drawer).
 ///
 /// See `button_theme_builder.dart` for the rationale behind splitting
-/// `app_theme.dart` by widget family — every value here is unchanged from
-/// the pre-split implementation.
+/// `app_theme.dart` by widget family.
+///
+/// Wave 1 M3 core refactor: drawer corners moved to the M3 large (16dp)
+/// shape category (spec container shape 0,16,16,0 — end corners only),
+/// tonal elevation restored (app bar scrolled state level 2 = 3dp, modal
+/// drawer level 1 = 1dp; the shadcn-era `surfaceTintColor`/`shadowColor`
+/// transparent overrides removed so elevation reads from `surfaceTint`),
+/// and the tab bar's `NoSplash` + accent hover/focus overrides removed in
+/// favor of the M3 state layers and ripple that `app_theme.dart` now
+/// renders by default.
 abstract final class NavigationThemeBuilder {
   static AppBarTheme appBar(
     AppThemeColors colors,
@@ -18,10 +26,9 @@ abstract final class NavigationThemeBuilder {
     return AppBarTheme(
       backgroundColor: colors.background,
       foregroundColor: colors.foreground,
+      // M3 top app bar: resting level 0, elevation on scroll level 2 (3dp).
       elevation: 0,
-      scrolledUnderElevation: 0,
-      surfaceTintColor: Colors.transparent,
-      shadowColor: Colors.transparent,
+      scrolledUnderElevation: 3,
       systemOverlayStyle: systemOverlayStyle,
       titleTextStyle: textTheme.titleLarge?.copyWith(
         color: colors.foreground,
@@ -45,8 +52,9 @@ abstract final class NavigationThemeBuilder {
   ) {
     return NavigationBarThemeData(
       backgroundColor: colors.background,
-      surfaceTintColor: Colors.transparent,
-      shadowColor: Colors.transparent,
+      // M3 navigation bar: elevation level 0 (no shadow/tint needed, and the
+      // previous transparent overrides are removed so nothing re-suppresses
+      // tonal elevation for the levels that do use it).
       elevation: 0,
       indicatorColor: colors.accent,
       iconTheme: WidgetStateProperty.resolveWith((states) {
@@ -121,26 +129,20 @@ abstract final class NavigationThemeBuilder {
       dividerHeight: BorderWidthTokens.sm,
       indicatorColor: colors.primary,
       indicatorSize: TabBarIndicatorSize.label,
-      overlayColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.hovered)) {
-          return colors.accent;
-        }
-        return Colors.transparent;
-      }),
-      splashFactory: NoSplash.splashFactory,
     );
   }
 
   static DrawerThemeData drawer(AppThemeColors colors) {
     return DrawerThemeData(
       backgroundColor: colors.background,
-      surfaceTintColor: Colors.transparent,
-      elevation: 0,
-      shadowColor: Colors.transparent,
+      // M3 modal navigation drawer: elevation level 1 (1dp).
+      elevation: 1,
+      // M3 drawer container shape: 0,16,16,0 dp — the two end (far) corners
+      // use the large (16dp) category; the near edge stays square.
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topRight: Radius.circular(RadiusTokens.lg),
-          bottomRight: Radius.circular(RadiusTokens.lg),
+          topRight: Radius.circular(RadiusTokens.large),
+          bottomRight: Radius.circular(RadiusTokens.large),
         ),
       ),
     );
