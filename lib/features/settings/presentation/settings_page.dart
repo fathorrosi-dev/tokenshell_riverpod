@@ -153,7 +153,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   },
                   // Local shape override removed (R6 / segmented button polish):
                   // ButtonThemeBuilder.segmentedButton() already sets the
-                  // correct RadiusTokens.md shape in the theme — a redundant
+                  // correct RadiusTokens.full shape in the theme — a redundant
                   // widget-level override here would silently shadow any future
                   // token update and was the only remaining raw-style reference
                   // in this file.
@@ -217,7 +217,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 /// ## Why Card, not Container + BoxDecoration (R6)
 ///
 /// The previous implementation hard-coded [colors.card], [colors.border], and
-/// [RadiusTokens.lg] via manual [BoxDecoration]. This meant that any update
+/// [RadiusTokens.medium] via manual [BoxDecoration]. This meant that any update
 /// to [SurfaceThemeBuilder.card()] — changing the radius, elevation, or border
 /// treatment — would NOT be reflected here, silently diverging from every other
 /// [Card] in the app.
