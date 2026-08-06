@@ -55,7 +55,7 @@ final class PostsListState {
   // calling `.add()` / `.remove()` on a reference they hold to
   // `state.posts`). Without this, a mutation would silently change the
   // list in-memory with no Riverpod notification and no Freezed equality
-  // enforcement — an especially real risk once Baseline's feature-level
+  // enforcement — an especially real risk once TokenShell's feature-level
   // notifiers start handling inline edits or reordering.
   //
   // Any caller that needs a mutable copy should use `List.of(state.posts)`

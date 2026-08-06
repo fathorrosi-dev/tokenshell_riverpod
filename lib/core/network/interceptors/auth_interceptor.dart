@@ -84,6 +84,6 @@ class AuthInterceptor extends Interceptor {
 ///
 /// Without this, crashes in production cannot be attributed to a specific
 /// client account — making support triage significantly harder for a B2B
-/// SaaS like Baseline.
+/// SaaS like TokenShell.
 @Riverpod(keepAlive: true)
 AccessTokenReader accessTokenReader(Ref ref) => _noAccessToken;

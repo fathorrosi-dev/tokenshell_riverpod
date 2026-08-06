@@ -34,7 +34,7 @@ part of 'posts_notifier.dart';
 /// navigation. With autoDispose, every switch to Settings or Home and back
 /// would dispose this notifier — resetting to page 1 and discarding all
 /// pages the user had already scrolled through. For a daily-use
-/// productivity tool like Baseline, that's an unnecessary UX regression.
+/// productivity tool like TokenShell, that's an unnecessary UX regression.
 ///
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
@@ -72,7 +72,7 @@ final postsProvider = PostsNotifierProvider._();
 /// navigation. With autoDispose, every switch to Settings or Home and back
 /// would dispose this notifier — resetting to page 1 and discarding all
 /// pages the user had already scrolled through. For a daily-use
-/// productivity tool like Baseline, that's an unnecessary UX regression.
+/// productivity tool like TokenShell, that's an unnecessary UX regression.
 ///
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
@@ -108,7 +108,7 @@ final class PostsNotifierProvider
   /// navigation. With autoDispose, every switch to Settings or Home and back
   /// would dispose this notifier — resetting to page 1 and discarding all
   /// pages the user had already scrolled through. For a daily-use
-  /// productivity tool like Baseline, that's an unnecessary UX regression.
+  /// productivity tool like TokenShell, that's an unnecessary UX regression.
   ///
   /// Tradeoff: keepAlive means the list stays in memory for the app's
   /// lifetime. For stale-data mitigation, consider calling [refresh] on
@@ -163,7 +163,7 @@ String _$postsNotifierHash() => r'24cf06e8e68192bfa644137ea0fe147053e58515';
 /// navigation. With autoDispose, every switch to Settings or Home and back
 /// would dispose this notifier — resetting to page 1 and discarding all
 /// pages the user had already scrolled through. For a daily-use
-/// productivity tool like Baseline, that's an unnecessary UX regression.
+/// productivity tool like TokenShell, that's an unnecessary UX regression.
 ///
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
