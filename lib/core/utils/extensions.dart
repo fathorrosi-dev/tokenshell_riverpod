@@ -11,11 +11,19 @@ import 'package:tokenshell_riverpod/core/utils/responsive_helper.dart';
 extension AppContextX on BuildContext {
   // ── Theme shortcuts ──────────────────────────────────────────────────────────
 
-  /// Access the resolved shadcn/ui color tokens for the current brightness.
-  AppThemeColors get colors => AppThemeExtension.of(this).colors;
-
   /// Material 3 [ColorScheme] from the active [ThemeData].
+  ///
+  /// This is the primary color-access API for the app — every role that
+  /// has a native M3 role (surface, primary, outline, ...) is read from
+  /// here directly rather than through a custom wrapper.
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
+
+  /// Access the app's status/semantic color tokens (success, warning, info,
+  /// error) for the current brightness.
+  ///
+  /// Material 3 has no built-in [ColorScheme] role for these four states,
+  /// so they're carried by [AppThemeExtension] instead of [colorScheme].
+  AppStatusColors get statusColors => AppThemeExtension.of(this).status;
 
   /// Material 3 [TextTheme] from the active [ThemeData].
   TextTheme get textTheme => Theme.of(this).textTheme;

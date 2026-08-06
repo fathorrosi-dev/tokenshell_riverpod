@@ -76,13 +76,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
+    final colors = context.colorScheme;
     final themeAsync = ref.watch(themeModeProvider);
     final packageInfoAsync = ref.watch(packageInfoProvider);
     final currentMode = themeAsync.asData?.value ?? ThemeMode.system;
 
     return Scaffold(
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
       appBar: AppBar(title: const Text(AppStrings.settingsAppBarTitle)),
       body: ListView(
         padding: context.pagePadding,
@@ -101,7 +101,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 Text(
                   AppStrings.settingsThemeModeLabel,
                   style: context.textTheme.bodyMedium?.copyWith(
-                    color: colors.foreground,
+                    color: colors.onSurface,
                     fontWeight: TypographyTokens.weightMedium,
                   ),
                 ),
@@ -109,7 +109,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 Text(
                   AppStrings.settingsThemeModeDescription,
                   style: context.textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
+                    color: colors.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.xl),
@@ -177,24 +177,36 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   label: AppStrings.settingsAboutTemplateLabel,
                   value: AppStrings.settingsAboutTemplateValue,
                 ),
-                Divider(height: SpacingTokens.x3l, color: colors.border),
+                Divider(
+                  height: SpacingTokens.x3l,
+                  color: colors.outlineVariant,
+                ),
                 _InfoRow(
                   label: AppStrings.settingsAboutVersionLabel,
                   value:
                       packageInfoAsync.asData?.value.version ??
                       AppStrings.settingsAboutVersionFallback,
                 ),
-                Divider(height: SpacingTokens.x3l, color: colors.border),
+                Divider(
+                  height: SpacingTokens.x3l,
+                  color: colors.outlineVariant,
+                ),
                 const _InfoRow(
                   label: AppStrings.settingsAboutArchitectureLabel,
                   value: AppStrings.settingsAboutArchitectureValue,
                 ),
-                Divider(height: SpacingTokens.x3l, color: colors.border),
+                Divider(
+                  height: SpacingTokens.x3l,
+                  color: colors.outlineVariant,
+                ),
                 const _InfoRow(
                   label: AppStrings.settingsAboutStateLabel,
                   value: AppStrings.settingsAboutStateValue,
                 ),
-                Divider(height: SpacingTokens.x3l, color: colors.border),
+                Divider(
+                  height: SpacingTokens.x3l,
+                  color: colors.outlineVariant,
+                ),
                 const _InfoRow(
                   label: AppStrings.settingsAboutDesignSystemLabel,
                   value: AppStrings.settingsAboutDesignSystemValue,
@@ -216,8 +228,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 ///
 /// ## Why Card, not Container + BoxDecoration (R6)
 ///
-/// The previous implementation hard-coded [colors.card], [colors.border], and
-/// [RadiusTokens.medium] via manual [BoxDecoration]. This meant that any update
+/// The previous implementation hard-coded a manual card fill color, border
+/// color, and [RadiusTokens.medium] via manual [BoxDecoration]. This meant that any update
 /// to [SurfaceThemeBuilder.card()] — changing the radius, elevation, or border
 /// treatment — would NOT be reflected here, silently diverging from every other
 /// [Card] in the app.
@@ -249,20 +261,20 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
+    final colors = context.colorScheme;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
           style: context.textTheme.bodyMedium?.copyWith(
-            color: colors.mutedForeground,
+            color: colors.onSurfaceVariant,
           ),
         ),
         Text(
           value,
           style: context.textTheme.bodyMedium?.copyWith(
-            color: colors.foreground,
+            color: colors.onSurface,
             fontWeight: TypographyTokens.weightMedium,
           ),
         ),

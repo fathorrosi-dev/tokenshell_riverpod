@@ -17,7 +17,7 @@ abstract final class OpacityTokens {
   /// 0.08 — standard hover overlay (e.g., tint on primary button background on hover).
   static const double hover = 0.08;
 
-  /// 0.12 — pressed / splash overlay (e.g., ripple-equivalent for shadcn feel).
+  /// 0.12 — pressed / splash overlay (M3 pressed state-layer opacity).
   static const double pressed = 0.12;
 
   /// 0.12 — root [ThemeData.focusColor] overlay alpha.
@@ -43,7 +43,7 @@ abstract final class OpacityTokens {
   /// 0.5 — disabled surface (background, border, or track when a component is disabled).
   ///
   /// Used for elevated button background/foreground in disabled state, input borders,
-  /// switch thumbs, and as the root [ThemeData.hoverColor] overlay on accent surfaces.
+  /// switch thumbs, and as the root [ThemeData.hoverColor] overlay on primary surfaces.
   static const double disabledSurface = 0.5;
 
   // ── Semantic fills ───────────────────────────────────────────────────────────

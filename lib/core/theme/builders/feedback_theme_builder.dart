@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 
 /// Builds [ThemeData] sub-themes for smaller interactive/feedback
@@ -17,27 +16,26 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 /// Wave 1 M3 core refactor: shapes moved onto the M3 per-component shape
 /// categories (chips=small 8dp, checkbox/snackbar/menu=extraSmall 4dp,
 /// scrollbar=full), snackbar elevation restored to the M3 6dp default, and
-/// the shadcn-era manual hover/focus overrides (built on the pre-Wave-0
-/// NoSplash premise) removed in favor of the M3 state layers and ripple that
-/// `app_theme.dart` now renders by default.
+/// the legacy manual hover/focus overrides removed in favor of the M3 state
+/// layers and ripple that `app_theme.dart` now renders by default.
 abstract final class FeedbackThemeBuilder {
-  static ChipThemeData chip(AppThemeColors colors, TextTheme textTheme) {
+  static ChipThemeData chip(ColorScheme colors, TextTheme textTheme) {
     return ChipThemeData(
-      backgroundColor: colors.secondary,
+      backgroundColor: colors.secondaryContainer,
       selectedColor: colors.primary,
-      disabledColor: colors.muted,
-      deleteIconColor: colors.mutedForeground,
+      disabledColor: colors.surfaceContainerHighest,
+      deleteIconColor: colors.onSurfaceVariant,
       labelStyle: textTheme.labelMedium?.copyWith(
-        color: colors.secondaryForeground,
+        color: colors.onSecondaryContainer,
       ),
       secondaryLabelStyle: textTheme.labelMedium?.copyWith(
-        color: colors.primaryForeground,
+        color: colors.onPrimary,
       ),
-      // M3 outlined-chip border uses the outline role. `colors.border`
-      // bridges to outlineVariant (decorative dividers) and fails the 3:1
-      // non-text contrast bar on the secondaryContainer fill; `colors.input`
-      // bridges to outline (~3.2:1 light) — a genuine M3 role, not a divider.
-      side: BorderSide(color: colors.input),
+      // M3 outlined-chip border uses the outline role, not outlineVariant:
+      // outlineVariant is for decorative dividers and fails the 3:1
+      // non-text contrast bar against the secondaryContainer fill here,
+      // while outline (~3.2:1 in light mode) is built for exactly this.
+      side: BorderSide(color: colors.outline),
       // M3 chip shape category: small (8dp).
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(RadiusTokens.small),
@@ -51,76 +49,79 @@ abstract final class FeedbackThemeBuilder {
     );
   }
 
-  static SwitchThemeData switchTheme(AppThemeColors colors) {
+  static SwitchThemeData switchTheme(ColorScheme colors) {
     return SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return colors.mutedForeground.withValues(
+          return colors.onSurfaceVariant.withValues(
             alpha: OpacityTokens.disabledSurface,
           );
         }
         if (states.contains(WidgetState.selected)) {
-          return colors.primaryForeground;
+          return colors.onPrimary;
         }
-        return colors.mutedForeground;
+        return colors.onSurfaceVariant;
       }),
       trackColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return colors.muted;
+          return colors.surfaceContainerHighest;
         }
         if (states.contains(WidgetState.selected)) {
           return colors.primary;
         }
-        return colors.input;
+        return colors.outline;
       }),
-      // Unselected track is already the outline-colored solid (colors.input),
-      // so an additional M3 outline border is intentionally suppressed.
+      // Unselected track is already the outline-colored solid, so an
+      // additional M3 outline border is intentionally suppressed.
       trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
     );
   }
 
-  static CheckboxThemeData checkbox(AppThemeColors colors) {
+  static CheckboxThemeData checkbox(ColorScheme colors) {
     return CheckboxThemeData(
       fillColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.disabled)) return colors.muted;
+        if (states.contains(WidgetState.disabled)) {
+          return colors.surfaceContainerHighest;
+        }
         if (states.contains(WidgetState.selected)) return colors.primary;
         // Unselected: transparent fill. M3 hover/focus/pressed state layers
-        // (onSurface) render automatically now that the ripple/state-layer
-        // suppression is gone — no manual tint needed (and the old accent fill
-        // would resolve to a near-black solid since accent bridges to primary).
+        // (onSurface) render automatically — no manual tint needed.
         return Colors.transparent;
       }),
-      checkColor: WidgetStatePropertyAll(colors.primaryForeground),
+      checkColor: WidgetStatePropertyAll(colors.onPrimary),
       side: WidgetStateBorderSide.resolveWith((states) {
         // selected → primary (solid fill matches the border — clear checked state).
         if (states.contains(WidgetState.selected)) {
           return BorderSide(color: colors.primary, width: BorderWidthTokens.md);
         }
-        // disabled → muted (recedes, signals non-interactable).
+        // disabled → muted surface tier (recedes, signals non-interactable).
         if (states.contains(WidgetState.disabled)) {
-          return BorderSide(color: colors.muted, width: BorderWidthTokens.md);
+          return BorderSide(
+            color: colors.surfaceContainerHighest,
+            width: BorderWidthTokens.md,
+          );
         }
-        // focused → ring color at 2 px width. Mirrors the focused input border
-        // treatment (focusedBorder uses ring + BorderWidthTokens.lg) so keyboard
-        // focus on a checkbox looks consistent with focus on any TextField.
-        // Documented exception to the M3 default: the framework's focus state
-        // layer now renders (Wave 0 restored the interaction defaults), but an
-        // explicit 2px border keeps focus unmistakable for keyboard/tab users.
+        // focused → primary at 2 px width. Mirrors the focused input border
+        // treatment (focusedBorder uses primary + BorderWidthTokens.lg) so
+        // keyboard focus on a checkbox looks consistent with focus on any
+        // TextField. M3 has no dedicated "focus ring" role — primary is
+        // this app's deliberate stand-in (see theme_constants.dart).
+        // Documented exception to the M3 default: the framework's focus
+        // state layer already renders, but an explicit 2px border keeps
+        // focus unmistakable for keyboard/tab users.
         if (states.contains(WidgetState.focused)) {
-          return BorderSide(color: colors.ring, width: BorderWidthTokens.lg);
+          return BorderSide(color: colors.primary, width: BorderWidthTokens.lg);
         }
-        // hovered → primary border at normal width. More prominent than input
-        // color at rest, signalling the control is about to be clicked.
+        // hovered → primary border at normal width. More prominent than the
+        // outline color at rest, signalling the control is about to be clicked.
         if (states.contains(WidgetState.hovered)) {
           return BorderSide(color: colors.primary, width: BorderWidthTokens.md);
         }
-        // unselected (default) → input token (bridges to M3 outline).
-        // Using the outline color (same as TextField) makes unchecked
-        // checkboxes visually consistent with the rest of the form — lighter
-        // weight so they don't compete for attention in a list of fields.
-        // The previous value (colors.primary, near-black) made every unchecked
-        // checkbox as visually heavy as a selected one.
-        return BorderSide(color: colors.input, width: BorderWidthTokens.md);
+        // unselected (default) → outline role. Using the same color as
+        // TextField borders makes unchecked checkboxes visually consistent
+        // with the rest of the form — lighter weight so they don't compete
+        // for attention in a list of fields.
+        return BorderSide(color: colors.outline, width: BorderWidthTokens.md);
       }),
       shape: RoundedRectangleBorder(
         // M3 checkbox is a rounded square (spec container shape 2dp; Flutter
@@ -131,74 +132,72 @@ abstract final class FeedbackThemeBuilder {
     );
   }
 
-  static RadioThemeData radio(AppThemeColors colors) {
+  static RadioThemeData radio(ColorScheme colors) {
     return RadioThemeData(
       fillColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return colors.mutedForeground.withValues(
+          return colors.onSurfaceVariant.withValues(
             alpha: OpacityTokens.disabledContent,
           );
         }
         if (states.contains(WidgetState.selected)) return colors.primary;
         // Unselected: transparent fill. M3 hover/focus/pressed state layers
-        // (onSurface) render automatically now that the interaction defaults
-        // are restored — the old focused→ring / hovered→foreground branches
-        // resolved to near-black solids (ring/foreground bridge to primary/
-        // onSurface) and are no longer needed.
+        // (onSurface) render automatically — no manual tint needed.
         return Colors.transparent;
       }),
     );
   }
 
   static SnackBarThemeData snackBar(
-    AppThemeColors colors,
+    ColorScheme colors,
     TextTheme textTheme,
   ) {
     return SnackBarThemeData(
-      backgroundColor: colors.foreground,
+      backgroundColor: colors.onSurface,
       contentTextStyle: textTheme.bodyMedium?.copyWith(
-        color: colors.background,
+        color: colors.surface,
       ),
-      // SnackBar background is colors.foreground (near-black in light, near-white
-      // in dark). The action text must contrast against that background:
-      //   • Light mode: foreground ≈ #030712 (near-black) → use primaryForeground
-      //     (#FAFAFA, near-white) so action text is readable on the dark snackbar.
-      //   • Dark mode:  foreground ≈ #F9FAFB (near-white) → use primaryForeground
-      //     (#18181B, near-black) so action text is readable on the light snackbar.
-      // primaryForeground is always the inverse of primary, making it the natural
+      // SnackBar background is colors.onSurface (dark-toned in light mode,
+      // light-toned in dark mode — see ColorTokens.lightOnSurface /
+      // darkOnSurface). The action text must contrast against that
+      // background:
+      //   • Light mode: onSurface is the dark tone → use onPrimary (white
+      //     in light mode) so action text is readable on the dark snackbar.
+      //   • Dark mode: onSurface is the light tone → use onPrimary (dark in
+      //     dark mode) so action text is readable on the light snackbar.
+      // onPrimary is always the inverse of primary, making it the natural
       // choice regardless of brightness — explicit and predictable.
-      actionTextColor: colors.primaryForeground,
+      actionTextColor: colors.onPrimary,
       shape: RoundedRectangleBorder(
         // M3 snackbar shape category: extraSmall (4dp).
         borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
       ),
       behavior: SnackBarBehavior.floating,
-      // M3 snackbar elevation is 6dp (default). The previous flat
-      // `elevation: 0` override is dropped; in the monochrome scheme the
-      // surfaceTint at 6dp is ~indistinguishable from the container color.
+      // M3 snackbar elevation is 6dp (default). In the monochrome scheme
+      // the surfaceTint at 6dp is ~indistinguishable from the container
+      // color, so no explicit override is needed here.
     );
   }
 
-  static ProgressIndicatorThemeData progressIndicator(AppThemeColors colors) {
+  static ProgressIndicatorThemeData progressIndicator(ColorScheme colors) {
     return ProgressIndicatorThemeData(
       color: colors.primary,
-      linearTrackColor: colors.muted,
-      circularTrackColor: colors.muted,
+      linearTrackColor: colors.surfaceContainerHighest,
+      circularTrackColor: colors.surfaceContainerHighest,
       linearMinHeight: 4,
     );
   }
 
-  /// Flat 4px track, solid thumb; M3 hover/focus/pressed overlay restored
-  /// (the shadcn-era `overlayColor: transparent` + zero-radius overlay
-  /// suppression is dropped so the slider shows its state layer again).
-  static SliderThemeData slider(AppThemeColors colors, TextTheme textTheme) {
+  /// Flat 4px track, solid thumb; M3 hover/focus/pressed overlay is left at
+  /// the framework default so the slider shows its state layer.
+  static SliderThemeData slider(ColorScheme colors, TextTheme textTheme) {
     return SliderThemeData(
       activeTrackColor: colors.primary,
-      inactiveTrackColor: colors.muted,
+      inactiveTrackColor: colors.surfaceContainerHighest,
       disabledActiveTrackColor: colors.primary.withValues(
         alpha: OpacityTokens.disabledSurface,
       ),
-      disabledInactiveTrackColor: colors.muted,
+      disabledInactiveTrackColor: colors.surfaceContainerHighest,
       thumbColor: colors.primary,
       disabledThumbColor: colors.primary.withValues(
         alpha: OpacityTokens.disabledSurface,
@@ -208,19 +207,19 @@ abstract final class FeedbackThemeBuilder {
       trackHeight: 4,
       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
       valueIndicatorShape: const DropSliderValueIndicatorShape(),
-      valueIndicatorColor: colors.popover,
+      valueIndicatorColor: colors.surfaceContainerHigh,
       valueIndicatorTextStyle: textTheme.labelSmall?.copyWith(
-        color: colors.popoverForeground,
+        color: colors.onSurface,
       ),
       showValueIndicator: ShowValueIndicator.onlyForDiscrete,
     );
   }
 
   /// Notification badges follow the primary color. smallSize is a dot-only badge.
-  static BadgeThemeData badge(AppThemeColors colors, TextTheme textTheme) {
+  static BadgeThemeData badge(ColorScheme colors, TextTheme textTheme) {
     return BadgeThemeData(
       backgroundColor: colors.primary,
-      textColor: colors.primaryForeground,
+      textColor: colors.onPrimary,
       smallSize: 6,
       largeSize: 16,
       textStyle: textTheme.labelSmall,
@@ -229,36 +228,37 @@ abstract final class FeedbackThemeBuilder {
   }
 
   /// Used for accordion / settings sections. Border-bottom only, transparent bg.
-  static ExpansionTileThemeData expansionTile(AppThemeColors colors) {
+  static ExpansionTileThemeData expansionTile(ColorScheme colors) {
     return ExpansionTileThemeData(
       backgroundColor: Colors.transparent,
       collapsedBackgroundColor: Colors.transparent,
-      iconColor: colors.mutedForeground,
-      collapsedIconColor: colors.mutedForeground,
-      textColor: colors.foreground,
-      collapsedTextColor: colors.foreground,
+      iconColor: colors.onSurfaceVariant,
+      collapsedIconColor: colors.onSurfaceVariant,
+      textColor: colors.onSurface,
+      collapsedTextColor: colors.onSurface,
       tilePadding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.xl,
         vertical: SpacingTokens.xs,
       ),
       childrenPadding: const EdgeInsets.only(bottom: SpacingTokens.md),
-      // Border-bottom only — consistent with shadcn/ui list divider pattern.
-      shape: Border(bottom: BorderSide(color: colors.border)),
-      collapsedShape: Border(bottom: BorderSide(color: colors.border)),
+      // Border-bottom only — a deliberately minimal divider treatment
+      // rather than a fully bordered container.
+      shape: Border(bottom: BorderSide(color: colors.outlineVariant)),
+      collapsedShape: Border(bottom: BorderSide(color: colors.outlineVariant)),
     );
   }
 
   /// Minimal pill scrollbar — visible only on hover/drag, transparent track.
-  static ScrollbarThemeData scrollbar(AppThemeColors colors) {
+  static ScrollbarThemeData scrollbar(ColorScheme colors) {
     return ScrollbarThemeData(
       thumbColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.dragged) ||
             states.contains(WidgetState.hovered)) {
           // More visible when interacting.
-          return colors.mutedForeground;
+          return colors.onSurfaceVariant;
         }
-        // Subtle at rest — consistent with shadcn/ui's minimal aesthetic.
-        return colors.border;
+        // Subtle at rest — deliberately minimal.
+        return colors.outlineVariant;
       }),
       trackColor: const WidgetStatePropertyAll(Colors.transparent),
       trackBorderColor: const WidgetStatePropertyAll(Colors.transparent),
@@ -272,10 +272,9 @@ abstract final class FeedbackThemeBuilder {
   }
 
   /// MenuAnchor / SubmenuButton items. Transparent rest state; hover/focus/
-  /// pressed feedback comes from the M3 state layer and ripple (restored in
-  /// Wave 0) instead of the old shadcn accent hover.
+  /// pressed feedback comes from the M3 state layer and ripple.
   static MenuButtonThemeData menuButton(
-    AppThemeColors colors,
+    ColorScheme colors,
     TextTheme textTheme,
   ) {
     return MenuButtonThemeData(
@@ -283,11 +282,11 @@ abstract final class FeedbackThemeBuilder {
         backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.disabledContent,
             );
           }
-          return colors.foreground;
+          return colors.onSurface;
         }),
         textStyle: WidgetStatePropertyAll(
           textTheme.bodyMedium?.copyWith(

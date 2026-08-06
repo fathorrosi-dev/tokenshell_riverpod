@@ -84,7 +84,7 @@ class _OfflineBannerWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
+    final status = context.statusColors;
 
     return Column(
       children: [
@@ -94,13 +94,13 @@ class _OfflineBannerWrapper extends StatelessWidget {
             horizontal: SpacingTokens.xl,
             vertical: SpacingTokens.sm,
           ),
-          color: colors.status.warning,
+          color: status.warning,
           child: Row(
             children: [
               Icon(
                 Icons.wifi_off_rounded,
                 size: IconSizeTokens.sm,
-                color: colors.status.warningForeground,
+                color: status.warningForeground,
               ),
               const SizedBox(width: SpacingTokens.sm),
               Text(
@@ -110,7 +110,7 @@ class _OfflineBannerWrapper extends StatelessWidget {
                 // Fixed so future i18n retrofits don't miss this string.
                 AppStrings.shellOfflineBanner,
                 style: context.textTheme.labelMedium?.copyWith(
-                  color: colors.status.warningForeground,
+                  color: status.warningForeground,
                   // Reset letterSpacing to Normal: labelMedium uses trackingWide
                   // (0.4 px) by default, which reads oddly for sentence-case copy.
                   letterSpacing: TypographyTokens.trackingNormal,
@@ -194,7 +194,7 @@ class _RailShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
+    final colors = context.colorScheme;
     final selectedIdx = _selectedIndex(context);
 
     return Scaffold(
@@ -235,7 +235,7 @@ class _RailShell extends StatelessWidget {
                 ),
             ],
           ),
-          VerticalDivider(width: 1, thickness: 1, color: colors.border),
+          VerticalDivider(width: 1, thickness: 1, color: colors.outlineVariant),
           Expanded(child: child),
         ],
       ),

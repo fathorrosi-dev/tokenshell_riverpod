@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
 import 'package:tokenshell_riverpod/core/routing/routes.dart';
-import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 import 'package:tokenshell_riverpod/core/utils/extensions.dart';
 import 'package:tokenshell_riverpod/features/posts/domain/entities/post.dart';
 
-/// Renders a single [Post] as a shadcn/ui-inspired card.
+/// Renders a single [Post] as a Material 3 card.
 ///
 /// Color contract: every color value is sourced exclusively from
-/// [AppThemeExtension] semantic tokens or [ThemeData] ColorScheme.
-/// No hardcoded [Color] literals are present in this file.
+/// `Theme.of(context).colorScheme`. No hardcoded [Color] literals are
+/// present in this file.
 class PostCard extends StatelessWidget {
   const PostCard({required this.post, super.key});
 
@@ -18,7 +17,7 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
+    final colors = context.colorScheme;
     final textTheme = context.textTheme;
 
     return Card(
@@ -38,14 +37,14 @@ class PostCard extends StatelessWidget {
                 children: [
                   _Badge(
                     label: AppStrings.postCardIdBadge(post.id),
-                    backgroundColor: colors.muted,
-                    foregroundColor: colors.mutedForeground,
+                    backgroundColor: colors.surfaceContainerHighest,
+                    foregroundColor: colors.onSurfaceVariant,
                   ),
                   const SizedBox(width: SpacingTokens.md),
                   _Badge(
                     label: AppStrings.postCardUserBadge(post.userId),
-                    backgroundColor: colors.secondary,
-                    foregroundColor: colors.secondaryForeground,
+                    backgroundColor: colors.secondaryContainer,
+                    foregroundColor: colors.onSecondaryContainer,
                   ),
                 ],
               ),
@@ -55,7 +54,7 @@ class PostCard extends StatelessWidget {
               Text(
                 post.title.capitalised,
                 style: textTheme.titleSmall?.copyWith(
-                  color: colors.cardForeground,
+                  color: colors.onSurface,
                   fontWeight: TypographyTokens.weightSemiBold,
                 ),
                 maxLines: 2,
@@ -67,7 +66,7 @@ class PostCard extends StatelessWidget {
               Text(
                 post.body,
                 style: textTheme.bodySmall?.copyWith(
-                  color: colors.mutedForeground,
+                  color: colors.onSurfaceVariant,
                   height: TypographyTokens.leadingRelaxed,
                 ),
                 maxLines: 3,
@@ -83,7 +82,7 @@ class PostCard extends StatelessWidget {
                   Text(
                     AppStrings.postCardReadMore,
                     style: textTheme.labelMedium?.copyWith(
-                      color: colors.mutedForeground,
+                      color: colors.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(width: SpacingTokens.xs),
@@ -93,7 +92,7 @@ class PostCard extends StatelessWidget {
                   Icon(
                     Icons.arrow_forward_rounded,
                     size: IconSizeTokens.xs,
-                    color: colors.mutedForeground,
+                    color: colors.onSurfaceVariant,
                   ),
                 ],
               ),

@@ -11,10 +11,10 @@ import 'package:tokenshell_riverpod/core/theme/theme_constants.dart';
 
 /// Produces fully-configured [ThemeData] for light and dark modes.
 ///
-/// Both factory methods are pure functions: given the same token set
-/// they always return the same [ThemeData]. Zero values are hardcoded
-/// here — every dimension, color, opacity, and duration is sourced from
-/// a token file in the design_system barrel.
+/// Both factory methods are pure functions: given the same brightness they
+/// always return the same [ThemeData]. Zero values are hardcoded here —
+/// every dimension, color, opacity, and duration is sourced from a token
+/// file in the design_system barrel.
 ///
 /// The ~40 individual widget sub-themes used to all live inline in
 /// [_build] (800+ lines in one static method). They're now composed from
@@ -36,14 +36,14 @@ import 'package:tokenshell_riverpod/core/theme/theme_constants.dart';
 abstract final class AppTheme {
   /// Returns a complete light-mode [ThemeData].
   static ThemeData light() => _build(
-    colors: ThemeConstants.lightColors,
+    status: ThemeConstants.lightStatus,
     brightness: Brightness.light,
     systemOverlayStyle: SystemUiOverlayStyle.dark,
   );
 
   /// Returns a complete dark-mode [ThemeData].
   static ThemeData dark() => _build(
-    colors: ThemeConstants.darkColors,
+    status: ThemeConstants.darkStatus,
     brightness: Brightness.dark,
     systemOverlayStyle: SystemUiOverlayStyle.light,
   );
@@ -51,17 +51,17 @@ abstract final class AppTheme {
   // ── Internal builder ──────────────────────────────────────────────────────────
 
   static ThemeData _build({
-    required AppThemeColors colors,
+    required AppStatusColors status,
     required Brightness brightness,
     required SystemUiOverlayStyle systemOverlayStyle,
   }) {
-    final colorScheme = ThemeConstants.colorSchemeFrom(colors, brightness);
-    final textTheme = ThemeConstants.textThemeFrom(colors.foreground);
+    final colors = ThemeConstants.colorSchemeFrom(brightness);
+    final textTheme = ThemeConstants.textThemeFrom(colors.onSurface);
 
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
-      colorScheme: colorScheme,
+      colorScheme: colors,
       textTheme: textTheme,
       // Explicitly mirror `textTheme` here instead of leaving this unset.
       // Left unset, `ThemeData` falls back to its own legacy
@@ -79,11 +79,13 @@ abstract final class AppTheme {
       // `.apply()` on it is always safe regardless of widget-tree state.
       primaryTextTheme: textTheme,
 
-      // Register the shadcn/ui extension — required for AppThemeExtension.of(ctx)
-      extensions: [AppThemeExtension(colors: colors)],
+      // Register the status-colors extension — required for
+      // AppThemeExtension.of(ctx). Every other color role is already on
+      // `colorScheme` above and needs no extension.
+      extensions: [AppThemeExtension(status: status)],
 
       // ── Scaffold ────────────────────────────────────────────────────────────
-      scaffoldBackgroundColor: colors.background,
+      scaffoldBackgroundColor: colors.surface,
 
       // ── Navigation chrome ──────────────────────────────────────────────────
       appBarTheme: NavigationThemeBuilder.appBar(
@@ -109,7 +111,7 @@ abstract final class AppTheme {
       listTileTheme: SurfaceThemeBuilder.listTile(colors, textTheme),
       popupMenuTheme: SurfaceThemeBuilder.popupMenu(colors, textTheme),
       bottomSheetTheme: SurfaceThemeBuilder.bottomSheet(colors),
-      tooltipTheme: SurfaceThemeBuilder.tooltip(colors, textTheme, brightness),
+      tooltipTheme: SurfaceThemeBuilder.tooltip(colors, textTheme),
 
       // ── Form inputs ───────────────────────────────────────────────────────────
       inputDecorationTheme: InputThemeBuilder.inputDecoration(
@@ -145,27 +147,23 @@ abstract final class AppTheme {
 
       // ── Icons ────────────────────────────────────────────────────────────────
       iconTheme: IconThemeData(
-        color: colors.foreground,
+        color: colors.onSurface,
         size: IconSizeTokens.md,
       ),
       primaryIconTheme: IconThemeData(
-        color: colors.primaryForeground,
+        color: colors.onPrimary,
         size: IconSizeTokens.md,
       ),
 
       // ── Splash / ink / state layers ──────────────────────────────────────────
-      // No overrides at this level: the previous suppression
-      // (`NoSplash.splashFactory`, transparent `highlightColor`, and the
-      // focus/hover overrides that replicated shadcn/ui's flat feel) is removed
-      // so components get the M3 interaction defaults —
+      // No overrides at this level: components get the M3 interaction
+      // defaults —
       //   • ripple via the platform InkSparkle/InkRipple splashFactory,
       //   • state layers per m3.material.io/foundations/interaction/states
       //     (hover onSurface@8%, focus @12%, pressed @12%, dragged @16%).
       // The ripple is not a state layer itself — it's the pressed feedback the
-      // M3 spec pairs with those overlays. Tonal elevation is likewise
-      // re-enabled through ColorScheme.surfaceTint = primary (see
-      // theme_constants.dart); per-widget surfaceTintColor overrides that
-      // remain in the builder files are Wave 1 scope.
+      // M3 spec pairs with those overlays. Tonal elevation is provided
+      // through ColorScheme.surfaceTint = primary (see theme_constants.dart).
     );
   }
 }

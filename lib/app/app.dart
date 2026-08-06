@@ -39,10 +39,12 @@ class App extends ConsumerWidget {
     // theming) that *can* fail.
     //
     // IMPORTANT: both fallback ThemeData objects must register
-    // AppThemeExtension — without it, every context.colors call in the
-    // widget tree throws StateError ("AppThemeExtension not found in
+    // AppThemeExtension — without it, every context.statusColors call in
+    // the widget tree throws StateError ("AppThemeExtension not found in
     // ThemeData"), which defeats the entire purpose of the fallback.
-    // ThemeConstants.lightColors / darkColors are const, so registering
+    // (context.colorScheme is unaffected either way: ThemeData.light() /
+    // .dark() always populate a default ColorScheme on their own.)
+    // ThemeConstants.lightStatus / darkStatus are const, so registering
     // them here costs nothing at runtime.
     ThemeData lightTheme;
     ThemeData darkTheme;
@@ -60,12 +62,12 @@ class App extends ConsumerWidget {
           );
       lightTheme = ThemeData.light(useMaterial3: true).copyWith(
         extensions: [
-          const AppThemeExtension(colors: ThemeConstants.lightColors),
+          const AppThemeExtension(status: ThemeConstants.lightStatus),
         ],
       );
       darkTheme = ThemeData.dark(useMaterial3: true).copyWith(
         extensions: [
-          const AppThemeExtension(colors: ThemeConstants.darkColors),
+          const AppThemeExtension(status: ThemeConstants.darkStatus),
         ],
       );
     }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 
 /// Builds [ThemeData] sub-themes for surface/container widgets — things
@@ -12,61 +11,62 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 ///
 /// Wave 1 M3 core refactor: shapes moved onto the M3 per-component shape
 /// categories (card=medium 12dp, dialog/bottom-sheet=extraLarge 28dp,
-/// popup menu/tooltip=extraSmall 4dp, list tile=rectangular), the flat
-/// shadcn-era elevation/surfaceTint/shadow overrides removed so each
-/// component falls back to its M3 elevation default, and the outline
-/// borders on card/dialog/menu dropped (M3 elevated surfaces are
-/// borderless).
+/// popup menu/tooltip=extraSmall 4dp, list tile=rectangular), each
+/// component's elevation/surfaceTint/shadow falls back to its M3 default,
+/// the outline borders on card/dialog/menu are dropped (M3 elevated
+/// surfaces are borderless), and [tooltip] now renders the genuine M3
+/// "plain tooltip" — an inverseSurface fill with no border and no shadow —
+/// instead of a bordered popover-style surface.
 abstract final class SurfaceThemeBuilder {
-  static CardThemeData card(AppThemeColors colors) {
+  static CardThemeData card(ColorScheme colors) {
     return CardThemeData(
-      color: colors.card,
+      color: colors.surfaceContainerLow,
       margin: EdgeInsets.zero,
-      // M3 elevated card: medium (12dp) shape, no outline border. The old
-      // `elevation: 0` + transparent shadow are dropped — the M3 defaults
-      // (elevation 1 with colorScheme.shadow) restore the tonal lift.
+      // M3 elevated card: medium (12dp) shape, no outline border. The M3
+      // defaults (elevation 1 with colorScheme.shadow) provide the tonal lift.
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(RadiusTokens.medium),
       ),
     );
   }
 
-  static DividerThemeData divider(AppThemeColors colors) {
+  static DividerThemeData divider(ColorScheme colors) {
     return DividerThemeData(
-      color: colors.border,
+      color: colors.outlineVariant,
       thickness: BorderWidthTokens.sm,
       space: 0,
     );
   }
 
-  static DialogThemeData dialog(AppThemeColors colors, TextTheme textTheme) {
+  static DialogThemeData dialog(ColorScheme colors, TextTheme textTheme) {
     return DialogThemeData(
-      backgroundColor: colors.popover,
+      backgroundColor: colors.surfaceContainerHigh,
       // M3 dialog: extraLarge (28dp) shape, no outline border, elevation 6
-      // (M3 default). The flat `elevation: 0` + transparent shadow/tint
-      // overrides are dropped.
+      // (M3 default).
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(RadiusTokens.extraLarge),
       ),
       titleTextStyle: textTheme.titleLarge?.copyWith(
-        color: colors.popoverForeground,
+        color: colors.onSurface,
       ),
       contentTextStyle: textTheme.bodyMedium?.copyWith(
-        color: colors.popoverForeground,
+        color: colors.onSurface,
       ),
     );
   }
 
   static ListTileThemeData listTile(
-    AppThemeColors colors,
+    ColorScheme colors,
     TextTheme textTheme,
   ) {
     return ListTileThemeData(
       tileColor: Colors.transparent,
-      selectedTileColor: colors.accent,
-      textColor: colors.foreground,
-      selectedColor: colors.accentForeground,
-      iconColor: colors.mutedForeground,
+      // M3-canonical selected-state role — matches the NavigationBar /
+      // NavigationRail indicator treatment in navigation_theme_builder.dart.
+      selectedTileColor: colors.secondaryContainer,
+      textColor: colors.onSurface,
+      selectedColor: colors.onSecondaryContainer,
+      iconColor: colors.onSurfaceVariant,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.xl,
         vertical: SpacingTokens.xs,
@@ -74,72 +74,68 @@ abstract final class SurfaceThemeBuilder {
       // M3 Lists are rectangular — no container shape override (Flutter M3
       // ListTile default renders full-bleed edges).
       titleTextStyle: textTheme.bodyMedium?.copyWith(
-        color: colors.foreground,
+        color: colors.onSurface,
         fontWeight: TypographyTokens.weightMedium,
       ),
       subtitleTextStyle: textTheme.bodySmall?.copyWith(
-        color: colors.mutedForeground,
+        color: colors.onSurfaceVariant,
       ),
     );
   }
 
   static PopupMenuThemeData popupMenu(
-    AppThemeColors colors,
+    ColorScheme colors,
     TextTheme textTheme,
   ) {
     return PopupMenuThemeData(
-      color: colors.popover,
+      color: colors.surfaceContainerHigh,
       // M3 menu: extraSmall (4dp) shape, no outline border, elevation 3 (M3
-      // default). The flat `elevation: 0` + transparent shadow/tint are dropped.
+      // default).
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
       ),
       textStyle: textTheme.bodyMedium?.copyWith(
-        color: colors.popoverForeground,
+        color: colors.onSurface,
       ),
       labelTextStyle: WidgetStatePropertyAll(
-        textTheme.bodyMedium?.copyWith(color: colors.popoverForeground),
+        textTheme.bodyMedium?.copyWith(color: colors.onSurface),
       ),
       menuPadding: const EdgeInsets.symmetric(vertical: SpacingTokens.xs),
     );
   }
 
-  static BottomSheetThemeData bottomSheet(AppThemeColors colors) {
+  static BottomSheetThemeData bottomSheet(ColorScheme colors) {
     return BottomSheetThemeData(
-      backgroundColor: colors.card,
-      modalBackgroundColor: colors.card,
+      backgroundColor: colors.surfaceContainerLow,
+      modalBackgroundColor: colors.surfaceContainerLow,
       // M3 modal bottom sheet: top corners extraLarge (28dp), elevation 1 (M3
-      // default). The flat `elevation`/`modalElevation: 0` + transparent
-      // shadow/tint overrides are dropped.
+      // default).
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(RadiusTokens.extraLarge),
         ),
       ),
-      dragHandleColor: colors.mutedForeground,
+      dragHandleColor: colors.onSurfaceVariant,
       // 32 × 4 matches the M3 drag handle pill proportion.
       dragHandleSize: const Size(32, 4),
       showDragHandle: true,
     );
   }
 
-  static TooltipThemeData tooltip(
-    AppThemeColors colors,
-    TextTheme textTheme,
-    Brightness brightness,
-  ) {
+  /// M3 "plain tooltip": a solid [ColorScheme.inverseSurface] fill with no
+  /// border and no shadow (m3.material.io/components/tooltips). This
+  /// replaced an earlier bordered, popover-colored, drop-shadowed treatment
+  /// that was closer to a shadcn/ui-style overlay than the M3 spec — plain
+  /// tooltips are meant to read as a small, flat, high-contrast label, not
+  /// an elevated surface.
+  static TooltipThemeData tooltip(ColorScheme colors, TextTheme textTheme) {
     return TooltipThemeData(
       decoration: BoxDecoration(
-        color: colors.popover,
-        border: Border.all(color: colors.border),
+        color: colors.inverseSurface,
         // M3 tooltip container shape: extraSmall (4dp).
         borderRadius: BorderRadius.circular(RadiusTokens.extraSmall),
-        // Brightness-resolved so the shadow stays perceptible in dark
-        // mode instead of blending into a near-black surface — see
-        // [ShadowTokens.resolve] for the full rationale.
-        boxShadow: ShadowTokens.resolve(brightness, ShadowTokens.sm),
       ),
-      textStyle: textTheme.bodySmall?.copyWith(color: colors.popoverForeground),
+      textStyle: textTheme.bodySmall?.copyWith(color: colors.onInverseSurface),
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.lg,
         vertical: SpacingTokens.sm,

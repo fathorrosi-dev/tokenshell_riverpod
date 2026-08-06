@@ -4,139 +4,68 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 
 /// Static helpers and pre-built token snapshots used by [AppTheme].
 ///
-/// [lightColors] and [darkColors] are [const] — allocated once at startup.
+/// [lightStatus] and [darkStatus] are [const] — allocated once at startup.
 /// [colorSchemeFrom] and [textThemeFrom] are factory methods called once
 /// per theme build and cached inside [ThemeData].
 abstract final class ThemeConstants {
-  // ── Pre-resolved color snapshots ─────────────────────────────────────────────
+  // ── Pre-resolved status snapshots ────────────────────────────────────────────
   //
-  // WAVE 0 BRIDGE: [AppThemeColors] fields still carry the old shadcn-era names
-  // (muted, accent, border, input, ring, card, popover, ...) because the
-  // freezed extension is frozen for this wave. Each field below is therefore
-  // filled with the M3 role that now provides the semantic — see the inline
-  // `// bridge:` comments. Renaming the fields on the extension is deferred
-  // to a later wave alongside the builder/feature call-site updates.
+  // Status colors (success/warning/info/error) have no native M3 ColorScheme
+  // role, so they're the only piece still carried through a dedicated
+  // snapshot + [ThemeExtension] — see [AppStatusColors] and
+  // [AppThemeExtension]. Every other role is read straight from
+  // [colorSchemeFrom] below; there is no longer an intermediate token
+  // wrapper duplicating [ColorScheme] under different field names.
 
-  static const AppThemeColors lightColors = AppThemeColors(
-    // bridge: surface (tone 98)
-    background: ColorTokens.lightSurface,
-    // bridge: onSurface
-    foreground: ColorTokens.lightOnSurface,
-    // bridge: M3 elevated cards live at surfaceContainerLow
-    card: ColorTokens.lightSurfaceContainerLow,
-    // bridge: onSurface
-    cardForeground: ColorTokens.lightOnSurface,
-    // bridge: popovers/menus render at surfaceContainerHigh in M3
-    popover: ColorTokens.lightSurfaceContainerHigh,
-    // bridge: onSurface
-    popoverForeground: ColorTokens.lightOnSurface,
-    primary: ColorTokens.lightPrimary,
-    // bridge: onPrimary
-    primaryForeground: ColorTokens.lightOnPrimary,
-    // bridge: shadcn `secondary` was surface-like in this app; map to the M3
-    // secondaryContainer family so existing consumers keep a surface value
-    secondary: ColorTokens.lightSecondaryContainer,
-    // bridge: onSecondaryContainer
-    secondaryForeground: ColorTokens.lightOnSecondaryContainer,
-    // bridge: muted ≈ highest-elevation surface tier
-    muted: ColorTokens.lightSurfaceContainerHighest,
-    // bridge: onSurfaceVariant (muted text role)
-    mutedForeground: ColorTokens.lightOnSurfaceVariant,
-    // bridge: accent ≈ primary emphasis (monochrome scheme has no hue accent)
-    accent: ColorTokens.lightPrimary,
-    // bridge: onPrimary
-    accentForeground: ColorTokens.lightOnPrimary,
-    // bridge: destructive ≈ error role
-    destructive: ColorTokens.lightError,
-    // bridge: onError
-    destructiveForeground: ColorTokens.lightOnError,
-    // bridge: decorative dividers/borders → outlineVariant
-    border: ColorTokens.lightOutlineVariant,
-    // bridge: input borders use full outline in M3
-    input: ColorTokens.lightOutline,
-    // bridge: focus indication ≈ primary (The ring concept is not available on the M3)
-    ring: ColorTokens.lightPrimary,
-    status: AppStatusColors(
-      success: ColorTokens.lightSuccess,
-      successForeground: ColorTokens.lightSuccessForeground,
-      warning: ColorTokens.lightWarning,
-      warningForeground: ColorTokens.lightWarningForeground,
-      info: ColorTokens.lightInfo,
-      infoForeground: ColorTokens.lightInfoForeground,
-      error: ColorTokens.lightStatusError,
-      errorForeground: ColorTokens.lightStatusErrorForeground,
-    ),
+  static const AppStatusColors lightStatus = AppStatusColors(
+    success: ColorTokens.lightSuccess,
+    successForeground: ColorTokens.lightSuccessForeground,
+    warning: ColorTokens.lightWarning,
+    warningForeground: ColorTokens.lightWarningForeground,
+    info: ColorTokens.lightInfo,
+    infoForeground: ColorTokens.lightInfoForeground,
+    error: ColorTokens.lightStatusError,
+    errorForeground: ColorTokens.lightStatusErrorForeground,
   );
 
-  static const AppThemeColors darkColors = AppThemeColors(
-    // bridge: surface (tone 6)
-    background: ColorTokens.darkSurface,
-    // bridge: onSurface
-    foreground: ColorTokens.darkOnSurface,
-    // bridge: surfaceContainerLow (M3 elevated card)
-    card: ColorTokens.darkSurfaceContainerLow,
-    // bridge: onSurface
-    cardForeground: ColorTokens.darkOnSurface,
-    // bridge: surfaceContainerHigh
-    popover: ColorTokens.darkSurfaceContainerHigh,
-    // bridge: onSurface
-    popoverForeground: ColorTokens.darkOnSurface,
-    primary: ColorTokens.darkPrimary,
-    // bridge: onPrimary
-    primaryForeground: ColorTokens.darkOnPrimary,
-    // bridge: secondaryContainer (surface-like, see light comment)
-    secondary: ColorTokens.darkSecondaryContainer,
-    // bridge: onSecondaryContainer
-    secondaryForeground: ColorTokens.darkOnSecondaryContainer,
-    // bridge: surfaceContainerHighest
-    muted: ColorTokens.darkSurfaceContainerHighest,
-    // bridge: onSurfaceVariant
-    mutedForeground: ColorTokens.darkOnSurfaceVariant,
-    // bridge: primary emphasis (monochrome — see light comment)
-    accent: ColorTokens.darkPrimary,
-    // bridge: onPrimary
-    accentForeground: ColorTokens.darkOnPrimary,
-    // bridge: error role
-    destructive: ColorTokens.darkError,
-    // bridge: onError
-    destructiveForeground: ColorTokens.darkOnError,
-    // bridge: outlineVariant
-    border: ColorTokens.darkOutlineVariant,
-    // bridge: outline
-    input: ColorTokens.darkOutline,
-    // bridge: primary
-    ring: ColorTokens.darkPrimary,
-    status: AppStatusColors(
-      success: ColorTokens.darkSuccess,
-      successForeground: ColorTokens.darkSuccessForeground,
-      warning: ColorTokens.darkWarning,
-      warningForeground: ColorTokens.darkWarningForeground,
-      info: ColorTokens.darkInfo,
-      infoForeground: ColorTokens.darkInfoForeground,
-      error: ColorTokens.darkStatusError,
-      errorForeground: ColorTokens.darkStatusErrorForeground,
-    ),
+  static const AppStatusColors darkStatus = AppStatusColors(
+    success: ColorTokens.darkSuccess,
+    successForeground: ColorTokens.darkSuccessForeground,
+    warning: ColorTokens.darkWarning,
+    warningForeground: ColorTokens.darkWarningForeground,
+    info: ColorTokens.darkInfo,
+    infoForeground: ColorTokens.darkInfoForeground,
+    error: ColorTokens.darkStatusError,
+    errorForeground: ColorTokens.darkStatusErrorForeground,
   );
 
   // ── ColorScheme factory ───────────────────────────────────────────────────────
 
   /// Builds a Material 3 [ColorScheme] mapped 1:1 from the M3 role tokens in
-  /// [ColorTokens]. No cross-design-system translation happens here anymore:
-  /// every role holds a value with a genuine M3 tonal relationship, computed
-  /// in the token file with documented contrast math.
+  /// [ColorTokens]. Every role holds a value with a genuine M3 tonal
+  /// relationship, computed in the token file with documented contrast math
+  /// — this factory is a thin assembler, not a place that invents colors.
   ///
-  /// `c` is consumed only through the bridge snapshot (see [lightColors]);
-  /// roles that exist natively in M3 read straight from the ramp constants so
-  /// this factory stays a thin assembler, not a place that invents colors
-  /// (all previous `Color.lerp` / `withValues(alpha:)` pseudo-roles removed).
-  static ColorScheme colorSchemeFrom(AppThemeColors c, Brightness brightness) {
+  /// Two roles are worth calling out because they carry a deliberate
+  /// app-level decision rather than an M3-prescribed default:
+  ///   * `secondaryContainer` is used as this app's general-purpose
+  ///     "quiet surface" tone (chips, muted fills) rather than reserved
+  ///     purely for M3's literal secondary-action semantics.
+  ///   * `secondaryContainer` / `onSecondaryContainer` are also the
+  ///     selected-state colors for [NavigationBar], [NavigationRail], and
+  ///     selected [ListTile]s (see `navigation_theme_builder.dart` and
+  ///     `surface_theme_builder.dart`) — the M3-canonical choice, in place
+  ///     of the app's earlier primary-based "accent" bridge.
+  static ColorScheme colorSchemeFrom(Brightness brightness) {
     final isLight = brightness == Brightness.light;
     return ColorScheme(
       brightness: brightness,
 
       // ── Primary ─────────────────────────────────────────────────────────────
-      primary: c.primary,
-      onPrimary: c.primaryForeground,
+      primary: isLight ? ColorTokens.lightPrimary : ColorTokens.darkPrimary,
+      onPrimary: isLight
+          ? ColorTokens.lightOnPrimary
+          : ColorTokens.darkOnPrimary,
       primaryContainer: isLight
           ? ColorTokens.lightPrimaryContainer
           : ColorTokens.darkPrimaryContainer,
@@ -151,14 +80,18 @@ abstract final class ThemeConstants {
       onPrimaryFixedVariant: ColorTokens.onPrimaryFixedVariant,
 
       // ── Secondary ───────────────────────────────────────────────────────────
-      secondary: isLight ? ColorTokens.lightSecondary : ColorTokens.darkSecondary,
+      secondary: isLight
+          ? ColorTokens.lightSecondary
+          : ColorTokens.darkSecondary,
       onSecondary: isLight
           ? ColorTokens.lightOnSecondary
           : ColorTokens.darkOnSecondary,
-      // Bridge fields: `c.secondary` carries the surface-like
-      // secondaryContainer intentionally (see lightColors).
-      secondaryContainer: c.secondary,
-      onSecondaryContainer: c.secondaryForeground,
+      secondaryContainer: isLight
+          ? ColorTokens.lightSecondaryContainer
+          : ColorTokens.darkSecondaryContainer,
+      onSecondaryContainer: isLight
+          ? ColorTokens.lightOnSecondaryContainer
+          : ColorTokens.darkOnSecondaryContainer,
       secondaryFixed: ColorTokens.secondaryFixed,
       secondaryFixedDim: ColorTokens.secondaryFixedDim,
       onSecondaryFixed: ColorTokens.onSecondaryFixed,
@@ -183,8 +116,8 @@ abstract final class ThemeConstants {
       onTertiaryFixedVariant: ColorTokens.onTertiaryFixedVariant,
 
       // ── Error — M3 baseline palette, explicit ──────────────────────────────
-      error: c.destructive,
-      onError: c.destructiveForeground,
+      error: isLight ? ColorTokens.lightError : ColorTokens.darkError,
+      onError: isLight ? ColorTokens.lightOnError : ColorTokens.darkOnError,
       errorContainer: isLight
           ? ColorTokens.lightErrorContainer
           : ColorTokens.darkErrorContainer,
@@ -194,7 +127,9 @@ abstract final class ThemeConstants {
 
       // ── Surface hierarchy — the five M3 container tiers, explicit ───────────
       surface: isLight ? ColorTokens.lightSurface : ColorTokens.darkSurface,
-      onSurface: isLight ? ColorTokens.lightOnSurface : ColorTokens.darkOnSurface,
+      onSurface: isLight
+          ? ColorTokens.lightOnSurface
+          : ColorTokens.darkOnSurface,
       onSurfaceVariant: isLight
           ? ColorTokens.lightOnSurfaceVariant
           : ColorTokens.darkOnSurfaceVariant,
@@ -213,16 +148,16 @@ abstract final class ThemeConstants {
       surfaceContainerHighest: isLight
           ? ColorTokens.lightSurfaceContainerHighest
           : ColorTokens.darkSurfaceContainerHighest,
-      surfaceDim: isLight ? ColorTokens.lightSurfaceDim : ColorTokens.darkSurfaceDim,
+      surfaceDim: isLight
+          ? ColorTokens.lightSurfaceDim
+          : ColorTokens.darkSurfaceDim,
       surfaceBright: isLight
           ? ColorTokens.lightSurfaceBright
           : ColorTokens.darkSurfaceBright,
 
-      // Tonal elevation restored: M3 components tint elevated surfaces with
-      // `surfaceTint` (Flutter defaults to `primary`). The previous override
-      // (`Colors.transparent`, for the flat shadcn look) is removed here; the
-      // remaining per-widget `surfaceTintColor` overrides live in the builder
-      // files and are Wave 1 scope.
+      // Tonal elevation: M3 components tint elevated surfaces with
+      // `surfaceTint` (Flutter defaults to `primary`, which is what this
+      // app uses too — no override).
       surfaceTint: isLight ? ColorTokens.lightPrimary : ColorTokens.darkPrimary,
 
       // ── Inverse surfaces ────────────────────────────────────────────────────
@@ -239,8 +174,10 @@ abstract final class ThemeConstants {
       // ── Borders — M3 role semantics ─────────────────────────────────────────
       // outline        → component borders (full weight, non-text 3:1 contract)
       // outlineVariant → decorative dividers / separators (solid tone, no alpha)
-      outline: c.input,
-      outlineVariant: c.border,
+      outline: isLight ? ColorTokens.lightOutline : ColorTokens.darkOutline,
+      outlineVariant: isLight
+          ? ColorTokens.lightOutlineVariant
+          : ColorTokens.darkOutlineVariant,
 
       // Scrim / shadow — opaque black per M3.
       shadow: const Color(0xFF000000),
@@ -255,10 +192,11 @@ abstract final class ThemeConstants {
   /// Font family stays Geist ([TypographyTokens.fontFamily]) — the M3 spec
   /// does not mandate a typeface. Size, weight and letter-spacing values are
   /// snapped 1:1 to the M3 type-scale table and are written as literals with
-  /// inline cross-references because `typography_tokens.dart` is OUTSIDE the
-  /// Wave 0 scope boundary (4-file limit). The tokens file will be brought
-  /// back into sync in a later wave; until then its `size*`/`weight*`/
-  /// `tracking*` values no longer describe the live text theme.
+  /// inline cross-references. [TypographyTokens]'s own `size*`/`tracking*`
+  /// constants are a separate, smaller set used for component-level type
+  /// tweaks (badges, overline-style labels) that intentionally sit outside
+  /// the M3 role scale — see the doc comment on [TypographyTokens] for the
+  /// distinction.
   ///
   /// Line height is left at `null` so Geist's natural font metrics apply —
   /// the M3 spec's leading values (display 64/52/44 px on mobile etc.) are

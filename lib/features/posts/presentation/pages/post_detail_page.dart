@@ -21,11 +21,11 @@ class PostDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.colors;
+    final colors = context.colorScheme;
     final postAsync = ref.watch(postDetailProvider(postId));
 
     return Scaffold(
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
       appBar: AppBar(
         // FIXED: was `Text('Post #$postId')` — hardcoded ID string regardless
         // of whether the post data had already loaded. This formed a bad
@@ -58,21 +58,21 @@ class PostDetailPage extends ConsumerWidget {
               Text(
                 post.title.capitalised,
                 style: context.textTheme.headlineMedium?.copyWith(
-                  color: colors.foreground,
+                  color: colors.onSurface,
                 ),
               ),
               const SizedBox(height: SpacingTokens.sm),
               Text(
                 AppStrings.postDetailMeta(post.userId, post.id),
                 style: context.textTheme.bodySmall?.copyWith(
-                  color: colors.mutedForeground,
+                  color: colors.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: SpacingTokens.x3l),
               Text(
                 post.body.capitalised,
                 style: context.textTheme.bodyLarge?.copyWith(
-                  color: colors.foreground,
+                  color: colors.onSurface,
                   height: TypographyTokens.leadingRelaxed,
                 ),
               ),

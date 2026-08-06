@@ -9,18 +9,16 @@ part 'app_theme_extension.freezed.dart';
 /// Immutable snapshot of all status/semantic color tokens — success, warning,
 /// info, error — along with their foregrounds.
 ///
-/// Extracted from the flat [AppThemeColors] field list so that:
-///   1. Status tokens can be extended independently (e.g. adding `successSubtle`)
-///      without touching the core semantic section.
-///   2. [AppThemeColors.lerp] delegates to [AppStatusColors.lerp] — one line
-///      instead of eight, and maintenance stays bounded regardless of how many
-///      status variants are added.
-///   3. Consumer API is more expressive:
-///        `colors.status.success`  vs  `colors.success`
+/// Material 3's [ColorScheme] does not define native roles for these four
+/// semantic states (it only ships `error`/`onError`), so they live in their
+/// own [ThemeExtension] rather than as a duplicate wrapper around the roles
+/// [ColorScheme] already provides. Any color that DOES have a native M3
+/// role (surface, primary, outline, etc.) is read directly from
+/// `Theme.of(context).colorScheme` — see `extensions.dart`.
 ///
 /// ## Usage
 /// ```dart
-/// final s = context.colors.status;
+/// final s = context.statusColors;
 /// Container(color: s.warning, child: Text('!', style: TextStyle(color: s.warningForeground)));
 /// ```
 @freezed
@@ -37,8 +35,7 @@ abstract class AppStatusColors with _$AppStatusColors {
   }) = _AppStatusColors;
 
   /// Linearly interpolates between [a] and [b] at fraction [t].
-  /// Delegated to from [AppThemeColors.lerp] — keeps the parent lerp
-  /// to a single line for the entire status group.
+  /// Used by [AppThemeExtension.lerp] during animated theme transitions.
   factory AppStatusColors.lerp(AppStatusColors a, AppStatusColors b, double t) {
     return AppStatusColors(
       success: Color.lerp(a.success, b.success, t)!,
@@ -61,142 +58,50 @@ abstract class AppStatusColors with _$AppStatusColors {
   }
 }
 
-// ── AppThemeColors ────────────────────────────────────────────────────────────
-
-/// Immutable snapshot of every shadcn/ui color token resolved for a
-/// specific [Brightness]. Consumed by [AppThemeExtension] and
-/// [ThemeConstants] factory methods.
-///
-/// ## Why Freezed?
-///
-/// Freezed generates [==], [hashCode], and [copyWith] from the single field
-/// declaration — always in sync by construction. Adding a core token is
-/// one line change. The compiler surfaces any missing required parameter
-/// at every call site.
-///
-/// ## Status tokens
-///
-/// Status colors live in the [AppStatusColors] sub-record ([status] field)
-/// rather than as flat fields. This keeps the core semantic section lean
-/// and makes [lerp] maintenance O(1) for the status group.
-///
-/// ## What Freezed does NOT generate
-///
-/// [AppThemeColors.lerp] is kept manual because Freezed has no domain
-/// knowledge that every field is a [Color]. When you add a new core token
-/// field, add the corresponding [Color.lerp] line here; the compiler will
-/// surface the gap as a missing required named parameter at the call site.
-@freezed
-abstract class AppThemeColors with _$AppThemeColors {
-  const factory AppThemeColors({
-    // ── Core semantic tokens ─────────────────────────────────────────────────
-    required Color background,
-    required Color foreground,
-    required Color card,
-    required Color cardForeground,
-    required Color popover,
-    required Color popoverForeground,
-    required Color primary,
-    required Color primaryForeground,
-    required Color secondary,
-    required Color secondaryForeground,
-    required Color muted,
-    required Color mutedForeground,
-    required Color accent,
-    required Color accentForeground,
-    required Color destructive,
-    required Color destructiveForeground,
-    required Color border,
-    required Color input,
-    required Color ring,
-    // ── Status tokens (grouped) ───────────────────────────────────────────────
-    required AppStatusColors status,
-  }) = _AppThemeColors;
-
-  // ── Interpolation ──────────────────────────────────────────────────────────
-
-  /// Linearly interpolates between [a] and [b] at fraction [t].
-  /// Used by [AppThemeExtension.lerp] during animated theme transitions.
-  ///
-  /// MAINTENANCE NOTE: when you add a new core token field above, add the
-  /// corresponding [Color.lerp] line here. Status tokens are handled by
-  /// [AppStatusColors.lerp] — no changes needed here for status additions.
-  factory AppThemeColors.lerp(AppThemeColors a, AppThemeColors b, double t) {
-    return AppThemeColors(
-      background: Color.lerp(a.background, b.background, t)!,
-      foreground: Color.lerp(a.foreground, b.foreground, t)!,
-      card: Color.lerp(a.card, b.card, t)!,
-      cardForeground: Color.lerp(a.cardForeground, b.cardForeground, t)!,
-      popover: Color.lerp(a.popover, b.popover, t)!,
-      popoverForeground: Color.lerp(
-        a.popoverForeground,
-        b.popoverForeground,
-        t,
-      )!,
-      primary: Color.lerp(a.primary, b.primary, t)!,
-      primaryForeground: Color.lerp(
-        a.primaryForeground,
-        b.primaryForeground,
-        t,
-      )!,
-      secondary: Color.lerp(a.secondary, b.secondary, t)!,
-      secondaryForeground: Color.lerp(
-        a.secondaryForeground,
-        b.secondaryForeground,
-        t,
-      )!,
-      muted: Color.lerp(a.muted, b.muted, t)!,
-      mutedForeground: Color.lerp(a.mutedForeground, b.mutedForeground, t)!,
-      accent: Color.lerp(a.accent, b.accent, t)!,
-      accentForeground: Color.lerp(a.accentForeground, b.accentForeground, t)!,
-      destructive: Color.lerp(a.destructive, b.destructive, t)!,
-      destructiveForeground: Color.lerp(
-        a.destructiveForeground,
-        b.destructiveForeground,
-        t,
-      )!,
-      border: Color.lerp(a.border, b.border, t)!,
-      input: Color.lerp(a.input, b.input, t)!,
-      ring: Color.lerp(a.ring, b.ring, t)!,
-      // Status group — delegated; one line regardless of status token count.
-      status: AppStatusColors.lerp(a.status, b.status, t),
-    );
-  }
-}
-
 // ── ThemeExtension ────────────────────────────────────────────────────────────
 
-/// Material 3 [ThemeExtension] that carries the full [AppThemeColors] snapshot
-/// into the widget tree.
+/// Material 3 [ThemeExtension] that carries the app's [AppStatusColors]
+/// snapshot into the widget tree.
+///
+/// ## Why this extension is deliberately thin
+///
+/// Earlier revisions of this file also carried a 19-field `AppThemeColors`
+/// snapshot that mirrored every [ColorScheme] role under different names
+/// (a leftover from an early shadcn/ui-inspired token layout). That wrapper
+/// was removed once the M3 migration closed out: it was a duplicate of
+/// [ColorScheme] with no independent reason to exist, and every consumer
+/// now reads M3-native roles straight from `Theme.of(context).colorScheme`.
+/// [AppStatusColors] is the only piece that genuinely needs a custom
+/// extension, because M3 has no built-in role for success/warning/info.
 ///
 /// Access it anywhere with:
 /// ```dart
-/// final colors = AppThemeExtension.of(context).colors;
+/// final status = AppThemeExtension.of(context).status;
 /// ```
 ///
 /// Or via the convenience extension in `extensions.dart`:
 /// ```dart
-/// final colors = context.colors;
+/// final status = context.statusColors;
 /// ```
 @immutable
 final class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
-  const AppThemeExtension({required this.colors});
+  const AppThemeExtension({required this.status});
 
-  /// The resolved shadcn/ui color tokens for the current brightness.
-  final AppThemeColors colors;
+  /// The resolved status/semantic color tokens for the current brightness.
+  final AppStatusColors status;
 
   // ── ThemeExtension contract ──────────────────────────────────────────────────
 
   @override
-  AppThemeExtension copyWith({AppThemeColors? colors}) {
-    return AppThemeExtension(colors: colors ?? this.colors);
+  AppThemeExtension copyWith({AppStatusColors? status}) {
+    return AppThemeExtension(status: status ?? this.status);
   }
 
   @override
   AppThemeExtension lerp(ThemeExtension<AppThemeExtension>? other, double t) {
     if (other is! AppThemeExtension) return this;
     return AppThemeExtension(
-      colors: AppThemeColors.lerp(colors, other.colors, t),
+      status: AppStatusColors.lerp(status, other.status, t),
     );
   }
 
@@ -222,9 +127,9 @@ final class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is AppThemeExtension && other.colors == colors;
+    return other is AppThemeExtension && other.status == status;
   }
 
   @override
-  int get hashCode => colors.hashCode;
+  int get hashCode => status.hashCode;
 }

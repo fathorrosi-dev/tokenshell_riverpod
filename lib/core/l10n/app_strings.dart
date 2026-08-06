@@ -62,7 +62,7 @@ final class AppStrings {
   static const String homeToggleThemeTooltip = 'Toggle theme';
   static const String homeHeading = 'TokenShell Riverpod';
   static const String homeSubheading =
-      'shadcn/ui design tokens · Clean Architecture · Riverpod';
+      'Material 3 design tokens · Clean Architecture · Riverpod';
   static const String homeColorTokensSectionTitle = 'Color Tokens';
   static const String homeTypographySectionTitle = 'Typography Scale';
 
@@ -85,7 +85,7 @@ final class AppStrings {
   static const String settingsAboutStateLabel = 'State';
   static const String settingsAboutStateValue = 'Riverpod';
   static const String settingsAboutDesignSystemLabel = 'Design system';
-  static const String settingsAboutDesignSystemValue = 'shadcn/ui tokens';
+  static const String settingsAboutDesignSystemValue = 'Material 3 tokens';
 
   // ── Posts list page (features/posts/presentation/pages/posts_page.dart) ─
   static const String postsAppBarTitle = 'Posts';

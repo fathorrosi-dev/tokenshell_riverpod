@@ -68,7 +68,7 @@ class AppStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
+    final colors = context.colorScheme;
 
     return Center(
       child: Padding(
@@ -79,13 +79,13 @@ class AppStateView extends StatelessWidget {
             Icon(
               icon,
               size: IconSizeTokens.x4l,
-              color: iconColor ?? colors.mutedForeground,
+              color: iconColor ?? colors.onSurfaceVariant,
             ),
             const SizedBox(height: SpacingTokens.xl),
             Text(
               title,
               style: context.textTheme.titleMedium?.copyWith(
-                color: colors.foreground,
+                color: colors.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
@@ -94,7 +94,7 @@ class AppStateView extends StatelessWidget {
               Text(
                 message!,
                 style: context.textTheme.bodySmall?.copyWith(
-                  color: colors.mutedForeground,
+                  color: colors.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
               ),

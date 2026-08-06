@@ -79,7 +79,7 @@ class _PostsPageState extends ConsumerState<PostsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
+    final colors = context.colorScheme;
 
     // Surfaces a failed *next* page as a transient SnackBar without
     // touching the rest of the screen — see [PostsListState.loadMoreError]
@@ -111,7 +111,7 @@ class _PostsPageState extends ConsumerState<PostsPage> {
     });
 
     return Scaffold(
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
       // AppBar does NOT watch postsProvider — it will not rebuild when
       // pagination state changes (isLoadingMore toggle, page appended).
       // Only the body Consumer below rebuilds on list state changes.
@@ -135,13 +135,13 @@ class _PostsPageState extends ConsumerState<PostsPage> {
       body: Consumer(
         builder: (context, watchRef, _) {
           final postsAsync = watchRef.watch(postsProvider);
-          final bodyColors = context.colors;
+          final bodyColors = context.colorScheme;
 
           return postsAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, _) => AppStateView.error(
               message: error is Failure ? error.message : error.toString(),
-              iconColor: bodyColors.destructive,
+              iconColor: bodyColors.error,
               onRetry: () => watchRef.read(postsProvider.notifier).refresh(),
             ),
             data: (listState) => listState.posts.isEmpty

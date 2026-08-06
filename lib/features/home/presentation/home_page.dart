@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
-import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 import 'package:tokenshell_riverpod/core/theme/notifiers/theme_mode_notifier.dart';
 import 'package:tokenshell_riverpod/core/utils/extensions.dart';
@@ -73,7 +72,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
+    final colors = context.colorScheme;
     final themeMode = ref.watch(themeModeProvider).value;
 
     // Built once per State.build() call (exactly the same cost as the
@@ -87,7 +86,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final bodyItems = _buildBodyItems(context, colors);
 
     return Scaffold(
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
       appBar: AppBar(
         title: const Text(AppStrings.homeAppBarTitle),
         actions: [
@@ -128,32 +127,34 @@ class _HomePageState extends ConsumerState<HomePage> {
   /// outright. Making the swap while it's still a no-op avoids that.
   ///
   /// The `Wrap` of color swatches stays as a single list item rather than
-  /// being flattened into 13 separate ones — it's a flowing horizontal
+  /// being flattened into separate ones — it's a flowing horizontal
   /// layout, not a vertical sequence, so splitting it up would change
   /// what's actually rendered, not just how it's delivered to the list.
   ///
-  /// Takes [colors] explicitly (rather than re-reading `context.colors`)
+  /// Takes [colors] explicitly (rather than re-reading `context.colorScheme`)
   /// so this stays a pure function of its inputs — no risk of silently
   /// reading a stale/different [BuildContext] than the one [build] is
   /// currently working with.
-  List<Widget> _buildBodyItems(BuildContext context, AppThemeColors colors) {
+  List<Widget> _buildBodyItems(BuildContext context, ColorScheme colors) {
+    final status = context.statusColors;
     return [
       Text(AppStrings.homeHeading, style: context.textTheme.headlineMedium),
       const SizedBox(height: SpacingTokens.sm),
       Text(
         AppStrings.homeSubheading,
         style: context.textTheme.bodyMedium?.copyWith(
-          color: colors.mutedForeground,
+          color: colors.onSurfaceVariant,
         ),
       ),
       const SizedBox(height: SpacingTokens.x4l),
 
       // ── Color token swatch grid ──────────────────────────────────────
-      // Swatch labels below ('background', 'primary', ...) are
-      // intentionally NOT routed through AppStrings — see the "What's
-      // deliberately NOT here" section of app_strings.dart. They name
-      // actual design-token identifiers for a developer-facing preview,
-      // not user-facing copy.
+      // Swatch labels below ('surface', 'primary', ...) are intentionally
+      // NOT routed through AppStrings — see the "What's deliberately NOT
+      // here" section of app_strings.dart. They name actual ColorScheme
+      // role identifiers for a developer-facing preview, not user-facing
+      // copy — kept in sync with the roles [ColorSchemeFrom]/the builders
+      // actually consume, one swatch per role.
       Text(
         AppStrings.homeColorTokensSectionTitle,
         style: context.textTheme.titleMedium,
@@ -164,69 +165,64 @@ class _HomePageState extends ConsumerState<HomePage> {
         runSpacing: SpacingTokens.md,
         children: [
           _Swatch(
-            label: 'background',
-            color: colors.background,
-            onColor: colors.foreground,
+            label: 'surface',
+            color: colors.surface,
+            onColor: colors.onSurface,
           ),
           _Swatch(
-            label: 'foreground',
-            color: colors.foreground,
-            onColor: colors.background,
+            label: 'onSurface',
+            color: colors.onSurface,
+            onColor: colors.surface,
           ),
           _Swatch(
-            label: 'card',
-            color: colors.card,
-            onColor: colors.cardForeground,
+            label: 'surfaceContainerLow',
+            color: colors.surfaceContainerLow,
+            onColor: colors.onSurface,
           ),
           _Swatch(
             label: 'primary',
             color: colors.primary,
-            onColor: colors.primaryForeground,
+            onColor: colors.onPrimary,
           ),
           _Swatch(
-            label: 'secondary',
-            color: colors.secondary,
-            onColor: colors.secondaryForeground,
+            label: 'secondaryContainer',
+            color: colors.secondaryContainer,
+            onColor: colors.onSecondaryContainer,
           ),
           _Swatch(
-            label: 'muted',
-            color: colors.muted,
-            onColor: colors.mutedForeground,
-          ),
-          _Swatch(
-            label: 'accent',
-            color: colors.accent,
-            onColor: colors.accentForeground,
-          ),
-          _Swatch(
-            label: 'destructive',
-            color: colors.destructive,
-            onColor: colors.destructiveForeground,
-          ),
-          _Swatch(
-            label: 'border',
-            color: colors.border,
-            onColor: colors.foreground,
-          ),
-          _Swatch(
-            label: 'success',
-            color: colors.status.success,
-            onColor: colors.status.successForeground,
-          ),
-          _Swatch(
-            label: 'warning',
-            color: colors.status.warning,
-            onColor: colors.status.warningForeground,
-          ),
-          _Swatch(
-            label: 'info',
-            color: colors.status.info,
-            onColor: colors.status.infoForeground,
+            label: 'surfaceContainerHighest',
+            color: colors.surfaceContainerHighest,
+            onColor: colors.onSurfaceVariant,
           ),
           _Swatch(
             label: 'error',
-            color: colors.status.error,
-            onColor: colors.status.errorForeground,
+            color: colors.error,
+            onColor: colors.onError,
+          ),
+          _Swatch(
+            label: 'outlineVariant',
+            color: colors.outlineVariant,
+            onColor: colors.onSurface,
+          ),
+          _Swatch(
+            label: 'success',
+            color: status.success,
+            onColor: status.successForeground,
+          ),
+          _Swatch(
+            label: 'warning',
+            color: status.warning,
+            onColor: status.warningForeground,
+          ),
+          _Swatch(
+            label: 'info',
+            color: status.info,
+            onColor: status.infoForeground,
+          ),
+          _Swatch(
+            label: 'statusError',
+            color: status.error,
+            onColor: status.errorForeground,
           ),
         ],
       ),
@@ -321,15 +317,15 @@ class _SwatchState extends State<_Swatch> {
         child: Card(
           // The swatch's own token color is the point of this widget, so it
           // overrides CardThemeData.color. The border is kept so light-on-light
-          // swatches ('background', 'card') stay visible against the page
-          // background; Card exposes no `side`, so it rides on the shape — the
-          // radius uses the same RadiusTokens.medium token as
+          // swatches ('surface', 'surfaceContainerLow') stay visible against
+          // the page background; Card exposes no `side`, so it rides on the
+          // shape — the radius uses the same RadiusTokens.medium token as
           // SurfaceThemeBuilder.card(), avoiding divergence. Elevation still
           // comes from CardThemeData.
           color: widget.color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(RadiusTokens.medium),
-            side: BorderSide(color: context.colors.border),
+            side: BorderSide(color: context.colorScheme.outlineVariant),
           ),
           child: SizedBox(
             width: 120,

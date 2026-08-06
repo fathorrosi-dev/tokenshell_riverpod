@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 
 /// Builds every button-family [ThemeData] sub-theme (elevated, outlined,
-/// text, segmented, FAB) from [AppThemeColors] + [TextTheme].
+/// text, segmented, FAB) from [ColorScheme] + [TextTheme].
 ///
 /// Extracted from `app_theme.dart` — that file held all ~40 widget themes
 /// in a single 800+ line static method, which made even a one-line tweak
@@ -15,11 +14,10 @@ import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart'
 /// M3 button shape category (full / pill — m3.material.io/components/buttons,
 /// round-default corner size), the FAB onto the M3 rounded-square shape
 /// (large 16dp) with its elevation restored to the 6dp baseline, and the
-/// shadcn-era state-layer suppression (transparent `overlayColor`, accent
-/// hover fills) removed in favor of the M3 state layers — hover 8%, focus
-/// 12%, pressed 12% (m3.material.io/foundations/interaction/states), using
-/// the on-color of each container (onSurface / onPrimary) — that Wave 0's
-/// interaction-default restoration re-enabled.
+/// legacy state-layer suppression (transparent `overlayColor`, flat hover
+/// fills) removed in favor of the M3 state layers — hover 8%, focus 12%,
+/// pressed 12% (m3.material.io/foundations/interaction/states), using the
+/// on-color of each container (onSurface / onPrimary).
 ///
 /// Pure functions — given the same [colors]/[textTheme] they always
 /// return the same `ThemeData` sub-object, exactly like [AppTheme] itself.
@@ -35,9 +33,9 @@ abstract final class ButtonThemeBuilder {
   /// unaffected — only height mattered for the touch-target guideline.
   static const Size _minimumButtonSize = Size(64, 48);
 
-  /// Elevated button — shadcn/ui "default" / primary variant.
+  /// Elevated button — M3 filled button style (primary container, 0dp flat).
   static ElevatedButtonThemeData elevatedButton(
-    AppThemeColors colors,
+    ColorScheme colors,
     TextTheme textTheme,
   ) {
     return ElevatedButtonThemeData(
@@ -45,7 +43,7 @@ abstract final class ButtonThemeBuilder {
         backgroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
             // Both bg and fg use disabledSurface (0.5) so the entire button
-            // dims uniformly, matching shadcn's muted-but-visible disabled look.
+            // dims uniformly, keeping it legible while visibly non-interactive.
             return colors.primary.withValues(
               alpha: OpacityTokens.disabledSurface,
             );
@@ -54,11 +52,11 @@ abstract final class ButtonThemeBuilder {
         }),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
-            return colors.primaryForeground.withValues(
+            return colors.onPrimary.withValues(
               alpha: OpacityTokens.disabledSurface,
             );
           }
-          return colors.primaryForeground;
+          return colors.onPrimary;
         }),
         overlayColor: WidgetStateProperty.resolveWith((states) {
           // M3 state layer for a primary-filled button: onPrimary (the
@@ -68,17 +66,17 @@ abstract final class ButtonThemeBuilder {
           // `primary`-tinted, which would be invisible on this button's
           // solid primary fill.
           if (states.contains(WidgetState.hovered)) {
-            return colors.primaryForeground.withValues(
+            return colors.onPrimary.withValues(
               alpha: OpacityTokens.hover,
             );
           }
           if (states.contains(WidgetState.focused)) {
-            return colors.primaryForeground.withValues(
+            return colors.onPrimary.withValues(
               alpha: OpacityTokens.focusOverlay,
             );
           }
           if (states.contains(WidgetState.pressed)) {
-            return colors.primaryForeground.withValues(
+            return colors.onPrimary.withValues(
               alpha: OpacityTokens.pressed,
             );
           }
@@ -110,40 +108,40 @@ abstract final class ButtonThemeBuilder {
     );
   }
 
-  /// Outlined button — shadcn/ui "outline" variant.
+  /// Outlined button — M3 outlined button style (transparent fill, outline
+  /// border).
   static OutlinedButtonThemeData outlinedButton(
-    AppThemeColors colors,
+    ColorScheme colors,
     TextTheme textTheme,
   ) {
     return OutlinedButtonThemeData(
       style: ButtonStyle(
         // Transparent container at every state — hover/focus/pressed feedback
-        // comes from the onSurface state layer below (the old shadcn accent
-        // hover fill would now resolve to a near-black solid).
+        // comes entirely from the onSurface state layer below.
         backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.disabledContent,
             );
           }
-          return colors.foreground;
+          return colors.onSurface;
         }),
         overlayColor: WidgetStateProperty.resolveWith((states) {
           // M3 state layer for a transparent outlined button: onSurface at
           // hover 8% / focus 12% / pressed 12%.
           if (states.contains(WidgetState.hovered)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.hover,
             );
           }
           if (states.contains(WidgetState.focused)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.focusOverlay,
             );
           }
           if (states.contains(WidgetState.pressed)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.pressed,
             );
           }
@@ -152,15 +150,21 @@ abstract final class ButtonThemeBuilder {
         side: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
             return BorderSide(
-              color: colors.border.withValues(
+              color: colors.outlineVariant.withValues(
                 alpha: OpacityTokens.disabledSurface,
               ),
             );
           }
           if (states.contains(WidgetState.focused)) {
-            return BorderSide(color: colors.ring, width: BorderWidthTokens.lg);
+            // M3 has no dedicated "focus ring" role — primary is this app's
+            // deliberate stand-in for focus indication (documented in
+            // theme_constants.dart's colorSchemeFrom doc comment).
+            return BorderSide(
+              color: colors.primary,
+              width: BorderWidthTokens.lg,
+            );
           }
-          return BorderSide(color: colors.border);
+          return BorderSide(color: colors.outlineVariant);
         }),
         elevation: const WidgetStatePropertyAll(0),
         shadowColor: const WidgetStatePropertyAll(Colors.transparent),
@@ -186,9 +190,9 @@ abstract final class ButtonThemeBuilder {
     );
   }
 
-  /// Text button — shadcn/ui "ghost" variant.
+  /// Text button — M3 text button style (transparent fill, no border).
   static TextButtonThemeData textButton(
-    AppThemeColors colors,
+    ColorScheme colors,
     TextTheme textTheme,
   ) {
     return TextButtonThemeData(
@@ -198,31 +202,29 @@ abstract final class ButtonThemeBuilder {
         backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.disabledContent,
             );
           }
           // Label stays onSurface in every enabled state — M3 state layers
-          // carry the feedback, not a label-color swap (the old hover branch
-          // switched to accentForeground, which now resolves to near-white
-          // and lost contrast against the surface).
-          return colors.foreground;
+          // carry the feedback, not a label-color swap.
+          return colors.onSurface;
         }),
         overlayColor: WidgetStateProperty.resolveWith((states) {
           // M3 state layer for a transparent text button: onSurface at
           // hover 8% / focus 12% / pressed 12%.
           if (states.contains(WidgetState.hovered)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.hover,
             );
           }
           if (states.contains(WidgetState.focused)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.focusOverlay,
             );
           }
           if (states.contains(WidgetState.pressed)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.pressed,
             );
           }
@@ -252,11 +254,12 @@ abstract final class ButtonThemeBuilder {
     );
   }
 
-  /// Segmented button — shadcn/ui's ToggleGroup equivalent.
+  /// Segmented button — M3 segmented button (single/multi-select toggle
+  /// group).
   ///
   /// Selected segment uses primary; unselected is transparent with border.
   static SegmentedButtonThemeData segmentedButton(
-    AppThemeColors colors,
+    ColorScheme colors,
     TextTheme textTheme,
   ) {
     return SegmentedButtonThemeData(
@@ -266,56 +269,54 @@ abstract final class ButtonThemeBuilder {
             return colors.primary;
           }
           // Unselected: transparent — feedback comes from the onSurface state
-          // layer below (the old accent hover fill resolved to a near-black
-          // solid, indistinguishable from the selected fill).
+          // layer below.
           return Colors.transparent;
         }),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.disabledContent,
             );
           }
           if (states.contains(WidgetState.selected)) {
-            return colors.primaryForeground;
+            return colors.onPrimary;
           }
-          return colors.foreground;
+          return colors.onSurface;
         }),
         overlayColor: WidgetStateProperty.resolveWith((states) {
           // M3 state layers — onPrimary over the selected primary fill,
           // onSurface over the transparent unselected container — at hover
-          // 8% / focus 12% / pressed 12%. The old transparent overlay
-          // suppressed both the state layer and the ripple.
+          // 8% / focus 12% / pressed 12%.
           if (states.contains(WidgetState.selected)) {
             if (states.contains(WidgetState.hovered)) {
-              return colors.primaryForeground.withValues(
+              return colors.onPrimary.withValues(
                 alpha: OpacityTokens.hover,
               );
             }
             if (states.contains(WidgetState.focused)) {
-              return colors.primaryForeground.withValues(
+              return colors.onPrimary.withValues(
                 alpha: OpacityTokens.focusOverlay,
               );
             }
             if (states.contains(WidgetState.pressed)) {
-              return colors.primaryForeground.withValues(
+              return colors.onPrimary.withValues(
                 alpha: OpacityTokens.pressed,
               );
             }
             return Colors.transparent;
           }
           if (states.contains(WidgetState.hovered)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.hover,
             );
           }
           if (states.contains(WidgetState.focused)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.focusOverlay,
             );
           }
           if (states.contains(WidgetState.pressed)) {
-            return colors.foreground.withValues(
+            return colors.onSurface.withValues(
               alpha: OpacityTokens.pressed,
             );
           }
@@ -330,15 +331,15 @@ abstract final class ButtonThemeBuilder {
         // `SettingsPage` for the light/dark/system theme-mode toggle.
         minimumSize: const WidgetStatePropertyAll(_minimumButtonSize),
         side: WidgetStateProperty.resolveWith((states) {
-          // Was `BorderSide(color: colors.border)` returned unconditionally
-          // — `states` was read but never branched on, so every segment
-          // (including focused ones) rendered an identical border. Now
-          // mirrors [outlinedButton]'s ring treatment so a focused segment
+          // Mirrors [outlinedButton]'s focus treatment so a focused segment
           // is actually distinguishable from its neighbours.
           if (states.contains(WidgetState.focused)) {
-            return BorderSide(color: colors.ring, width: BorderWidthTokens.lg);
+            return BorderSide(
+              color: colors.primary,
+              width: BorderWidthTokens.lg,
+            );
           }
-          return BorderSide(color: colors.border);
+          return BorderSide(color: colors.outlineVariant);
         }),
         shape: WidgetStatePropertyAll(
           // M3 segmented button shape category: full (pill).
@@ -357,26 +358,25 @@ abstract final class ButtonThemeBuilder {
 
   /// Floating action button.
   static FloatingActionButtonThemeData floatingActionButton(
-    AppThemeColors colors,
+    ColorScheme colors,
   ) {
     return FloatingActionButtonThemeData(
       backgroundColor: colors.primary,
-      foregroundColor: colors.primaryForeground,
+      foregroundColor: colors.onPrimary,
       // M3 FAB elevation baseline: 6dp rest / focus, 8dp hover, 6dp pressed
-      // (Flutter's `_FABDefaultsM3`). The previous all-zero override was the
-      // flat shadcn treatment — tonal elevation is restored here.
+      // (Flutter's `_FABDefaultsM3`).
       elevation: 6,
       focusElevation: 6,
       hoverElevation: 8,
       highlightElevation: 6,
-      splashColor: colors.primaryForeground.withValues(
+      splashColor: colors.onPrimary.withValues(
         alpha: OpacityTokens.pressed,
       ),
       shape: RoundedRectangleBorder(
         // M3 FAB shape: rounded square, 16dp corners for the regular 56dp FAB
         // (m3.material.io/components/floating-action-button — "boxier shape";
         // Flutter `_FABDefaultsM3` regular = RoundedRectangleBorder 16). Not
-        // the `full` category — that's the pre-M3 circular FAB.
+        // the `full` category — that would be the pre-M3 circular FAB.
         borderRadius: BorderRadius.circular(RadiusTokens.large),
       ),
     );

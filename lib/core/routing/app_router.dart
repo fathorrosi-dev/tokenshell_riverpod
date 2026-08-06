@@ -132,7 +132,7 @@ class _NotFoundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colors.background,
+      backgroundColor: context.colorScheme.surface,
       body: AppStateView(
         icon: Icons.signpost_outlined,
         title: AppStrings.notFoundTitle,
