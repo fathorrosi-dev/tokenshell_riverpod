@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Box-shadow tokens inspired by shadcn/ui's subtle elevation system.
+/// Box-shadow tokens for a subtle, low-contrast elevation system.
 ///
 /// All shadow colors use semi-transparent black; no colored shadows.
 /// Each tier is [static const] and can be used directly in [BoxDecoration].
@@ -95,9 +95,10 @@ abstract final class ShadowTokens {
   /// Every tier above is calibrated as semi-transparent black, tuned for
   /// legibility against light surfaces. In dark mode that same black is
   /// barely distinguishable from typical dark-mode surface colors (e.g.
-  /// `darkPopover`/`darkCard` #111827 sitting on `darkBackground`
-  /// #030712) — a production-readiness audit (01 Jul 2026) found the
-  /// elevation cue effectively disappears for every dark-mode session.
+  /// `darkSurfaceContainerLow`/`darkSurfaceContainerHigh` #1B1B1B/#2B2B2B
+  /// sitting on `darkSurface` #131313) — a production-readiness audit
+  /// (01 Jul 2026) found the elevation cue effectively disappears for
+  /// every dark-mode session.
   /// Rather than hand-tune a second, parallel dark-mode shadow palette
   /// (twice the tokens to keep in sync), this boosts each tier's alpha
   /// for [Brightness.dark] so the same shape/blur/offset stays visually

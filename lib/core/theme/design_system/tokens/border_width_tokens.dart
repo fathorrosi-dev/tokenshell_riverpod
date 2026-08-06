@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Border width tokens following shadcn/ui's minimal border convention.
+/// Border width tokens for a minimal, low-weight border convention.
 ///
 /// All values are in logical pixels. Use these constants instead of raw
 /// 1 / 1.5 / 2 literals in [BorderSide], [OutlineInputBorder], etc.

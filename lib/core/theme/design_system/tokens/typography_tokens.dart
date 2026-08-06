@@ -1,10 +1,23 @@
 import 'package:flutter/painting.dart';
 
-/// Typography tokens derived from the shadcn/ui typographic system.
+/// Typography primitives — font family, weight, letter-spacing, and line-height
+/// constants used for component-level type styling.
 ///
 /// Font family: Geist (with system sans-serif fallback).
-/// Letter spacing is intentionally tighter than Material 3 defaults
-/// to match the shadcn/ui visual feel.
+///
+/// ## Relationship to the M3 [TextTheme]
+///
+/// [ThemeConstants.textThemeFrom] builds the app's M3 role scale
+/// (displayLarge…labelSmall) from literal values snapped 1:1 to the M3
+/// type-scale spec, not from the `size*`/`tracking*` constants below — see
+/// that method's doc comment. This file's `size*`/`tracking*` constants are
+/// a separate, smaller set for component-level type tweaks that
+/// deliberately sit outside the M3 role scale (e.g. badge labels, which are
+/// smaller than any M3 `label*` role) or that adjust a role's letter-spacing
+/// for a specific widget context. [weightRegular]/[weightMedium]/
+/// [weightSemiBold], [trackingNormal], and [sizeXs] are the members
+/// currently consumed this way — see their call sites in `core/theme/builders/`
+/// and `features/*/presentation/`.
 abstract final class TypographyTokens {
   // ── Font families ─────────────────────────────────────────────────────────────
 
@@ -37,7 +50,7 @@ abstract final class TypographyTokens {
   static const FontWeight weightExtraBold = FontWeight.w800;
   static const FontWeight weightBlack = FontWeight.w900;
 
-  // ── Letter spacing — shadcn/ui uses a slightly tight feel ────────────────────
+  // ── Letter spacing — component-level tracking scale ──────────────────────────
 
   /// -0.8px: use on large display text.
   static const double trackingTighter = -0.8;

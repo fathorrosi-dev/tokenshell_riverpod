@@ -6,61 +6,61 @@ import 'package:flutter/painting.dart';
 /// Light and dark variants are separated by prefix convention.
 ///
 /// Wave 0 M3 core refactor: every role holds a value with a genuine M3
-/// tonal relationship to its neighbours (tone 10/20/30/…/100 netral ramp),
+/// tonal relationship to its neighbours (tone 10/20/30/…/100 neutral ramp),
 /// not a 1:1 port from another design system. Scheme identity is a deliberate
 /// monochrome design decision — see repo AGENTS.md "Open decisions".
 abstract final class ColorTokens {
   // ── Light mode ──────────────────────────────────────────────────────────────
 
-  // Primary — netral tone ramp. Light scheme anchors primary at a very dark
+  // Primary — neutral tone ramp. Light scheme anchors primary at a very dark
   // tone (tone-10 class) with a light container (tone 90) — the M3
   // "high-emphasis monochrome" pattern (cf. Android black/white schemes).
 
-  /// Primary action color — netral tone 10.
+  /// Primary action color — neutral tone 10.
   static const Color lightPrimary = Color(0xFF1B1B1B);
 
   /// Text / icon on primary. White on tone 10 (#1B1B1B): ~18.0:1 — AA/AAA.
   static const Color lightOnPrimary = Color(0xFFFFFFFF);
 
-  /// Primary container — netral tone 90.
+  /// Primary container — neutral tone 90.
   static const Color lightPrimaryContainer = Color(0xFFE2E2E2);
 
   /// Text on primary container. Tone 10 on tone 90: ~14.6:1 — AA/AAA.
   static const Color lightOnPrimaryContainer = Color(0xFF1B1B1B);
 
-  // Secondary — netral tone 40.
+  // Secondary — neutral tone 40.
 
-  /// Secondary — netral tone 40.
+  /// Secondary — neutral tone 40.
   static const Color lightSecondary = Color(0xFF5E5E5E);
 
   /// Text on secondary. White on tone 40: ~6.7:1 — AA.
   static const Color lightOnSecondary = Color(0xFFFFFFFF);
 
-  /// Secondary container — netral tone 92 (sedikit lebih terang dari
-  /// primaryContainer agar kedua keluarga tetap distinguishable).
+  /// Secondary container — neutral tone 92 (slightly lighter than
+  /// primaryContainer so the two families stay distinguishable).
   static const Color lightSecondaryContainer = Color(0xFFEBEBEB);
 
   /// Text on secondary container. Tone 10 on tone 92: ~17.0:1 — AAA.
   static const Color lightOnSecondaryContainer = Color(0xFF1B1B1B);
 
-  // Tertiary — untuk skema monokrom tidak ada hue ketiga; tertiary dipetakan
-  // ke offset tone yang tetap netral (tone 25/85) supaya widget yang membaca
-  // role tertiary tetap distinguishable dari primary/secondary. Keputusan
-  // desain eksplisit — didokumentasikan, bukan kebetulan.
+  // Tertiary — a monochrome scheme has no third hue; tertiary is mapped
+  // to an offset tone that stays neutral (tone 25/85) so widgets that read
+  // the tertiary role stay distinguishable from primary/secondary. An
+  // explicit design decision — documented, not incidental.
 
-  /// Tertiary — netral tone 25.
+  /// Tertiary — neutral tone 25.
   static const Color lightTertiary = Color(0xFF3F3F3F);
 
   /// Text on tertiary. White on tone 25: ~10.0:1 — AAA.
   static const Color lightOnTertiary = Color(0xFFFFFFFF);
 
-  /// Tertiary container — netral tone 85.
+  /// Tertiary container — neutral tone 85.
   static const Color lightTertiaryContainer = Color(0xFFD9D9D9);
 
   /// Text on tertiary container. Tone 23 on tone 85: ~12.0:1 — AAA.
   static const Color lightOnTertiaryContainer = Color(0xFF262626);
 
-  // Error — M3 baseline error palette (eksplisit, bukan alpha-tint).
+  // Error — M3 baseline error palette (explicit, not an alpha-tint).
 
   /// Error — M3 light error (#BA1A1A).
   static const Color lightError = Color(0xFFBA1A1A);
@@ -74,7 +74,7 @@ abstract final class ColorTokens {
   /// Text on error container. #410002 on #FFDAD6: ~12.6:1 — AAA.
   static const Color lightOnErrorContainer = Color(0xFF410002);
 
-  // Surface hierarchy — five M3 container tiers pada ramp netral.
+  // Surface hierarchy — five M3 container tiers on the neutral ramp.
 
   /// Surface base — tone 98.
   static const Color lightSurface = Color(0xFFFCFCFC);
@@ -83,7 +83,7 @@ abstract final class ColorTokens {
   static const Color lightOnSurface = Color(0xFF1B1B1B);
 
   /// De-emphasised text on surface — tone 30.
-  /// #474747 on #FCFCFC: ~8.6:1 — AAA(AA untuk teks normal jauh terlampaui).
+  /// #474747 on #FCFCFC: ~8.6:1 — AAA (comfortably exceeds AA for normal text).
   static const Color lightOnSurfaceVariant = Color(0xFF474747);
 
   /// Tier 1 (0 dp canvas) — tone 100.
@@ -104,7 +104,7 @@ abstract final class ColorTokens {
   /// Darkest surface anchor — tone 87.
   static const Color lightSurfaceDim = Color(0xFFDDDDDD);
 
-  /// Lightest surface anchor — tone 98 (sama dengan surface, sesuai M3 light scheme).
+  /// Lightest surface anchor — tone 98 (same as surface, per the M3 light scheme).
   static const Color lightSurfaceBright = Color(0xFFFCFCFC);
 
   // Inverse surfaces
@@ -112,26 +112,26 @@ abstract final class ColorTokens {
   /// Inverse surface — tone 20.
   static const Color lightInverseSurface = Color(0xFF303030);
 
-  /// Text on inverse surface — tone 95 (~13.4:1 kontras terhadap tone 20).
+  /// Text on inverse surface — tone 95 (~13.4:1 contrast against tone 20).
   static const Color lightOnInverseSurface = Color(0xFFF2F2F2);
 
-  /// Inverse primary — tone 80 (#C6C6C6 pada tone 20: ~8.3:1 — OK untuk elemen menonjol).
+  /// Inverse primary — tone 80 (#C6C6C6 on tone 20: ~8.3:1 — fine for prominent elements).
   static const Color lightInversePrimary = Color(0xFFC6C6C6);
 
   // Outlines
 
-  /// Component borders — netral tone 50.
-  /// #757575 on #FCFCFC: ~4.2:1 — memenuhi WCAG non-text contrast 3:1 untuk
-  /// batas komponen UI. Teks muted TIDAK memakai role ini — pakai
-  /// [lightOnSurfaceVariant] (AAA).
+  /// Component borders — neutral tone 50.
+  /// #757575 on #FCFCFC: ~4.2:1 — meets the WCAG non-text contrast bar
+  /// (3:1) for UI component boundaries. Muted text does NOT use this role —
+  /// it uses [lightOnSurfaceVariant] (AAA).
   static const Color lightOutline = Color(0xFF757575);
 
-  /// Dekoratif / divider — tone 80, solid (menggantikan border@50% alpha lama).
+  /// Decorative / divider — tone 80, solid (replaces the old border@50% alpha).
   static const Color lightOutlineVariant = Color(0xFFC7C7C7);
 
   // ── Dark mode ────────────────────────────────────────────────────────────────
 
-  /// Primary — netral tone 90.
+  /// Primary — neutral tone 90.
   static const Color darkPrimary = Color(0xFFE2E2E2);
 
   /// Text on primary. Tone 10 on tone 90: ~14.6:1 — AAA.
@@ -155,7 +155,7 @@ abstract final class ColorTokens {
   /// Text on secondary container. Tone 90 on tone 30: ~8.1:1 — AAA.
   static const Color darkOnSecondaryContainer = Color(0xFFE2E2E2);
 
-  /// Tertiary — tone 75 (offset dari secondary, tetap netral).
+  /// Tertiary — tone 75 (offset from secondary, stays neutral).
   static const Color darkTertiary = Color(0xFFBDBDBD);
 
   /// Text on tertiary. Tone 23 on tone 75: ~7.2:1 — AAA.
@@ -216,19 +216,19 @@ abstract final class ColorTokens {
   /// Text on inverse surface — tone 20.
   static const Color darkOnInverseSurface = Color(0xFF303030);
 
-  /// Inverse primary — tone 40 (#5E5E5E pada tone 90: ~5.4:1).
+  /// Inverse primary — tone 40 (#5E5E5E on tone 90: ~5.4:1).
   static const Color darkInversePrimary = Color(0xFF5E5E5E);
 
   /// Component borders — tone 60.
-  /// #8E8E8E on #131313: ~5.7:1 — di atas WCAG non-text 3:1.
+  /// #8E8E8E on #131313: ~5.7:1 — above the WCAG non-text 3:1 bar.
   static const Color darkOutline = Color(0xFF8E8E8E);
 
-  /// Dekoratif / divider — tone 30, solid.
+  /// Decorative / divider — tone 30, solid.
   static const Color darkOutlineVariant = Color(0xFF474747);
 
-  // ── Fixed roles (brightness-invariant, per kontrak M3 "fixed") ──────────────
+  // ── Fixed roles (brightness-invariant, per the M3 "fixed" contract) ────────
 
-  /// Primary fixed — light-scheme tone 90, identik di kedua brightness.
+  /// Primary fixed — light-scheme tone 90, identical across both brightness modes.
   static const Color primaryFixed = Color(0xFFE2E2E2);
 
   /// Primary fixed dim — tone 80.
@@ -266,10 +266,11 @@ abstract final class ColorTokens {
 
   // ── Status palette ───────────────────────────────────────────────────────────
   //
-  // Sengaja berada DI LUAR role M3 native: success/warning/info tidak punya
-  // padanan di ColorScheme, jadi tetap dibawa lewat ThemeExtension
-  // (AppStatusColors) — lihat AGENTS.md. Nilai di bawah sudah lolos audit
-  // WCAG AA (01 Jul 2026) dan TIDAK diubah oleh refactor M3 Wave 0.
+  // Deliberately OUTSIDE the native M3 roles: success/warning/info have no
+  // ColorScheme equivalent, so they're still carried through a
+  // ThemeExtension (AppStatusColors) — see AGENTS.md. The values below
+  // already passed a WCAG AA audit (01 Jul 2026) and were NOT changed by
+  // the M3 Wave 0 refactor.
   //
   // Foreground tokens are split by mode because dark-mode status backgrounds
   // are lighter (400-series) than their light-mode counterparts (500-series).
@@ -319,8 +320,8 @@ abstract final class ColorTokens {
   /// Stone-950 on sky-400 (dark): ~8.9:1 ✅ WCAG AAA
   static const Color darkInfoForeground = Color(0xFF1C1917);
 
-  // Error (status) — Rose family. Berbeda dari role `error` M3 di atas:
-  // ini semantic status color untuk extension, bukan ColorScheme.error.
+  // Error (status) — Rose family. Distinct from the M3 `error` role above:
+  // this is a semantic status color for the extension, not ColorScheme.error.
   static const Color lightStatusError = Color(0xFFF43F5E); // rose-500
   static const Color darkStatusError = Color(0xFFFB7185); // rose-400
   /// Stone-950 on rose-500 (light): 4.76:1 — passes WCAG AA.
