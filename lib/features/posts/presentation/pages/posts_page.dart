@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tokenshell_riverpod/core/errors/failure.dart';
 import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
@@ -115,7 +115,6 @@ class _PostsPageState extends ConsumerState<PostsPage> {
       // AppBar does NOT watch postsProvider — it will not rebuild when
       // pagination state changes (isLoadingMore toggle, page appended).
       // Only the body Consumer below rebuilds on list state changes.
-      // (R-11, 27 Jun 2026 — production readiness audit)
       appBar: AppBar(
         title: const Text(AppStrings.postsAppBarTitle),
         actions: [

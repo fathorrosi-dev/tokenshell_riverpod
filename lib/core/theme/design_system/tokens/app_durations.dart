@@ -22,7 +22,7 @@ import 'package:tokenshell_riverpod/core/theme/design_system/tokens/duration_tok
 /// [DurationTokens] remains available for contexts where [BuildContext] is
 /// not accessible (e.g. [ThemeData] construction, Riverpod providers).
 ///
-/// ## Allocation strategy (R7)
+/// ## Allocation strategy
 ///
 /// There are exactly two possible [AppDurations] instances: one where
 /// reduce-motion is active and one where it is not. [forReduceMotion]

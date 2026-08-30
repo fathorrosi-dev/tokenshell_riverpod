@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 
@@ -19,12 +19,12 @@ abstract final class ButtonThemeBuilder {
   /// Minimum tap target for every themed button family below.
   ///
   /// Height was previously 40 — below both Android's Material 48dp and iOS
-  /// HIG's 44pt minimum touch-target guidance. Bumped to 48 as part of the
-  /// 01 Jul 2026 production-readiness audit: this app already invests in
-  /// keyboard-focus and reduce-motion accessibility (see the `focused`
-  /// state handling throughout this file), so touch-target size was the
-  /// one accessibility dimension still below standard. Width (64) is
-  /// unaffected — only height mattered for the touch-target guideline.
+  /// HIG's 44pt minimum touch-target guidance. Bumped to 48 since this app
+  /// already invests in keyboard-focus and reduce-motion accessibility
+  /// (see the `focused` state handling throughout this file), so
+  /// touch-target size was the one accessibility dimension still below
+  /// standard. Width (64) is unaffected — only height mattered for the
+  /// touch-target guideline.
   static const Size _minimumButtonSize = Size(64, 48);
 
   /// Elevated button — shadcn/ui "default" / primary variant.

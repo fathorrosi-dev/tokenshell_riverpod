@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
 import 'package:tokenshell_riverpod/core/routing/routes.dart';
 import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';

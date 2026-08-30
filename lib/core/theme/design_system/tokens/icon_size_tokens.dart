@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Icon size tokens built on a progressive scale aligned with the 4 px base grid.
 ///
@@ -28,9 +28,9 @@ abstract final class IconSizeTokens {
 
   /// 48 px — full-bleed empty/error state icons (see [AppStateView]).
   ///
-  /// Added during the 01 Jul 2026 production-readiness audit: this exact
-  /// size was already in use as a raw `48` literal in `app_state_view.dart`
-  /// — added here (rather than resizing to the nearest existing step) to
-  /// close the token-discipline gap without an uncommunicated visual change.
+  /// This exact size was already in use as a raw `48` literal in
+  /// `app_state_view.dart` — added here (rather than resizing to the
+  /// nearest existing step) to close the token-discipline gap without an
+  /// uncommunicated visual change.
   static const double x4l = 48;
 }

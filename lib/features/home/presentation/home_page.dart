@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
@@ -12,10 +12,10 @@ import 'package:tokenshell_riverpod/core/utils/extensions.dart';
 /// Renders a live token preview so developers can verify the design system
 /// is wired correctly before building actual feature UI.
 ///
-/// ## Why ConsumerStatefulWidget (R16)
+/// ## Why ConsumerStatefulWidget
 ///
 /// This page watches the same [themeModeWriteFailureProvider] as
-/// [SettingsPage] (see its "Why ConsumerStatefulWidget (R4)" doc comment for
+/// [SettingsPage] (see its "Why ConsumerStatefulWidget" doc comment for
 /// the full explanation), but was never migrated when that fix landed. A
 /// [ConsumerWidget] using [WidgetRef.listen] inside `build()` has no
 /// guaranteed cleanup point — if this widget is disposed between a write
@@ -52,9 +52,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         // that is no longer in the tree.
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Couldn't save your theme preference. Try again."),
-          ),
+          const SnackBar(content: Text(AppStrings.themeModeWriteFailure)),
         );
         // Clear the failure so the same one isn't shown again on the next
         // build or re-visit.
@@ -111,8 +109,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   /// Builds the flat list of body sections/rows fed to [ListView.builder]
   /// above.
   ///
-  /// ## Why `.builder`, not `ListView(children: [...])` (LOW, 3 Jul 2026
-  /// production readiness audit — Pillar 3)
+  /// ## Why `.builder`, not `ListView(children: [...])`
   ///
   /// This page's content is currently static and small (~30 widgets) —
   /// switching delegate type buys no measurable performance difference

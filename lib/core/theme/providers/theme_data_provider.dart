@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:tokenshell_riverpod/core/theme/app_theme.dart';
@@ -35,13 +35,13 @@ ThemeData darkTheme(Ref ref) => AppTheme.dark();
 //
 // Interaction with OS accessibility text scaling: this fontSizeFactor
 // multiplies on top of whatever MediaQuery.textScaler the OS reports —
-// Flutter applies both. Before 01 Jul 2026 that stack was unbounded,
-// which a production-readiness audit flagged as an overflow risk for
-// low-vision users on tablet/desktop. `App.builder` (see `app/app.dart`)
-// now clamps `textScaler` to a 1.6x ceiling before either this factor or
-// any other scaling is applied, so the worst realistic combined scale is
-// bounded (1.6 × 1.2 ≈ 1.92x on expanded) instead of unbounded. No change
-// to the 1.1/1.2 values themselves was needed once that ceiling existed.
+// Flutter applies both. That stack was previously unbounded, an overflow
+// risk for low-vision users on tablet/desktop. `App.builder` (see
+// `app/app.dart`) now clamps `textScaler` to a 1.6x ceiling before either
+// this factor or any other scaling is applied, so the worst realistic
+// combined scale is bounded (1.6 × 1.2 ≈ 1.92x on expanded) instead of
+// unbounded. No change to the 1.1/1.2 values themselves was needed once
+// that ceiling existed.
 
 /// Light theme scaled for medium (tablet) breakpoint — 1.1× font factor.
 @Riverpod(keepAlive: true)

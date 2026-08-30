@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
@@ -25,7 +25,7 @@ import 'package:tokenshell_riverpod/shared/shell/nav_destinations.dart';
 ///
 /// [isOfflineProvider] is a derived boolean — it collapses the raw
 /// [connectivityStreamProvider] stream into a single flag and only notifies
-/// listeners when that flag actually changes (R-08, 27 Jun 2026). The
+/// listeners when that flag actually changes. The
 /// previous approach watched [connectivityStreamProvider] directly, which
 /// rebuilt this root shell widget on every adapter event — including
 /// WiFi → cellular transitions that left the device online and changed

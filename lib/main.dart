@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_riverpod_logger/talker_riverpod_logger.dart';
@@ -29,7 +29,7 @@ Future<void> main() async {
 
       // `initSentry` wraps everything below in Sentry's own zone-guarded
       // `appRunner` — this is also what closes the "no runZonedGuarded
-      // around runApp()" gap from the same audit (25 Jun 2026): Sentry's
+      // around runApp()" gap: Sentry's
       // SDK already installs the equivalent zone/error-capture machinery
       // as part of this call, so a second, separate `runZonedGuarded`
       // wrapper here would be redundant rather than additive. See

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
 import 'package:tokenshell_riverpod/core/theme/design_system/design_system.dart';
 
@@ -140,10 +140,9 @@ abstract final class ThemeConstants {
       ),
       // Split by brightness: `destructive` itself reads at 4.76:1 on the
       // dark-mode errorContainer tint (passes AA, kept as-is), but only
-      // 3.1:1 on the light-mode tint (fails AA) — a gap found during the
-      // 01 Jul 2026 production-readiness audit, alongside the
-      // destructive/status-foreground fixes above. Light mode uses a
-      // dedicated dark-red token instead; see
+      // 3.1:1 on the light-mode tint (fails AA) — the same gap found
+      // alongside the destructive/status-foreground fixes above. Light
+      // mode uses a dedicated dark-red token instead; see
       // [ColorTokens.lightErrorContainerForeground] for the full contrast
       // math and rationale.
       onErrorContainer: brightness == Brightness.light

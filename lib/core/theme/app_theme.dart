@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
 import 'package:tokenshell_riverpod/core/theme/builders/button_theme_builder.dart';
@@ -59,7 +59,6 @@ abstract final class AppTheme {
     final textTheme = ThemeConstants.textThemeFrom(colors.foreground);
 
     return ThemeData(
-      useMaterial3: true,
       brightness: brightness,
       colorScheme: colorScheme,
       textTheme: textTheme,

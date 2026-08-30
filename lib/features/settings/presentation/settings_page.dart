@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tokenshell_riverpod/core/di/package_info_provider.dart';
 import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
@@ -13,7 +13,7 @@ import 'package:tokenshell_riverpod/core/utils/extensions.dart';
 /// Provides theme mode controls and displays app metadata.
 /// Extend this page with actual settings as features grow.
 ///
-/// ## Why ConsumerStatefulWidget (R4)
+/// ## Why ConsumerStatefulWidget
 ///
 /// The previous [ConsumerWidget] used [WidgetRef.listen] which runs in
 /// `build()` — if the widget is disposed between the write failure being
@@ -54,9 +54,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         // would throw because the context is no longer in the tree.
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Couldn't save your theme preference. Try again."),
-          ),
+          const SnackBar(content: Text(AppStrings.themeModeWriteFailure)),
         );
         // Clear the failure so the same one isn't shown again on the next
         // build or re-visit. Setting null here is what notifies any other
@@ -151,7 +149,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           .setThemeMode(modes.first),
                     );
                   },
-                  // Local shape override removed (R6 / segmented button polish):
+                  // Local shape override removed (segmented button polish):
                   // ButtonThemeBuilder.segmentedButton() already sets the
                   // correct RadiusTokens.md shape in the theme — a redundant
                   // widget-level override here would silently shadow any future
@@ -214,7 +212,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
 /// A card-shaped container that delegates ALL visual styling to [CardThemeData].
 ///
-/// ## Why Card, not Container + BoxDecoration (R6)
+/// ## Why Card, not Container + BoxDecoration
 ///
 /// The previous implementation hard-coded [colors.card], [colors.border], and
 /// [RadiusTokens.lg] via manual [BoxDecoration]. This meant that any update

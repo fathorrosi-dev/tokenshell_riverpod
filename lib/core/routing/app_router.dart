@@ -1,6 +1,6 @@
 // dart run build_runner build --delete-conflicting-outputs
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -47,9 +47,8 @@ GoRouter appRouter(Ref ref) {
     debugLogDiagnostics: kDebugMode,
 
     // ── Auth redirect placeholder ────────────────────────────────────────────
-    // R-13 (2 Jul 2026, production readiness audit — core/routing): tracked
-    // as a REQUIRED companion task for whenever the login feature is built —
-    // not something to implement speculatively now, consistent with
+    // Tracked as a REQUIRED companion task for whenever the login feature is
+    // built — not something to implement speculatively now, consistent with
     // `AuthInterceptor`'s own reasoning for staying a no-op until then (see
     // `core/network/interceptors/auth_interceptor.dart`). `FailureMapper`
     // already classifies 401/403 as `AuthFailure` (see failure_mapper.dart),
@@ -82,7 +81,7 @@ GoRouter appRouter(Ref ref) {
     // Default go_router error page is unbranded and not user-friendly —
     // this keeps an unmatched/broken deep link inside the app's own look.
     //
-    // R-12 (2 Jul 2026): also reports the failed uri through `talker`, so a
+    // Also reports the failed uri through `talker`, so a
     // broken deep link becomes a visible Sentry event instead of something
     // only discoverable if a user happens to report it manually. Every
     // `talker.handle()` call is auto-forwarded to Sentry by

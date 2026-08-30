@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tokenshell_riverpod/core/logging/talker_provider.dart';
 import 'package:tokenshell_riverpod/core/routing/app_router.dart';
@@ -58,12 +58,12 @@ class App extends ConsumerWidget {
             'Failed to build light/dark ThemeData — falling back to '
             'Material defaults with AppThemeExtension registered',
           );
-      lightTheme = ThemeData.light(useMaterial3: true).copyWith(
+      lightTheme = ThemeData.light().copyWith(
         extensions: [
           const AppThemeExtension(colors: ThemeConstants.lightColors),
         ],
       );
-      darkTheme = ThemeData.dark(useMaterial3: true).copyWith(
+      darkTheme = ThemeData.dark().copyWith(
         extensions: [
           const AppThemeExtension(colors: ThemeConstants.darkColors),
         ],

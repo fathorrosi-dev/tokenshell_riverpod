@@ -36,6 +36,15 @@
 /// Grouped by the feature/widget that owns each string, not
 /// alphabetically — a string's section tells you where its call site
 /// lives.
+///
+/// ## Keeping this the single source
+///
+/// Before merging any change that adds a `Text(...)`, `SnackBar(...)`,
+/// tooltip, or other user-facing copy, grep the diff for string literals
+/// in those call sites and confirm each one is a constant from this file
+/// rather than a fresh hardcoded literal. This file's guarantee only
+/// holds as long as that check actually happens — nothing in the build
+/// enforces it automatically.
 final class AppStrings {
   const AppStrings._(); // Static-only — never instantiate.
 
@@ -46,6 +55,10 @@ final class AppStrings {
 
   // ── Shared / AppShell (shared/shell/app_shell.dart) ─────────────────────
   static const String shellOfflineBanner = 'No internet connection';
+
+  // ── Shared / Theme mode write failure (home_page.dart, settings_page.dart) ─
+  static const String themeModeWriteFailure =
+      "Couldn't save your theme preference. Try again.";
 
   // ── Shared / Nav destination labels (each feature's *_routes.dart) ─────
   static const String navHome = 'Home';

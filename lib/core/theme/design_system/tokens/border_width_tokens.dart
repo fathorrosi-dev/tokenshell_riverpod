@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Border width tokens following shadcn/ui's minimal border convention.
 ///

@@ -27,14 +27,14 @@ part of 'posts_notifier.dart';
 /// AppBar refresh button, and `ref.read(postsProvider.notifier).loadMore()`
 /// when the list is scrolled near its end.
 ///
-/// ## Why keepAlive (R-06, 27 Jun 2026)
+/// ## Why keepAlive
 ///
 /// Changed from `@riverpod` (autoDispose default) to
 /// `@Riverpod(keepAlive: true)` so the paginated list state survives tab
 /// navigation. With autoDispose, every switch to Settings or Home and back
 /// would dispose this notifier — resetting to page 1 and discarding all
 /// pages the user had already scrolled through. For a daily-use
-/// productivity tool like Baseline, that's an unnecessary UX regression.
+/// productivity tool, that's an unnecessary UX regression.
 ///
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
@@ -65,14 +65,14 @@ final postsProvider = PostsNotifierProvider._();
 /// AppBar refresh button, and `ref.read(postsProvider.notifier).loadMore()`
 /// when the list is scrolled near its end.
 ///
-/// ## Why keepAlive (R-06, 27 Jun 2026)
+/// ## Why keepAlive
 ///
 /// Changed from `@riverpod` (autoDispose default) to
 /// `@Riverpod(keepAlive: true)` so the paginated list state survives tab
 /// navigation. With autoDispose, every switch to Settings or Home and back
 /// would dispose this notifier — resetting to page 1 and discarding all
 /// pages the user had already scrolled through. For a daily-use
-/// productivity tool like Baseline, that's an unnecessary UX regression.
+/// productivity tool, that's an unnecessary UX regression.
 ///
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
@@ -101,14 +101,14 @@ final class PostsNotifierProvider
   /// AppBar refresh button, and `ref.read(postsProvider.notifier).loadMore()`
   /// when the list is scrolled near its end.
   ///
-  /// ## Why keepAlive (R-06, 27 Jun 2026)
+  /// ## Why keepAlive
   ///
   /// Changed from `@riverpod` (autoDispose default) to
   /// `@Riverpod(keepAlive: true)` so the paginated list state survives tab
   /// navigation. With autoDispose, every switch to Settings or Home and back
   /// would dispose this notifier — resetting to page 1 and discarding all
   /// pages the user had already scrolled through. For a daily-use
-  /// productivity tool like Baseline, that's an unnecessary UX regression.
+  /// productivity tool, that's an unnecessary UX regression.
   ///
   /// Tradeoff: keepAlive means the list stays in memory for the app's
   /// lifetime. For stale-data mitigation, consider calling [refresh] on
@@ -156,14 +156,14 @@ String _$postsNotifierHash() => r'24cf06e8e68192bfa644137ea0fe147053e58515';
 /// AppBar refresh button, and `ref.read(postsProvider.notifier).loadMore()`
 /// when the list is scrolled near its end.
 ///
-/// ## Why keepAlive (R-06, 27 Jun 2026)
+/// ## Why keepAlive
 ///
 /// Changed from `@riverpod` (autoDispose default) to
 /// `@Riverpod(keepAlive: true)` so the paginated list state survives tab
 /// navigation. With autoDispose, every switch to Settings or Home and back
 /// would dispose this notifier — resetting to page 1 and discarding all
 /// pages the user had already scrolled through. For a daily-use
-/// productivity tool like Baseline, that's an unnecessary UX regression.
+/// productivity tool, that's an unnecessary UX regression.
 ///
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on

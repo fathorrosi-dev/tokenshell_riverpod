@@ -1,5 +1,5 @@
 // dart run build_runner build --delete-conflicting-outputs
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'app_theme_extension.freezed.dart';
