@@ -66,7 +66,7 @@ class AuthInterceptor extends Interceptor {
 /// `core/logging/talker_provider.dart` for the one deliberate exception
 /// that's staying manual, and why.
 ///
-/// ## Sentry user scope (R-03 — 27 Jun 2026)
+/// ## Sentry user scope
 ///
 /// When you override this provider with a real token reader, also wire
 /// [setSentryUser] / [clearSentryUser] from
@@ -83,7 +83,7 @@ class AuthInterceptor extends Interceptor {
 /// ```
 ///
 /// Without this, crashes in production cannot be attributed to a specific
-/// client account — making support triage significantly harder for a B2B
-/// SaaS like Baseline.
+/// client account — making support triage significantly harder for any
+/// multi-tenant B2B SaaS built on this template.
 @Riverpod(keepAlive: true)
 AccessTokenReader accessTokenReader(Ref ref) => _noAccessToken;

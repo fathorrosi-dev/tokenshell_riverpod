@@ -30,7 +30,7 @@ export 'package:tokenshell_riverpod/core/routing/shell_feature.dart'
 /// file), import it here, and add it to this list. That's the only edit
 /// needed.
 ///
-/// ## Why this is a cached `final`, not a `get` (perf, 3 Jul 2026 audit)
+/// ## Why this is a cached `final`, not a `get`
 ///
 /// This used to be `List<ShellFeature> get shellFeatures => [...]` — a
 /// getter that re-evaluated `homeShellFeature`, `settingsShellFeature`,

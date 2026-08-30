@@ -53,10 +53,10 @@ abstract final class ColorTokens {
   /// Text on destructive surfaces.
   ///
   /// Stone-950 on red-500: 4.65:1 — passes WCAG AA (4.5:1) for normal text.
-  /// Previously white/`FAFAFA` (~3.6:1, fails AA) — production-readiness
-  /// audit (01 Jul 2026) found this rendering live on the Home screen's
-  /// design-token preview at 12px/w500, well within WCAG's "normal text"
-  /// size bracket, so the 3:1 large-text exception never applied here.
+  /// Previously white/`FAFAFA` (~3.6:1, fails AA) — found rendering live on
+  /// the Home screen's design-token preview at 12px/w500, well within
+  /// WCAG's "normal text" size bracket, so the 3:1 large-text exception
+  /// never applied here.
   static const Color lightDestructiveForeground = Color(0xFF1C1917);
 
   /// Text for [ColorScheme.onErrorContainer] in light mode — red-900.
@@ -154,9 +154,9 @@ abstract final class ColorTokens {
   // Using stone-950 (#1C1917) as the dark-mode foreground restores AA compliance
   // and is consistent with the existing warningForeground treatment.
   //
-  // 01 Jul 2026 production-readiness audit: the same problem was found to
-  // also affect two LIGHT-mode 500-series pairs that had been assumed safe
-  // and never re-verified with precise contrast math —
+  // The same problem was found to also affect two LIGHT-mode 500-series
+  // pairs that had been assumed safe and never re-verified with precise
+  // contrast math —
   //   • lightSuccess (#10B981 emerald-500) + white → 2.54:1  ❌ (was
   //     documented as "~4.6:1 ✅", a calculation error, not just a bad
   //     color choice)

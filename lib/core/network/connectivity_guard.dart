@@ -7,9 +7,9 @@ import 'package:tokenshell_riverpod/core/errors/failure.dart';
 /// or `Right(unit)` if the device can reach the backend.
 ///
 /// Changed from `Future<void> Function()` (throw-based) to
-/// `Future<Either<NetworkFailure, Unit>> Function()` (Either-based) in
-/// R-05 (27 Jun 2026) to align with the established error propagation
-/// contract used throughout the Data/Domain layers.
+/// `Future<Either<NetworkFailure, Unit>> Function()` (Either-based) to
+/// align with the established error propagation contract used throughout
+/// the Data/Domain layers.
 ///
 /// The previous throw-based design worked, but only because
 /// [PostRepositoryImpl] happened to catch `on Exception` — which

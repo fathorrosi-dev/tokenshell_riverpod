@@ -28,8 +28,6 @@ part of 'offline_provider.dart';
 /// changes. This derived provider collapses the stream into a boolean so
 /// [AppShell] only rebuilds when the "is offline" flag actually flips.
 ///
-/// Added R-08 (27 Jun 2026) — production readiness audit.
-///
 /// [keepAlive: true] — matches [connectivityStreamProvider]'s own
 /// lifecycle. Both live for the app's entire lifetime; disposing this
 /// provider while the stream is still active would just recreate an
@@ -58,8 +56,6 @@ final isOfflineProvider = IsOfflineProvider._();
 /// changes. This derived provider collapses the stream into a boolean so
 /// [AppShell] only rebuilds when the "is offline" flag actually flips.
 ///
-/// Added R-08 (27 Jun 2026) — production readiness audit.
-///
 /// [keepAlive: true] — matches [connectivityStreamProvider]'s own
 /// lifecycle. Both live for the app's entire lifetime; disposing this
 /// provider while the stream is still active would just recreate an
@@ -86,8 +82,6 @@ final class IsOfflineProvider extends $FunctionalProvider<bool, bool, bool>
   /// visibility doesn't change, the shell layout doesn't change, nothing
   /// changes. This derived provider collapses the stream into a boolean so
   /// [AppShell] only rebuilds when the "is offline" flag actually flips.
-  ///
-  /// Added R-08 (27 Jun 2026) — production readiness audit.
   ///
   /// [keepAlive: true] — matches [connectivityStreamProvider]'s own
   /// lifecycle. Both live for the app's entire lifetime; disposing this

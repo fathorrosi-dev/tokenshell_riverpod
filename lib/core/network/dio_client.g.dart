@@ -35,7 +35,7 @@ part of 'dio_client.dart';
 ///   on GET requests.
 /// - [TalkerDioLogger] — logs every attempt, including retries, since each
 ///   retry is a fresh pass through this same interceptor chain. Settings
-///   come from [LogLevelPolicy.dioLoggerSettings] (added 25 Jun 2026) —
+///   come from [LogLevelPolicy.dioLoggerSettings] —
 ///   permanently redacts `Authorization`/`X-Api-Key` headers and stops
 ///   printing request/response bodies in `AppFlavor.prod`; see that
 ///   class's doc comment for why this is a permanent setting, not a
@@ -88,7 +88,7 @@ final dioProvider = DioProvider._();
 ///   on GET requests.
 /// - [TalkerDioLogger] — logs every attempt, including retries, since each
 ///   retry is a fresh pass through this same interceptor chain. Settings
-///   come from [LogLevelPolicy.dioLoggerSettings] (added 25 Jun 2026) —
+///   come from [LogLevelPolicy.dioLoggerSettings] —
 ///   permanently redacts `Authorization`/`X-Api-Key` headers and stops
 ///   printing request/response bodies in `AppFlavor.prod`; see that
 ///   class's doc comment for why this is a permanent setting, not a
@@ -140,7 +140,7 @@ final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
   ///   on GET requests.
   /// - [TalkerDioLogger] — logs every attempt, including retries, since each
   ///   retry is a fresh pass through this same interceptor chain. Settings
-  ///   come from [LogLevelPolicy.dioLoggerSettings] (added 25 Jun 2026) —
+  ///   come from [LogLevelPolicy.dioLoggerSettings] —
   ///   permanently redacts `Authorization`/`X-Api-Key` headers and stops
   ///   printing request/response bodies in `AppFlavor.prod`; see that
   ///   class's doc comment for why this is a permanent setting, not a

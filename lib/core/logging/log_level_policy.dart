@@ -18,16 +18,16 @@ import 'package:tokenshell_riverpod/core/env/app_flavor.dart';
 /// construction site AND `dio_client.dart`'s provider body, with no `Ref`
 /// required at either call site.
 ///
-/// ## Root cause this closes (production-readiness audit, 25 Jun 2026)
+/// ## Root cause this closes
 ///
 /// `app_flavor.dart`'s doc comment used to describe exactly this kind of
 /// gating as an illustrative example
 /// (`if (flavor != AppFlavor.prod) talker.verbose(...)`) that was never
 /// actually wired into `talker_provider.dart` or `dio_client.dart` — two
-/// separate root causes from the same review (RC-3: `TalkerDioLogger` had
-/// zero settings, logging full request/response data in every build mode;
-/// RC-4: verbose Talker logging stayed on in `AppFlavor.prod` despite the
-/// doc comment describing the opposite). Consolidated into one file
+/// separate problems that trace back to the same review: `TalkerDioLogger`
+/// had zero settings, logging full request/response data in every build
+/// mode; and verbose Talker logging stayed on in `AppFlavor.prod` despite
+/// the doc comment describing the opposite. Consolidated into one file
 /// rather than two separate ad-hoc fixes, since both share the same root
 /// cause: no single place read [currentFlavor] to decide logging
 /// behavior at all.

@@ -20,8 +20,7 @@ import 'package:tokenshell_riverpod/core/logging/log_level_policy.dart';
 /// routine `.info()` / `.warning()` / `.debug()` calls are not errors and
 /// would just spam Sentry with non-actionable noise.
 ///
-/// Added as part of the production-readiness audit, 25 Jun 2026 (RC-1 —
-/// no crash reporter was integrated at all before this).
+/// Added because no crash reporter was integrated at all before this.
 class _SentryForwardingObserver extends TalkerObserver {
   @override
   void onError(TalkerError err) {
@@ -57,7 +56,7 @@ class _SentryForwardingObserver extends TalkerObserver {
 ///   reaching for this global directly.
 ///
 /// `settings` and `observer` come from [LogLevelPolicy] and
-/// [_SentryForwardingObserver] respectively (added 25 Jun 2026) — neither
+/// [_SentryForwardingObserver] respectively — neither
 /// existed when this file only read `TalkerSettings()` with no
 /// environment awareness and no link to a remote crash reporter.
 final Talker talker = TalkerFlutter.init(
@@ -93,7 +92,7 @@ final Provider<Talker> talkerProvider = Provider<Talker>(
 /// Call this once, at the very top of `main()`, before `runApp` — both
 /// hooks need to be set before anything can throw.
 ///
-/// ## Call-order safety with SentryFlutter.init() (added 25 Jun 2026)
+/// ## Call-order safety with SentryFlutter.init()
 ///
 /// `SentryFlutter.init()` (see `sentry_bootstrap.dart`) ALSO assigns
 /// [FlutterError.onError] and [PlatformDispatcher.onError] internally, to

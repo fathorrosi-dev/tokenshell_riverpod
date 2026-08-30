@@ -33,7 +33,7 @@ part of 'package_info_provider.dart';
 /// separate constant updated at upgrade time — there is no public runtime
 /// API to read the Flutter SDK version in a production build.
 ///
-/// ## Error observability (R17)
+/// ## Error observability
 ///
 /// `SettingsPage` reads this via `packageInfoAsync.asData?.value.version ??
 /// AppStrings.settingsAboutVersionFallback` — a safe UI fallback for the
@@ -73,7 +73,7 @@ final packageInfoProvider = PackageInfoProvider._();
 /// separate constant updated at upgrade time — there is no public runtime
 /// API to read the Flutter SDK version in a production build.
 ///
-/// ## Error observability (R17)
+/// ## Error observability
 ///
 /// `SettingsPage` reads this via `packageInfoAsync.asData?.value.version ??
 /// AppStrings.settingsAboutVersionFallback` — a safe UI fallback for the
@@ -118,7 +118,7 @@ final class PackageInfoProvider
   /// separate constant updated at upgrade time — there is no public runtime
   /// API to read the Flutter SDK version in a production build.
   ///
-  /// ## Error observability (R17)
+  /// ## Error observability
   ///
   /// `SettingsPage` reads this via `packageInfoAsync.asData?.value.version ??
   /// AppStrings.settingsAboutVersionFallback` — a safe UI fallback for the

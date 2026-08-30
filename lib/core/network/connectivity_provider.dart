@@ -174,7 +174,7 @@ const Duration _reachabilityFailureCacheTtl = Duration(seconds: 3);
 /// so [ReachabilityCache] can decide whether that result is still fresh
 /// enough to reuse instead of probing again.
 ///
-/// Freezed — was a hand-written mutable class (audited 25 Jun 2026). Every
+/// Freezed — was previously a hand-written mutable class. Every
 /// other state object in Core (see [Failure]) is immutable via Freezed;
 /// this was the one exception, with no value/equality semantics and no
 /// `copyWith` if a field is ever added. The private constructor + factory
@@ -280,7 +280,7 @@ class ReachabilityCache extends _$ReachabilityCache {
 /// narrow window it doesn't cover: two calls that both see a stale/absent
 /// cache before either one finishes probing. Without de-duplication, both
 /// independently start a real network round-trip to
-/// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+/// [_reachabilityProbeUrl]. [_inFlightProbe] closes that window: the
 /// second caller awaits the first caller's in-progress [Future] instead of
 /// starting a redundant one. Bounded by realistic parallel-request counts
 /// (a handful, not a thundering herd) — this is a minor efficiency fix, not
@@ -314,7 +314,7 @@ class ConnectivityService extends _$ConnectivityService {
     final dio = ref.read(probeDioProvider);
     final talker = ref.read(talkerProvider)
       // debug, not info — this fires on EVERY isConnected() call, including
-      // every cache hit during aggressive pagination (audited 25 Jun 2026).
+      // every cache hit during aggressive pagination.
       // At `info` it drowned out the genuinely rare events below (adapter
       // down, fresh probe ran, probe failed) in normal-mode log output.
       // `log_level_policy.dart` already filters `debug` out of
@@ -346,7 +346,7 @@ class ConnectivityService extends _$ConnectivityService {
       // earlier failed probe would return here with zero trace in the log,
       // indistinguishable from a fresh failure.
       //
-      // debug, not info (downgraded 25 Jun 2026) — reusing a cache is
+      // debug, not info — reusing a cache is
       // normal, expected behavior, not a problem by itself, and this path
       // fires on every guarded repository call during a cache-hit window
       // (very often under pagination). Still worth keeping at SOME level
@@ -422,7 +422,7 @@ class ConnectivityService extends _$ConnectivityService {
 /// Either value rather than initiating an HTTP request that is guaranteed
 /// to time out.
 ///
-/// Changed from throw-based to Either-based in R-05 (27 Jun 2026) to align
+/// Changed from throw-based to Either-based to align
 /// with the established error propagation contract used by every other
 /// Data/Domain layer method. See [ConnectivityGuard]'s doc comment for the
 /// full rationale.

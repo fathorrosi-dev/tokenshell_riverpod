@@ -30,14 +30,14 @@ part 'posts_notifier.g.dart';
 /// AppBar refresh button, and `ref.read(postsProvider.notifier).loadMore()`
 /// when the list is scrolled near its end.
 ///
-/// ## Why keepAlive (R-06, 27 Jun 2026)
+/// ## Why keepAlive
 ///
 /// Changed from `@riverpod` (autoDispose default) to
 /// `@Riverpod(keepAlive: true)` so the paginated list state survives tab
 /// navigation. With autoDispose, every switch to Settings or Home and back
 /// would dispose this notifier — resetting to page 1 and discarding all
 /// pages the user had already scrolled through. For a daily-use
-/// productivity tool like Baseline, that's an unnecessary UX regression.
+/// productivity tool, that's an unnecessary UX regression.
 ///
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
@@ -55,17 +55,16 @@ class PostsNotifier extends _$PostsNotifier {
   static const int _pageSize = 20;
 
   /// Maximum number of most-recently-loaded pages kept in
-  /// [PostsListState.posts] at once (R-18, 3 Jul 2026 — production
-  /// readiness audit, Pillar 1).
+  /// [PostsListState.posts] at once.
   ///
-  /// [PostsNotifier] is `keepAlive` (R-06) specifically so pagination
+  /// [PostsNotifier] is `keepAlive` specifically so pagination
   /// state survives tab switches — but keepAlive only controls *when*
   /// this notifier is disposed, not how large its state is allowed to
   /// grow while alive. Before this constant existed, [loadMore] only
   /// ever appended pages, with no upper bound: harmless for
   /// jsonplaceholder's 100-post ceiling (~2000 [Post] objects
   /// worst-case), but this notifier is written as the reference pattern
-  /// every future paginated feature in Baseline is expected to copy —
+  /// every future paginated feature in this app is expected to copy —
   /// and a real backend rarely caps itself at 100 records. Without a
   /// retention window, that copy-paste would silently inherit an
   /// unbounded memory-growth footgun the day it's pointed at a real API.
@@ -76,7 +75,7 @@ class PostsNotifier extends _$PostsNotifier {
   /// pattern next, not a value that happens to make eviction fire in
   /// *this* demo. jsonplaceholder's own list never actually reaches 10
   /// retained pages, so this ships with zero visible behavior change to
-  /// Baseline's current Posts screen — the ceiling exists for the next
+  /// this app's current Posts screen — the ceiling exists for the next
   /// feature that copies this notifier against a larger dataset.
   ///
   /// ## UX tradeoff (read before changing this)

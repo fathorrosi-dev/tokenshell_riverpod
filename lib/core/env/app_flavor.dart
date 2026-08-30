@@ -44,10 +44,10 @@ part 'app_flavor.g.dart';
 /// ad-hoc at call sites like the snippet above — see
 /// `core/logging/log_level_policy.dart`, the single place that reads
 /// [currentFlavor] to decide Talker verbosity and `TalkerDioLoggerSettings`
-/// header redaction. (Audited 25 Jun 2026: this doc comment used to show
+/// header redaction. (This doc comment previously showed
 /// `if (flavor != AppFlavor.prod) talker.verbose(...)` as an illustrative
 /// example that was never actually wired into `talker_provider.dart` —
-/// removed here now that it is.)
+/// removed now that it is.)
 enum AppFlavor {
   /// Local developer builds. Verbose logging, internal tooling enabled.
   dev,
@@ -68,7 +68,7 @@ enum AppFlavor {
 /// Defaults to [AppFlavor.dev] so local `flutter run` without any flags
 /// always behaves as expected.
 ///
-/// Public (was `_currentFlavor`, audited 25 Jun 2026) — `log_level_policy.dart`
+/// Public (previously `_currentFlavor`) — `log_level_policy.dart`
 /// needs this exact same compile-time signal at a point where no `Ref` is
 /// available yet (the `talker` global var in `talker_provider.dart` is
 /// constructed before `ProviderScope` mounts — see that file's doc comment).

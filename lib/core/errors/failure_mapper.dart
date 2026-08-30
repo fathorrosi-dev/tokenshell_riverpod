@@ -31,7 +31,7 @@ class FailureMapper {
   Failure call(Object error, [StackTrace? stackTrace]) {
     final failure = switch (error) {
       DioException() => _fromDioException(error),
-      // R-17 (2 Jul 2026): flutter_secure_storage surfaces platform-channel
+      // flutter_secure_storage surfaces platform-channel
       // failures (e.g. a corrupted Android Keystore after an OS restore —
       // a real, documented failure mode, not a hypothetical) as a raw
       // [PlatformException]. Previously this fell into the generic
@@ -68,11 +68,11 @@ class FailureMapper {
       DioExceptionType.cancel => const Failure.unknown(
         message: 'Request was cancelled.',
       ),
-      // R-15 (2 Jul 2026): split out from the generic catch-all below so a
+      // Split out from the generic catch-all below so a
       // TLS/certificate problem gets its own message instead of the fully
       // generic one. Still maps to `UnknownFailure` — no dedicated Failure
-      // subtype, since certificate pinning itself is out of scope at this
-      // audit's Balanced depth — but the raw `DioException` logged by
+      // subtype, since certificate pinning itself is intentionally out of
+      // scope here — but the raw `DioException` logged by
       // `call()` above already carries `type: badCertificate`, and this
       // message makes the same signal visible to the user, not just in
       // the log.
@@ -95,7 +95,7 @@ class FailureMapper {
         message: _extractMessage(error) ?? 'Validation failed.',
         fieldErrors: _extractFieldErrors(error),
       ),
-      // R-17 (2 Jul 2026): previously fell through to the generic 5xx-style
+      // Previously fell through to the generic 5xx-style
       // message below, indistinguishable from "the server is actually
       // down." A 429 means the opposite — the server is healthy and asking
       // us to slow down. No dedicated Failure subtype is introduced here
@@ -103,7 +103,7 @@ class FailureMapper {
       // maps to ServerFailure, but with a message that tells the user (and
       // anything reading Sentry/Talker) what's actually going on, including
       // the server's own wait-time hint when it provides one. See
-      // `RetryInterceptor`'s R17 doc comment — this is the same 429 case,
+      // `RetryInterceptor`'s 429-handling doc comment — this is the same 429 case,
       // reached only when retries there are exhausted or the response
       // wasn't a GET/explicitly-retryable request in the first place.
       429 => Failure.server(
@@ -135,7 +135,7 @@ class FailureMapper {
   /// instead of throwing if the shape doesn't match — caller falls back to
   /// a sane default rather than crashing on a malformed error response.
   ///
-  /// R-14 (2 Jul 2026): the raw string is passed through [_sanitizeMessage]
+  /// The raw string is passed through [_sanitizeMessage]
   /// before reaching the UI. The backend behind this is first-party today,
   /// but nothing stops a future repository from routing a third-party or
   /// legacy API through this same [FailureMapper] — this boundary

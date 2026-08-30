@@ -1,7 +1,6 @@
 # Release Checklist
 
 Pre-release steps yang harus dicek setiap kali membuat release build (AppBundle / IPA).
-Ditambahkan dari production readiness audit 27 Jun 2026 (R-02, R-07).
 
 ---
 
@@ -123,4 +122,4 @@ Setelah upload ke Play Store internal track / TestFlight:
 ---
 
 _Checklist ini diupdate setiap kali ada perubahan pada build pipeline._
-_Last updated: 27 Jun 2026_
+_Last updated: 24 Aug 2026_

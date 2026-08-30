@@ -13,7 +13,7 @@ import 'package:tokenshell_riverpod/features/posts/domain/repositories/post_repo
 /// entities, and translate every possible exception into a typed
 /// [Failure] via the shared [FailureMapper].
 ///
-/// ## ConnectivityGuard (updated R-05, 27 Jun 2026)
+/// ## ConnectivityGuard
 ///
 /// [_connectivity] now returns `Either<NetworkFailure, Unit>` instead of
 /// throwing. Each method pattern-matches on the result with a Dart 3

@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 /// POST/PATCH/DELETE that already reached the server risks duplicate side
 /// effects (double-charging, duplicate records, etc).
 ///
-/// ## 429 handling (R17)
+/// ## 429 handling
 ///
 /// A 429 is treated differently from a 5xx: it means the server is healthy
 /// but asking us to slow down, and it may tell us exactly how long to wait

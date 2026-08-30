@@ -47,7 +47,7 @@ Future<Post> postDetail(Ref ref, int id) async {
   // list hasn't loaded this post yet. Fall back to the network exactly as
   // before.
   //
-  // Changed from ref.read to ref.watch (R-10, 27 Jun 2026): both
+  // Changed from ref.read to ref.watch: both
   // getPostByIdUseCaseProvider and this provider are autoDispose, but
   // ref.read does not add a subscription — so the use case provider was
   // not kept alive during the async fetch. ref.watch adds a subscription

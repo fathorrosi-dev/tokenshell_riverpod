@@ -28,8 +28,7 @@ import 'package:tokenshell_riverpod/features/posts/domain/entities/post.dart';
 /// that lives *inside* the `AsyncData` payload, which is exactly what
 /// [isLoadingMore] is for.
 ///
-/// ## `.select()` convention (added 3 Jul 2026 — guidance only, no
-/// behavior change)
+/// ## `.select()` convention (guidance only, no behavior change)
 ///
 /// `posts_page.dart` currently watches this whole state via `Consumer`
 /// rather than `ref.watch(postsProvider).select(...)` on individual
@@ -49,13 +48,13 @@ import 'package:tokenshell_riverpod/features/posts/domain/entities/post.dart';
 /// inconsistently, the first time it comes up.
 final class PostsListState {
   // Not `const` — [List.unmodifiable] is not a const expression.
-  // The `const` keyword was removed intentionally (R-04, 27 Jun 2026):
+  // The `const` keyword was removed intentionally:
   // wrapping `posts` in [List.unmodifiable] via the initializer list
   // enforces that callers cannot mutate the list directly (e.g. by
   // calling `.add()` / `.remove()` on a reference they hold to
   // `state.posts`). Without this, a mutation would silently change the
   // list in-memory with no Riverpod notification and no Freezed equality
-  // enforcement — an especially real risk once Baseline's feature-level
+  // enforcement — an especially real risk once this app's feature-level
   // notifiers start handling inline edits or reordering.
   //
   // Any caller that needs a mutable copy should use `List.of(state.posts)`

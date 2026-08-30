@@ -17,7 +17,7 @@ part 'secure_storage_datasource.g.dart';
 /// Access this via [secureStorageDatasourceProvider], never by constructing
 /// it directly.
 ///
-/// Deliberately has no try/catch of its own (R17) — see the "Error handling
+/// Deliberately has no try/catch of its own — see the "Error handling
 /// contract" section on [ISecureStorageDatasource]. A [PlatformException]
 /// from `_storage` propagates untouched to the caller, which is expected to
 /// route it through `FailureMapper` (already updated to map it to

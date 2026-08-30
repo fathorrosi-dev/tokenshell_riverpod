@@ -408,7 +408,7 @@ abstract class _$ReachabilityCache extends $Notifier<ProbeResult?> {
 /// narrow window it doesn't cover: two calls that both see a stale/absent
 /// cache before either one finishes probing. Without de-duplication, both
 /// independently start a real network round-trip to
-/// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+/// [_reachabilityProbeUrl]. [_inFlightProbe] closes that window: the
 /// second caller awaits the first caller's in-progress [Future] instead of
 /// starting a redundant one. Bounded by realistic parallel-request counts
 /// (a handful, not a thundering herd) — this is a minor efficiency fix, not
@@ -448,7 +448,7 @@ final connectivityServiceProvider = ConnectivityServiceProvider._();
 /// narrow window it doesn't cover: two calls that both see a stale/absent
 /// cache before either one finishes probing. Without de-duplication, both
 /// independently start a real network round-trip to
-/// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+/// [_reachabilityProbeUrl]. [_inFlightProbe] closes that window: the
 /// second caller awaits the first caller's in-progress [Future] instead of
 /// starting a redundant one. Bounded by realistic parallel-request counts
 /// (a handful, not a thundering herd) — this is a minor efficiency fix, not
@@ -486,7 +486,7 @@ final class ConnectivityServiceProvider
   /// narrow window it doesn't cover: two calls that both see a stale/absent
   /// cache before either one finishes probing. Without de-duplication, both
   /// independently start a real network round-trip to
-  /// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+  /// [_reachabilityProbeUrl]. [_inFlightProbe] closes that window: the
   /// second caller awaits the first caller's in-progress [Future] instead of
   /// starting a redundant one. Bounded by realistic parallel-request counts
   /// (a handful, not a thundering herd) — this is a minor efficiency fix, not
@@ -552,7 +552,7 @@ String _$connectivityServiceHash() =>
 /// narrow window it doesn't cover: two calls that both see a stale/absent
 /// cache before either one finishes probing. Without de-duplication, both
 /// independently start a real network round-trip to
-/// [_reachabilityProbeUrl]. [_inFlightProbe] (R17) closes that window: the
+/// [_reachabilityProbeUrl]. [_inFlightProbe] closes that window: the
 /// second caller awaits the first caller's in-progress [Future] instead of
 /// starting a redundant one. Bounded by realistic parallel-request counts
 /// (a handful, not a thundering herd) — this is a minor efficiency fix, not

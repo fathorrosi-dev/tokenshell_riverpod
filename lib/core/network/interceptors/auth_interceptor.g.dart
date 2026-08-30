@@ -19,7 +19,7 @@ part of 'auth_interceptor.dart';
 /// `core/logging/talker_provider.dart` for the one deliberate exception
 /// that's staying manual, and why.
 ///
-/// ## Sentry user scope (R-03 — 27 Jun 2026)
+/// ## Sentry user scope
 ///
 /// When you override this provider with a real token reader, also wire
 /// [setSentryUser] / [clearSentryUser] from
@@ -36,8 +36,8 @@ part of 'auth_interceptor.dart';
 /// ```
 ///
 /// Without this, crashes in production cannot be attributed to a specific
-/// client account — making support triage significantly harder for a B2B
-/// SaaS like Baseline.
+/// client account — making support triage significantly harder for any
+/// multi-tenant B2B SaaS built on this template.
 
 @ProviderFor(accessTokenReader)
 final accessTokenReaderProvider = AccessTokenReaderProvider._();
@@ -53,7 +53,7 @@ final accessTokenReaderProvider = AccessTokenReaderProvider._();
 /// `core/logging/talker_provider.dart` for the one deliberate exception
 /// that's staying manual, and why.
 ///
-/// ## Sentry user scope (R-03 — 27 Jun 2026)
+/// ## Sentry user scope
 ///
 /// When you override this provider with a real token reader, also wire
 /// [setSentryUser] / [clearSentryUser] from
@@ -70,8 +70,8 @@ final accessTokenReaderProvider = AccessTokenReaderProvider._();
 /// ```
 ///
 /// Without this, crashes in production cannot be attributed to a specific
-/// client account — making support triage significantly harder for a B2B
-/// SaaS like Baseline.
+/// client account — making support triage significantly harder for any
+/// multi-tenant B2B SaaS built on this template.
 
 final class AccessTokenReaderProvider
     extends
@@ -92,7 +92,7 @@ final class AccessTokenReaderProvider
   /// `core/logging/talker_provider.dart` for the one deliberate exception
   /// that's staying manual, and why.
   ///
-  /// ## Sentry user scope (R-03 — 27 Jun 2026)
+  /// ## Sentry user scope
   ///
   /// When you override this provider with a real token reader, also wire
   /// [setSentryUser] / [clearSentryUser] from
@@ -109,8 +109,8 @@ final class AccessTokenReaderProvider
   /// ```
   ///
   /// Without this, crashes in production cannot be attributed to a specific
-  /// client account — making support triage significantly harder for a B2B
-  /// SaaS like Baseline.
+  /// client account — making support triage significantly harder for any
+  /// multi-tenant B2B SaaS built on this template.
   AccessTokenReaderProvider._()
     : super(
         from: null,

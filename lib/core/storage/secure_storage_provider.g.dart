@@ -30,7 +30,7 @@ part of 'secure_storage_provider.dart';
 /// `AndroidOptions(encryptedSharedPreferences: true)` as it is deprecated
 /// and ignored by the plugin.
 ///
-/// ## iOS — Keychain accessibility (R-09, 27 Jun 2026)
+/// ## iOS — Keychain accessibility
 ///
 /// Explicitly set to [KeychainAccessibility.first_unlock_this_device].
 ///
@@ -79,7 +79,7 @@ final secureStorageProvider = SecureStorageProvider._();
 /// `AndroidOptions(encryptedSharedPreferences: true)` as it is deprecated
 /// and ignored by the plugin.
 ///
-/// ## iOS — Keychain accessibility (R-09, 27 Jun 2026)
+/// ## iOS — Keychain accessibility
 ///
 /// Explicitly set to [KeychainAccessibility.first_unlock_this_device].
 ///
@@ -133,7 +133,7 @@ final class SecureStorageProvider
   /// `AndroidOptions(encryptedSharedPreferences: true)` as it is deprecated
   /// and ignored by the plugin.
   ///
-  /// ## iOS — Keychain accessibility (R-09, 27 Jun 2026)
+  /// ## iOS — Keychain accessibility
   ///
   /// Explicitly set to [KeychainAccessibility.first_unlock_this_device].
   ///
