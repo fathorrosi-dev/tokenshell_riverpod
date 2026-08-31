@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Icon size tokens built on a progressive scale aligned with the 4 px base grid.
 ///

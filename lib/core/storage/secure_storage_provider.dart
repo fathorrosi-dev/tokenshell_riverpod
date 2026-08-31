@@ -41,7 +41,8 @@ part 'secure_storage_provider.g.dart';
 /// the current device's hardware key, so:
 /// - No iCloud Keychain sync.
 /// - Value is also NOT migrated to a new device via encrypted backup
-///   (unlike [KeychainAccessibility.first_unlock_this_device] + backup flag).
+///   (unlike [KeychainAccessibility.first_unlock], which is not tied to
+///   the device's hardware key and can be restored on a new device).
 ///   Users re-authenticate after a device restore — correct behavior for
 ///   session tokens.
 ///

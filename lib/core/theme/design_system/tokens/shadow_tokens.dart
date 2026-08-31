@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Box-shadow tokens inspired by shadcn/ui's subtle elevation system.
 ///

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tokenshell_riverpod/core/logging/talker_provider.dart';
 import 'package:tokenshell_riverpod/core/routing/app_router.dart';
 import 'package:tokenshell_riverpod/core/theme/app_theme_extension.dart';
