@@ -32,6 +32,12 @@ analyzer:
     # Assets and fonts don't contain Dart code.
     - "assets/**"
     - "build/**"
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 
 linter:
   rules:
@@ -57,6 +63,12 @@ linter:
     # consistently, per Flutter community convention.
     prefer_double_quotes: false
 
+    # `sort_pub_dependencies` is disabled — it's a cosmetic-only rule, and
+    # this template's pubspec.yaml is already kept alphabetical by
+    # convention, so enforcing it via lint adds no value beyond what's
+    # already followed manually.
+    sort_pub_dependencies: false
+
     # ── Additional rules enabled ────────────────────────────────────────────
 
     # Ensure every switch is exhaustive — critical for sealed classes
@@ -76,7 +88,6 @@ linter:
 
     # Forbid unnecessary use of dynamic.
     avoid_dynamic_calls: true
-    sort_pub_dependencies: false
 
     # very_good_analysis excludes this rule by default (unresolved false
     # positives — dart-lang/linter#1381). Enabled here anyway: a Sink or
