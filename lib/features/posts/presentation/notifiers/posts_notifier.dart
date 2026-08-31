@@ -37,7 +37,7 @@ part 'posts_notifier.g.dart';
 /// navigation. With autoDispose, every switch to Settings or Home and back
 /// would dispose this notifier — resetting to page 1 and discarding all
 /// pages the user had already scrolled through. For a daily-use
-/// productivity tool like Baseline, that's an unnecessary UX regression.
+/// productivity tool, that's an unnecessary UX regression.
 ///
 /// Tradeoff: keepAlive means the list stays in memory for the app's
 /// lifetime. For stale-data mitigation, consider calling [refresh] on
@@ -65,7 +65,7 @@ class PostsNotifier extends _$PostsNotifier {
   /// ever appended pages, with no upper bound: harmless for
   /// jsonplaceholder's 100-post ceiling (~2000 [Post] objects
   /// worst-case), but this notifier is written as the reference pattern
-  /// every future paginated feature in Baseline is expected to copy —
+  /// every future paginated feature in this app is expected to copy —
   /// and a real backend rarely caps itself at 100 records. Without a
   /// retention window, that copy-paste would silently inherit an
   /// unbounded memory-growth footgun the day it's pointed at a real API.
@@ -76,7 +76,7 @@ class PostsNotifier extends _$PostsNotifier {
   /// pattern next, not a value that happens to make eviction fire in
   /// *this* demo. jsonplaceholder's own list never actually reaches 10
   /// retained pages, so this ships with zero visible behavior change to
-  /// Baseline's current Posts screen — the ceiling exists for the next
+  /// this app's current Posts screen — the ceiling exists for the next
   /// feature that copies this notifier against a larger dataset.
   ///
   /// ## UX tradeoff (read before changing this)
