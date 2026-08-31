@@ -1,9 +1,8 @@
 // dart run build_runner build --delete-conflicting-outputs
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:tokenshell_riverpod/core/l10n/app_strings.dart';
 import 'package:tokenshell_riverpod/core/logging/talker_provider.dart';
 import 'package:tokenshell_riverpod/core/routing/feature_registry.dart';

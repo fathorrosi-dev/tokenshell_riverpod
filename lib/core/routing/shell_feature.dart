@@ -1,6 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:material_ui/material_ui.dart';
 import 'package:tokenshell_riverpod/core/routing/routes.dart';
 
 /// Descriptor for a single navigation destination in the app shell.

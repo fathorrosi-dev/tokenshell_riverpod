@@ -1,8 +1,7 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_riverpod_logger/talker_riverpod_logger.dart';
-
 import 'package:tokenshell_riverpod/app/app.dart';
 import 'package:tokenshell_riverpod/core/logging/talker_provider.dart';
 import 'package:tokenshell_riverpod/core/observability/observability.dart';
