@@ -1,17 +1,27 @@
 # tokenshell_riverpod
 
-A new Flutter project.
+A Material 3, production-hardened Flutter starter template — built to be a
+reusable foundation for new apps, not a single-purpose project.
 
-## Getting Started
+## Stack
 
-This project is a starting point for a Flutter application.
+- **State management:** Riverpod 3 (codegen syntax)
+- **Routing:** go_router
+- **Networking:** Dio + Retrofit
+- **Modeling:** Freezed + json_serializable, with `fpdart`'s `Either` for
+  explicit `Failure` propagation instead of thrown exceptions
+- **Env config:** Envied (compile-time, not committed to source control)
+- **Storage:** shared_preferences (non-sensitive) + flutter_secure_storage
+  (tokens/credentials)
+- **Observability:** Talker (logging) + Sentry (crash/error reporting)
 
-A few resources to get you started if this is your first Flutter project:
+## Getting started
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+1. `flutter pub get`
+2. `dart run build_runner build --delete-conflicting-outputs`
+3. Provide the required env values (see `lib/core/env/`)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Project documentation
+
+Architecture decisions, package rationale, and the pre-release checklist
+live in [`lib/docs/`](lib/docs/) — start with `PACKAGE_DECISIONS.md`.
