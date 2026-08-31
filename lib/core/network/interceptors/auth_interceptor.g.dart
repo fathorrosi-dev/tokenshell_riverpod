@@ -37,7 +37,7 @@ part of 'auth_interceptor.dart';
 ///
 /// Without this, crashes in production cannot be attributed to a specific
 /// client account — making support triage significantly harder for a B2B
-/// SaaS like Baseline.
+/// SaaS product.
 
 @ProviderFor(accessTokenReader)
 final accessTokenReaderProvider = AccessTokenReaderProvider._();
@@ -71,7 +71,7 @@ final accessTokenReaderProvider = AccessTokenReaderProvider._();
 ///
 /// Without this, crashes in production cannot be attributed to a specific
 /// client account — making support triage significantly harder for a B2B
-/// SaaS like Baseline.
+/// SaaS product.
 
 final class AccessTokenReaderProvider
     extends
@@ -110,7 +110,7 @@ final class AccessTokenReaderProvider
   ///
   /// Without this, crashes in production cannot be attributed to a specific
   /// client account — making support triage significantly harder for a B2B
-  /// SaaS like Baseline.
+  /// SaaS product.
   AccessTokenReaderProvider._()
     : super(
         from: null,

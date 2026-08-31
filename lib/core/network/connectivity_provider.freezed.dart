@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'connectivity_provider.dart';
@@ -9,6 +9,7 @@ part of 'connectivity_provider.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ProbeResultCopyWith<ProbeResult> get copyWith => _$ProbeResultCopyWithImpl<Prob
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProbeResult&&(identical(other.result, result) || other.result == result)&&(identical(other.checkedAt, checkedAt) || other.checkedAt == checkedAt));
+  final _this = this as ProbeResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProbeResult&&(identical(other.result, _this.result) || other.result == _this.result)&&(identical(other.checkedAt, _this.checkedAt) || other.checkedAt == _this.checkedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result,checkedAt);
+int get hashCode {
+  final _this = this as ProbeResult;
+  return Object.hash(runtimeType,_this.result,_this.checkedAt);
+}
 
 @override
 String toString() {
-  return 'ProbeResult(result: $result, checkedAt: $checkedAt)';
+  final _this = this as ProbeResult;
+  return 'ProbeResult(result: ${_this.result}, checkedAt: ${_this.checkedAt})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ProbeResultCopyWithImpl<$Res>
 /// Create a copy of ProbeResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? result = null,Object? checkedAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProbeResult(
 result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
 as bool,checkedAt: null == checkedAt ? _self.checkedAt : checkedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
@@ -223,16 +229,18 @@ _$ProbeResultCopyWith<_ProbeResult> get copyWith => __$ProbeResultCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProbeResult&&(identical(other.result, result) || other.result == result)&&(identical(other.checkedAt, checkedAt) || other.checkedAt == checkedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProbeResult&&(identical(other.result, result) || other.result == result)&&(identical(other.checkedAt, checkedAt) || other.checkedAt == checkedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result,checkedAt);
+int get hashCode {
+    return Object.hash(runtimeType,result,checkedAt);
+}
 
 @override
 String toString() {
-  return 'ProbeResult(result: $result, checkedAt: $checkedAt)';
+    return 'ProbeResult(result: $result, checkedAt: $checkedAt)';
 }
 
 
